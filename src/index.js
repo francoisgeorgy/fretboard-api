@@ -24,3 +24,83 @@ function normalizeFrets(frets) {
     return f.map(e => e === "X" ? NOT_FRETTED_NUMBER : parseInt(e, 10));
     // return Array.from(shape.frets.toUpperCase()).map(e => e === "X" ? NOT_FRETTED_NUMBER : parseInt(e, 10));
 }
+
+
+class Shape {
+
+    constructor({tuning = ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'], id} = {}) {
+        this.id = id;
+        this.tuning = tuning;
+        this.frets = [];
+        this.fingers = [];
+    }
+
+    getTuning() {
+        return this.tuning;
+    }
+
+    setTuning(tuning) {
+        this.tuning = tuning;
+    }
+
+} // Shape
+
+
+class Fretboard {
+
+    constructor({tuning = ['E2', 'A2', 'D3', 'G3', 'B3', 'E4']} = {}) {
+        this.tuning = tuning;
+        this.shapes = [];
+        this.nextID = 0;
+    }
+
+    /* private */
+    uniqueId() {
+        return this.nextID++;
+    }
+
+    getTuning() {
+        return this.tuning;
+    }
+
+    setTuning(tuning) {
+        this.tuning = tuning;
+        this.shapes.forEach(function(s) {
+            s.setTuning(tuning);
+        });
+    }
+
+    addShape() {
+        let shape = new Shape({tuning: this.tuning, id: this.uniqueId()});
+        this.shapes.push(shape);
+        return shape;
+    }
+
+    removeShape(idOrShape) {
+        let id = typeof idOrShape === 'number' ? idOrShape : idOrShape.id;
+        let i = this.shapes.findIndex(e => e.id === id);
+        if (i > -1) {
+            this.shapes.splice(i, 1);
+        }
+        return this;
+    }
+
+
+
+} // Fretboard
+
+// quick tests:
+
+                                console.log('--- create Fretboard');
+var f = new Fretboard();        console.log(f);
+                                console.log('--- add shapes');
+var shape1 = f.addShape();      console.log(shape1);
+var shape2 = f.addShape();      console.log(shape2);
+                                console.log(f);
+// f.removeShape(shape1.id);       console.log(f);
+// f.removeShape(shape2);          console.log(f);
+                                console.log('--- change tuning');
+f.setTuning(['D2', 'A2', 'D3', 'G3', 'B3', 'D4']);
+                                console.log(shape1);
+                                console.log(shape2);
+                                console.log(f);
