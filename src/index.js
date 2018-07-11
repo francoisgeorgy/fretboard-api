@@ -66,6 +66,7 @@ class Fretboard {
     setTuning(tuning) {
         this.tuning = tuning;
         this.shapes.forEach(function(s) {
+            //TODO: only change shape's tuning if the shape was created WITH a tuning.
             s.setTuning(tuning);
         });
     }
