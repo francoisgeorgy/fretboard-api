@@ -2,7 +2,9 @@
 
 ### Strings numbering
 
-Strings are numbered starting at 1 and from the lowest pitched to the highest pitched.
+For the user: strings are numbered starting at 1 and from the lowest pitched to the highest pitched.
+
+Implementation: strings are in an array 0-index.
 
 For a standard tuning, strings are 1=E, 2=A, 3=D, 4=G, 5=B, 6=E
 
@@ -11,6 +13,12 @@ For a standard tuning, strings are 1=E, 2=A, 3=D, 4=G, 5=B, 6=E
 Frets are numbered starting at 0 and from the head of the neck towards the bridge.
 
 Fret number 0 is the nut, or the "zero fret" installed close the the nut on certain guitars.
+
+## Shape normalization
+
+    frets: [8, 10, 10, 9, 8, 8] --> [0, 2, 2, 1, 0, 0]
+
+    root: "0 1" --> {string: 0, fret: 1}
 
 ## Chord
 
@@ -71,3 +79,8 @@ With all optional attributes:
         // offset: 1,       --> determined if lowest root has fret > 0
     }
     
+# Resources:
+
+- https://en.wikipedia.org/wiki/Guitar_tunings
+- https://en.wikipedia.org/wiki/Stringed_instrument_tunings    
+- https://en.wikipedia.org/wiki/Scientific_pitch_notation

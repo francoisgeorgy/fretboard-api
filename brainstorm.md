@@ -15,6 +15,7 @@ Allow several shapes to be placed on a single fretboard.
     shape2 = f.addShape(...)
     shape1.moveTo({fret: 8})
     shape2.moveTo({string: 2, fret:3})
+    shape1.reset()
 
 Q: when moving across strings, adapt (update) the shape according to the current fretboard's tuning? 
 A: yes, if the shape has a tuning defined, no if the shape was defined without any tuning indication. 
