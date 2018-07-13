@@ -1,4 +1,5 @@
-import Tonal from "tonal";
+// import Tonal from "tonal";
+import { Distance, interval, Interval, Note } from "tonal";
 import {normalizeFrets} from "./utils.js";
 import {NOT_FRETTED_NUMBER} from "./conf";
 
@@ -21,6 +22,7 @@ export class Shape {
 
         this.computeTuningIntervals();
 
+        // TODO: normalize root if given as a string
         if (!this.hasOwnProperty("root")) {
             this.root = {};
             this.root['string'] = this.lowestString();
@@ -74,7 +76,7 @@ export class Shape {
     computeTuningIntervals() {
         this.tuningIntervals = Array(this.tuning.length).fill(null);
         for(let i = 0; i < this.tuning.length; i++) {
-            this.tuningIntervals[i] = Tonal.Distance.interval(this.tuning[i > 0 ? (i-1) : 0], this.tuning[i]);
+            this.tuningIntervals[i] = interval(this.tuning[i > 0 ? (i-1) : 0], this.tuning[i]);
         }
     }
 
@@ -103,15 +105,15 @@ export class Shape {
             }
 
             // get number of semitones from the root string to this string:
-            let semitones_from_root = Tonal.Distance.semitones(this.tuning[this.root.string], this.tuning[i]);     // Get the distance between two notes in semitones:
+            let semitones_from_root = Distance.semitones(this.tuning[this.root.string], this.tuning[i]);     // Get the distance between two notes in semitones:
 
             // get interval name between this shape's note and the shape's root note:
-            let interval_from_root = Tonal.Interval.fromSemitones(semitones_from_root + this.frets[i] - this.root.fret);   // Get interval name from semitones number:
+            let interval_from_root = Interval.fromSemitones(semitones_from_root + this.frets[i] - this.root.fret);   // Get interval name from semitones number:
 
             this.intervals[i] = (i === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root;
 
             // get the simplified name of this interval:
-            let si = Tonal.Interval.simplify(interval_from_root);       // Get the simplified version of an interval:
+            let si = Interval.simplify(interval_from_root);       // Get the simplified version of an interval:
             if ((si === "1P") || (si === "8P")) si = "R";
             if (!this.simpleIntervals.includes(si)) {
                 this.simpleIntervals.push(si);          // ! simpleIntervals are not sorted
@@ -137,12 +139,12 @@ export class Shape {
             }
 
             // get the note name:
-            let note = Tonal.Distance.transpose(this.tuning[i], Tonal.Interval.fromSemitones(this.frets[i]));
+            let note = Distance.transpose(this.tuning[i], Interval.fromSemitones(this.frets[i]));
 
             this.notes[i] = note;
 
             // get the note name without the octave:
-            let pc = Tonal.Note.pc(note);
+            let pc = Note.pc(note);
             if (!this.simpleNotes.includes(pc)) {
                 this.simpleNotes.push(pc);          // ! simpleNotes are not sorted
             }

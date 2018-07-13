@@ -1,0 +1,70 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>fretboard-api examples</title>
+    <script src="../dist/main.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+        #main {
+            font-family: monospace;
+            /*white-space: pre;*/
+        }
+        #main > div {
+            padding: 10px 0;
+            border-bottom: 1px solid #aaa;
+        }
+        #main > div > div {
+            font-family: sans-serif;
+            font-weight: bold;
+            font-size: 84%;
+            margin-bottom: 3px;
+        }
+    </style>
+</head>
+<body>
+    <h1>fretboard-api</h1>
+    <div id="header">
+    </div>
+    <div id="main"></div>
+</body>
+<script>
+
+    // If the browser support ES6 modules:
+    //import Slider from './index.js';
+
+    function logObj(o, labelText) {
+        let entry = document.createElement('div');
+        entry.innerHTML = JSON.stringify(o);    //, null, 2);
+        if (labelText) {
+            let label = document.createElement('div');
+            label.innerText = labelText;
+            entry.insertAdjacentElement('afterbegin', label);
+        }
+        document.getElementById('main').insertAdjacentElement('beforeend', entry);
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+
+        // For browser that do not support ES6 modules yet:
+        let api = fretboardApi;
+
+        logObj(api.SHAPES, 'SHAPES');
+
+        let f = new api.Fretboard();
+        logObj(f, 'fretboard');
+
+        // f.addShape({shape: {frets:'0 2 2 1 0 0'}, fret: 8});
+        let s = f.addShape({shape: {frets:'0 2 2 1 0 0'}});
+        logObj(s, 'shape');
+
+        s.moveTo({fret: 8});
+        logObj(s, 'shape moved to fret 8');
+
+
+    });
+
+</script>
+</html>
