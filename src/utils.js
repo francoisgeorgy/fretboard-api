@@ -1,3 +1,4 @@
+import Tonal from "tonal";
 import {NOT_FRETTED_NUMBER} from "./conf";
 
 /**

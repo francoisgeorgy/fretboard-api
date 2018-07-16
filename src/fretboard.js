@@ -1,5 +1,6 @@
 import {mandatory} from "./utils";
 import {Shape} from "./shape";
+import {DEF_TUNING} from "./conf";
 
 /**
  *

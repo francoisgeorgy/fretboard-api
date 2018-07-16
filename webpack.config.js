@@ -1,9 +1,32 @@
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
-module.exports = {
+/*
+const path = require('path');
+
+const serverConfig = {
+    target: 'node',
     output: {
-        library: "svgKnob",
-        libraryTarget: "umd"
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'lib.node.js'
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader"
+                }
+            }
+        ]
+    }
+};
+
+const clientConfig = {
+    target: 'web', // <=== can be omitted as default is 'web'
+    output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'lib.js'
     },
     module: {
         rules: [
@@ -22,6 +45,39 @@ module.exports = {
                 uglifyOptions: {
                     compress: {
                         drop_console: true,
+                    }
+                }
+            })
+        ]
+    }
+};
+
+module.exports = [ serverConfig, clientConfig ];
+*/
+
+module.exports = {
+    output: {
+        library: "fretboardApi",
+        libraryTarget: "umd"
+    },
+    module: {
+        rules: [
+            {
+                test: /\.js$/,
+                exclude: /node_modules/,
+                use: {
+                    loader: "babel-loader"
+                }
+            }
+        ]
+    },
+    optimization: {
+        minimizer: [
+            new UglifyJSPlugin({
+                uglifyOptions: {
+                    compress: {
+                        // drop_console: true,
+                        drop_console: false,
                     }
                 }
             })
