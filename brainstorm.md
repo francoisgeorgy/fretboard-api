@@ -1,6 +1,22 @@
-## Use case:
 
-1. setup a fretboard with number of strings and tuning. Optionnaly define the (max) number of frets.
+- Shapes can be used without a Fretboard object
+- Fretboard object provides tools that help to work with (groups of) shapes
+    - Is a Fretboard object really useful ?
+    
+
+## Uses cases:
+
+### Shapes only:
+
+    maj = new ChordShape('M')     # Major chord, by default on first string, fret 0. Will use default tuning
+    c_maj = maj.root('C')         # set the root
+    
+    maj = new ChordShape('M', string=2)     # ask for Major shape on string 2
+        
+
+### With Fretboard:
+
+1. setup a fretboard with number of strings and tuning. Optionally define the (max) number of frets.
 2. place a _shape_ on this fretboard
        a. the shape can represent a chord, a scale, an interval, a CAGED pattern, ...
        b. the position [string, fret] is optional and can be set later on.

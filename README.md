@@ -1,5 +1,7 @@
 # fretboard-api
 
+    c = new Chord('C')
+
 ### Strings numbering
 
 For the user: strings are numbered starting at 1 and from the lowest pitched to the highest pitched.

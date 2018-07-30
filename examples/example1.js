@@ -1,3 +1,8 @@
-import {SHAPES} from "../src/data/shapes";
+// import {SHAPES} from "../src/data/shapes";
 
-console.log(SHAPES);
+import { CAGED } from '../src/data';
+import { OCTAVES } from '../src/data';
+
+console.log(CAGED);
+
+console.log(OCTAVES);
