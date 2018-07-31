@@ -60,6 +60,45 @@ export class Fretboard {
     }
 
     /**
+     * Alias to addShape()
+     * @param pattern
+     * @param fret
+     * @param string
+     * @returns {Shape}
+     */
+    addPattern({pattern=mandatory(), fret, string} = {}) {
+        return this.addShape({shape=pattern, fret, string})
+    }
+
+    /**
+     *
+     * @param chordShape
+     * @param fret
+     * @param string
+     * @returns {Shape}
+     */
+    addChord({chordShape=mandatory(), fret, string} = {}) {
+
+        //TODO: verify that we have at most one note per string
+
+        return this.addShape({shape=chordShape, fret, string})
+    }
+
+    /**
+     *
+     * @param scaleShape
+     * @param fret
+     * @param string
+     * @returns {Shape}
+     */
+    addScale({scaleShape=mandatory(), fret, string} = {}) {
+
+        //TODO: allow more than one note per string
+
+        return this.addShape({shape=scaleShape, fret, string})
+    }
+
+    /**
      *
      * @param idOrShape
      * @returns {Fretboard}

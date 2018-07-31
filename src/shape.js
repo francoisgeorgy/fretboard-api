@@ -5,6 +5,28 @@ import {NOT_FRETTED_NUMBER} from "./conf";
 
 
 /**
+ * Build a shape from a partial or complete definition.
+ *
+ * The final shape will have, at least, the following properties:
+ *
+ * - frets : array of one element per string
+ * - intervals
+ * - simpleIntervals
+ * - notes
+ * - simpleNotes
+ * - root.string
+ * - root.fret
+ * - firstFret : the lowest fret number (>= 0)
+ * - firstString : the lowest fret number (> 0)
+ *
+ * It can also have, if specified during the creation:
+ *
+ * - fingers
+ *
+ * It will also have the following properties that are used internally but may be useful:
+ *
+ * - tuning
+ * - tuningIntervals
  *
  */
 export class Shape {
@@ -29,6 +51,8 @@ export class Shape {
             this.root['fret'] = this.frets[this.root.string];
         }
 
+        // TODO: compute lowestFret and lowestString
+
         if (!shape.hasOwnProperty('intervals ')) {      // necessary? or can we just override any provided intervals attribute?
             this.computeIntervals();
         }
@@ -36,6 +60,7 @@ export class Shape {
         if (!shape.hasOwnProperty('notes')) {           // necessary? or can we just override any provided notes attribute?
             this.computeNotes();
         }
+
     }
 
     /**
