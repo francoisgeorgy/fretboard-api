@@ -15,9 +15,19 @@ export function mandatory() {
  * @returns {*}
  */
 function minFret(frets) {
+    let m = 10000;              // start with an arbitrary large number
+    for (let s of frets) {      // loop over strings
+        for (let f of s) {      // loop over frets of the current string
+            if (f < m) m = f;
+        }
+    }
+    return m;
+
+    /*
     return frets.reduce(function (acc, v) {
         return (v === NOT_FRETTED_NUMBER || acc < v ? acc : v);
     }, Math.max(...frets));
+    */
 }
 
 /**
@@ -27,6 +37,7 @@ function minFret(frets) {
  * @param {?(array|string)} frets - frets.
  * @return {array} array of fret numbers.
  */
+/*
 export function normalizeFrets(frets) {
 
     //TODO: add option to disable position normalisation (123 --> 012)
@@ -52,6 +63,74 @@ export function normalizeFrets(frets) {
     let min = minFret(n);
 
     return n.map(e => e === NOT_FRETTED_NUMBER ? NOT_FRETTED_NUMBER : (e - min));
+}
+*/
+
+/**
+ * "02" --> [0, 2]
+ * "8 10" --> [8, 10]
+ * "X" --> []
+ * @param s
+ * @returns {*}
+ */
+// function singleString2array(s) {
+//     return s.toUpperCase() === 'X' ? [] : s.split(' ').map(e => parseInt(e, 10));
+// }
+
+/**
+ * "02" --> [0, 2]
+ * "8 10" --> [8, 10]
+ * "X" --> []
+ * @param s
+ * @returns {*}
+ */
+/*
+function multiStrings2array(s) {
+    if (s.toUpperCase() === 'X') return [];
+    // let a = s.indexOf(' ') >= 0 ? s.split(' ') : Array.from(s);
+    return (s.indexOf(' ') >= 0 ? s.split(' ') : Array.from(s)).map(e => parseInt(e, 10));
+}
+*/
+
+
+/**
+ * "022100" --> [[0], [2], [2], [1], [0], [0]]
+ * "8 10 10 9 8 8" --> [[8], [10], [10], [9], [8], [8]]
+ * "24,124,134,134,24,12" --> [[2, 4], [1, 2, 4], [1, 3, 4], [1, 3, 4], [2, 4], [1, 2]]
+ * "8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8" --> [[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10], [7, 8]]
+ * @param {?(array|string)} frets - frets.
+ * @return {array} array of fret numbers.
+ */
+export function normalizeFretsFormat(frets) {
+
+    if (typeof frets !== 'string') return frets;
+
+    let fs = frets.toUpperCase().replace(/\s+/g, ' ');  // replace multiples blanks with one space
+
+    if (fs.indexOf(',') < 0) {
+        // only one fretted note per string
+        // "022100" --> [[0], [2], [2], [1], [0], [0]]
+        let a = fs.indexOf(' ') >= 0 ? fs.split(' ') : Array.from(fs);
+        return a.map(s => s.toUpperCase() === 'X' ? [] : s.split(' ').map(e => parseInt(e, 10)));
+    } else {
+        // "8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8" --> [[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10], [7, 8]]
+        let a = fs.replace(/,\s*/g, ',').split(',');
+        return a.map(s => {
+            if (s.toUpperCase() === 'X') return [];
+            return (s.indexOf(' ') >= 0 ? s.split(' ') : Array.from(s)).map(e => parseInt(e, 10));
+        });
+    }
+
+}
+
+/**
+ * [8, 10, 10, 9, 8, 8] --> [0, 2, 2, 1, 0, 0]
+ * @param {array} array of fret numbers.
+ * @return {array} array of fret numbers.
+ */
+export function normalizeFretsPosition(frets) {
+    let min = minFret(frets);
+    return frets.map(e => e === NOT_FRETTED_NUMBER ? NOT_FRETTED_NUMBER : (e - min));
 }
 
 /**

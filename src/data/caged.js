@@ -1,5 +1,5 @@
 
-const CAGED = {
+export const CAGED = {
     caged_c: {
         name: 'CAGED C form',
         frets: 'X 3 2 0 1 0',
@@ -31,5 +31,3 @@ const CAGED = {
         // root: {string: 0, fret: 0}
     }
 };
-
-export default CAGED;

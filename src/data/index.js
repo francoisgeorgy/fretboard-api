@@ -1,3 +1,3 @@
 
-export {default as CAGED} from './CAGED.js';
-export * from './intervals.js';
+export {CAGED} from './caged.js';
+export {OCTAVES} from './intervals.js';

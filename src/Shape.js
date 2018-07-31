@@ -1,7 +1,10 @@
 // import Tonal from "tonal";
 import { Distance, interval, Interval, Note } from "tonal";
 import {normalizeFrets} from "./utils.js";
-import {NOT_FRETTED_NUMBER} from "./conf";
+import {DEF_TUNING, NOT_FRETTED_NUMBER} from "./conf";
+import {normalizeFretsFormat, normalizeFretsPosition} from "./utils";
+import Assert from "assert-js";
+import enharmonics from "enharmonics";
 
 
 /**
@@ -12,6 +15,8 @@ import {NOT_FRETTED_NUMBER} from "./conf";
  * - frets : array of one element per string
  * - intervals
  * - simpleIntervals
+ * - stackedIntervals (from low to high notes)
+ * - reverseStackedIntervals (from high to low notes)
  * - notes
  * - simpleNotes
  * - root.string
@@ -26,7 +31,7 @@ import {NOT_FRETTED_NUMBER} from "./conf";
  * It will also have the following properties that are used internally but may be useful:
  *
  * - tuning
- * - tuningIntervals
+ * - tuningIntervals (from low string to high string)
  *
  */
 export class Shape {
@@ -35,27 +40,44 @@ export class Shape {
      *
      * @param shape
      */
-    constructor(shape) {
+    constructor(shape, normalizePosition = false) {
+
+        Assert.hasProperty('frets', shape);
 
         Object.assign(this, shape);
-        this.frets = normalizeFrets(this.frets);
 
-        //TODO: check that frets attribute is specified
+        // TUNING:
+
+        if (!this.hasOwnProperty('tuning')) {
+            this.tuning = DEF_TUNING;
+        }
 
         this.computeTuningIntervals();
+
+        // FRETS:
+
+        this.frets = normalizeFretsFormat(this.frets);
+
+        if (normalizePosition) this.frets = normalizeFretsPosition(this.frets);
+
+        // TODO: compute lowestFret and lowestString
+
+        // ROOT:
 
         // TODO: normalize root if given as a string
         if (!this.hasOwnProperty("root")) {
             this.root = {};
             this.root['string'] = this.lowestString();
-            this.root['fret'] = this.frets[this.root.string];
+            this.root['fret'] = this.frets[this.root.string][0];    // by default takes the first fretted note on the first played string
         }
 
-        // TODO: compute lowestFret and lowestString
+        // INTERVALS:
 
         if (!shape.hasOwnProperty('intervals ')) {      // necessary? or can we just override any provided intervals attribute?
             this.computeIntervals();
         }
+
+        // NOTES:
 
         if (!shape.hasOwnProperty('notes')) {           // necessary? or can we just override any provided notes attribute?
             this.computeNotes();
@@ -110,7 +132,7 @@ export class Shape {
      * @returns {number} Number (1-based) of the lowest-pitched fretted string
      */
     lowestString() {
-        let i = this.frets.findIndex(f => f > NOT_FRETTED_NUMBER);
+        let i = this.frets.findIndex(f => f.length > 0);
         return i;
     }
 
@@ -120,29 +142,45 @@ export class Shape {
      */
     computeIntervals() {
 
-        this.intervals = Array(this.tuning.length).fill(null);       // "string-indexed"
+        this.intervals = [];
         this.simpleIntervals = [];
 
-        for (let i = 0; i < this.tuning.length; i++) {
+        for (let i = 0; i < this.frets.length; i++) {  // strings
 
-            if (this.frets[i] === NOT_FRETTED_NUMBER) {
+            let intv = [];
+
+            if (this.frets[i].length === 0) {
+                this.simpleIntervals.push(intv);
                 continue;
             }
 
             // get number of semitones from the root string to this string:
             let semitones_from_root = Distance.semitones(this.tuning[this.root.string], this.tuning[i]);     // Get the distance between two notes in semitones:
 
-            // get interval name between this shape's note and the shape's root note:
-            let interval_from_root = Interval.fromSemitones(semitones_from_root + this.frets[i] - this.root.fret);   // Get interval name from semitones number:
+            // console.log(`string semitones_from_root=${semitones_from_root}`);
 
-            this.intervals[i] = (i === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root;
+            for (let f = 0; f < this.frets[i].length; f++) {  // frets
 
-            // get the simplified name of this interval:
-            let si = Interval.simplify(interval_from_root);       // Get the simplified version of an interval:
-            if ((si === "1P") || (si === "8P")) si = "R";
-            if (!this.simpleIntervals.includes(si)) {
-                this.simpleIntervals.push(si);          // ! simpleIntervals are not sorted
+                // console.log(`string ${i} fret ${f}`);
+
+                // get interval name between this shape's note and the shape's root note:
+                let interval_from_root = Interval.fromSemitones(semitones_from_root + this.frets[i][f] - this.root.fret);   // Get interval name from semitones number:
+
+                // console.log(`string ${i} fret ${f} : interval_from_root=${interval_from_root}`);
+
+                intv.push((i === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root);
+
+                // this.intervals[i] = (i === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root;
+
+                // get the simplified name of this interval:
+                let si = Interval.simplify(interval_from_root);       // Get the simplified version of an interval:
+                if ((si === "1P") || (si === "8P")) si = "R";
+                if (!this.simpleIntervals.includes(si)) {
+                    this.simpleIntervals.push(si);          // ! simpleIntervals are not sorted
+                }
             }
+
+            this.intervals.push(intv);
         }
 
         return this;
@@ -154,26 +192,37 @@ export class Shape {
      */
     computeNotes() {
 
-        this.notes = Array(this.tuning.length).fill(null);  // "string-indexed"
+        // this.notes = Array(this.tuning.length).fill(null);  // "string-indexed"
+        this.notes = [];
         this.simpleNotes = [];
 
-        for (let i = 0; i < this.tuning.length; i++) {
+        for (let i = 0; i < this.frets.length; i++) {  // strings
 
-            if (this.frets[i] === NOT_FRETTED_NUMBER) {
+            let notes = [];
+
+            if (this.frets[i].length === 0) {
+                this.notes.push(notes);
                 continue;
             }
 
-            // get the note name:
-            let note = Distance.transpose(this.tuning[i], Interval.fromSemitones(this.frets[i]));
+            for (let f = 0; f < this.frets[i].length; f++) {  // frets
 
-            this.notes[i] = note;
+                // get the note name:
+                let note = Distance.transpose(this.tuning[i], Interval.fromSemitones(this.frets[i][f]));
 
-            // get the note name without the octave:
-            let pc = Note.pc(note);
-            if (!this.simpleNotes.includes(pc)) {
-                this.simpleNotes.push(pc);          // ! simpleNotes are not sorted
+                console.log(note, enharmonics(note));
+
+                notes.push(note);
+
+                // get the note name without the octave:
+                let pc = Note.pc(note);
+                if (!this.simpleNotes.includes(pc)) {
+                    this.simpleNotes.push(pc);          // ! simpleNotes are not sorted
+                }
+
             }
 
+            this.notes.push(notes);
         }
 
         return this;

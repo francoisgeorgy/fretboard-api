@@ -16,11 +16,66 @@ Frets are numbered starting at 0 and from the head of the neck towards the bridg
 
 Fret number 0 is the nut, or the "zero fret" installed close the the nut on certain guitars.
 
-## Shape normalization
+## `frets` and `fingers` format
 
-    frets: [8, 10, 10, 9, 8, 8] --> [0, 2, 2, 1, 0, 0]
+The canonical format is a two-dimensional array:
+
+- 1st dimension is strings
+- 2nd dimension is frets
+
+A muted string is represented by an empty frets array.
+
+Example2:
+
+C major scale:
+
+    [[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10] [7, 8]]
+    
+A7 chord:    
+    
+    [[5], [], [5], [6], [5] []]
+
+#### Allowed input formats:
+
+Frets and fingers can be specified as strings or arrays. They will always be normalized as arrays.
+
+`X` or `x` must be used to define a non-played (muted) string.
+
+With only one fretted note per string:
+
+    "022100" --> [[0], [2], [2], [1], [0], [0]]
+    
+    "5X565X" --> [[5], [], [5], [6], [5] []]
+    
+space are allowed, useful for frets > 9:
+
+    "8 10 10 9 8 8" --> [8, 10, 10, 9, 8, 8]        
+    
+When more than one fretted note per string use a comma to separate the strings:
+
+    "24,124,134,134,24,12" --> [[2, 4], [1, 2, 4], [1, 3, 4], [1, 3, 4], [2, 4], [1, 2]]
+    
+    "8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8" --> [[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10] [7, 8]]
+    
+
+## Frets normalization
+
+*TODO*: normalize relative to the root ? That is, some fret will be negative.
+
+Examples:
+
+one fretted note per string:
+
+    [8, 10, 10, 9, 8, 8] --> [[0], [2], [2], [1], [0], [0]]
+
+more than one fretted note per string:
+
+    [[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10] [7, 8]] --> [[2, 4], [1, 2, 4], [1, 3, 4], [1, 3, 4], [2, 4] [1, 2]]
+
+root:
 
     root: "0 1" --> {string: 0, fret: 1}
+
 
 ## Chord
 

@@ -406,6 +406,10 @@ asn1@~0.2.3:
   version "0.2.3"
   resolved "https://registry.yarnpkg.com/asn1/-/asn1-0.2.3.tgz#dac8787713c9966849fc8180777ebe9c1ddf3b86"
 
+assert-js@^0.19.0:
+  version "0.19.0"
+  resolved "https://registry.yarnpkg.com/assert-js/-/assert-js-0.19.0.tgz#6abeaec43a3e59acd4382e7453752d47c9d8d58e"
+
 assert-plus@1.0.0, assert-plus@^1.0.0:
   version "1.0.0"
   resolved "https://registry.yarnpkg.com/assert-plus/-/assert-plus-1.0.0.tgz#f12e0f3c5d77b0b1cdd9146942e4e96c1e4dd525"
@@ -2292,6 +2296,12 @@ enhanced-resolve@^4.0.0, enhanced-resolve@^4.1.0:
     graceful-fs "^4.1.2"
     memory-fs "^0.4.0"
     tapable "^1.0.0"
+
+enharmonics@^1.0.3:
+  version "1.0.3"
+  resolved "https://registry.yarnpkg.com/enharmonics/-/enharmonics-1.0.3.tgz#dde8f5fdee5ebf1b7c74c26cda621e9029137d8c"
+  dependencies:
+    note-transposer "^1.0.2"
 
 entities@1.0:
   version "1.0.0"
@@ -4883,6 +4893,10 @@ multimatch@^2.0.0:
     arrify "^1.0.0"
     minimatch "^3.0.0"
 
+music-notation@^1.0.0:
+  version "1.0.1"
+  resolved "https://registry.yarnpkg.com/music-notation/-/music-notation-1.0.1.tgz#33e9034b69ff0279f84e9c7d2e2e3d1093b6aaf9"
+
 mute-stream@0.0.7:
   version "0.0.7"
   resolved "https://registry.yarnpkg.com/mute-stream/-/mute-stream-0.0.7.tgz#3075ce93bc21b8fab43e1bc4da7e8115ed1e7bab"
@@ -5035,6 +5049,12 @@ normalize-url@2.0.1:
     prepend-http "^2.0.0"
     query-string "^5.0.1"
     sort-keys "^2.0.0"
+
+note-transposer@^1.0.2:
+  version "1.0.4"
+  resolved "https://registry.yarnpkg.com/note-transposer/-/note-transposer-1.0.4.tgz#878abd45ad6575dbf3e38db186896f9baf4a06a6"
+  dependencies:
+    music-notation "^1.0.0"
 
 npm-bundled@^1.0.1:
   version "1.0.3"
