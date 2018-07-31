@@ -15,14 +15,14 @@ import enharmonics from "enharmonics";
  * - frets : array of one element per string
  * - intervals
  * - simpleIntervals
- * - stackedIntervals (from low to high notes)
- * - reverseStackedIntervals (from high to low notes)
+ * - stackedIntervals (from low to high notes)              TODO
+ * - reverseStackedIntervals (from high to low notes)       TODO
  * - notes
  * - simpleNotes
  * - root.string
  * - root.fret
- * - firstFret : the lowest fret number (>= 0)
- * - firstString : the lowest fret number (> 0)
+ * - firstFret : the lowest fret number (>= 0)              TODO
+ * - firstString : the lowest fret number (> 0)             TODO
  *
  * It can also have, if specified during the creation:
  *
@@ -283,6 +283,9 @@ export class Shape {
      * @returns {Shape}
      */
     moveTo({fret=-1, string=-1} = {}) {
+
+        //FIXME: re-implement with new canonical format
+
         let changed = false;
         if (fret >= 0) {
             let delta = fret - this.frets[this.lowestString()];
