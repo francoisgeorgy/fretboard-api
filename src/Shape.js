@@ -192,9 +192,13 @@ export class Shape {
      */
     computeNotes() {
 
-        // this.notes = Array(this.tuning.length).fill(null);  // "string-indexed"
         this.notes = [];
         this.simpleNotes = [];
+
+        let rootNote = Distance.transpose(this.tuning[this.root.string], Interval.fromSemitones(this.root.fret));
+        let rootTokens = Note.tokenize(rootNote);
+        // let rootAccidental = rootTokens[1];
+        let previousAccidental = rootTokens[1];
 
         for (let i = 0; i < this.frets.length; i++) {  // strings
 
@@ -210,7 +214,40 @@ export class Shape {
                 // get the note name:
                 let note = Distance.transpose(this.tuning[i], Interval.fromSemitones(this.frets[i][f]));
 
-                console.log(note, enharmonics(note));
+                //
+                // We try to have the same kind of accidental across all notes.
+                //
+                // Example with Shape({frets: "5 7, 4 5 7, 4 6 7, 4 6 7, 5 7, 4 5"})
+                //
+                // without correction: A2 B2 C#3 D3 E3 F#3 Ab3 A3 B3 Db4 D4 E4 F#4 G#4
+                // with correction:    A2 B2 C#3 D3 E3 F#3 G#3 A3 B3 C#4 D4 E4 F#4 G#4
+                //                                         ^^^       ^^^
+                // with the correction, Ab3 is changed to G#3 and Dd4 to C#4.
+                //
+                // Same with "7 9, 6 7 9, 6 8 9, 6 8 9, 7 9, 6 7"
+                //
+                // before correction: B2 C#3 Eb3 E3 F#3 Ab3 Bb3 B3 Db4 Eb4 E4 F#4 G#4 Bb4 B4
+                // after correction:  B2 C#3 D#3 E3 F#3 G#3 A#3 B3 C#4 D#4 E4 F#4 G#4 Bb4 B4
+                //                           ^^^        ^^^ ^^^    ^^^ ^^^
+
+                let t = Note.tokenize(note);
+                // if (t[1] !== rootAccidental) {
+                if (t[1] !== previousAccidental) {
+                    for (let h of enharmonics(note)) {
+                        let k = Note.tokenize(h);
+                        // if (k[1] === t[1]) {
+                        //     note = h;
+                        //     break;
+                        // }
+                        if (k[1] === previousAccidental) {
+                            note = h;
+                            break;
+                        }
+                    }
+                }
+
+                t = Note.tokenize(note);
+                if (t[1] !== '') previousAccidental = t[1];
 
                 notes.push(note);
 

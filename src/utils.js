@@ -124,13 +124,13 @@ export function normalizeFretsFormat(frets) {
 }
 
 /**
- * [8, 10, 10, 9, 8, 8] --> [0, 2, 2, 1, 0, 0]
+ * [[8], [10], [10], [9], [8], [8]] --> [[0], [2], [2], [1], [0], [0]]
  * @param {array} array of fret numbers.
  * @return {array} array of fret numbers.
  */
 export function normalizeFretsPosition(frets) {
     let min = minFret(frets);
-    return frets.map(e => e === NOT_FRETTED_NUMBER ? NOT_FRETTED_NUMBER : (e - min));
+    return frets.map(s => s.length === 0 ? [] : s.map(f => f - min));
 }
 
 /**
