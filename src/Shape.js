@@ -17,6 +17,7 @@ import enharmonics from "enharmonics";
  * - simpleIntervals
  * - stackedIntervals (from low to high notes)              TODO
  * - reverseStackedIntervals (from high to low notes)       TODO
+ * - position : first fret of the first played string
  * - notes
  * - simpleNotes
  * - root.string
@@ -293,9 +294,10 @@ export class Shape {
      * The position is for the first fretted note of the first played string
      * @param fret
      * @param string
+     * @param boolean when moving by string, string 6 is moved to string 1, etc...
      * @returns {Shape}
      */
-    moveTo({fret = -1, string = -1} = {}) {
+    moveTo({fret = -1, string = -1, rollover = true} = {}) {
 
         //FIXME: re-implement with new canonical format
 
@@ -328,5 +330,10 @@ export class Shape {
 
         return this;
     }
+
+    //TODO: transposeHorizontal(interval)   : across frets first, then across strings if needed
+
+    //TODO: transposeVertical(interval)     : across strings first, then across frets if needed
+
 
 } // Shape
