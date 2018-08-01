@@ -30,6 +30,16 @@ function minFret(frets) {
     */
 }
 
+
+/**
+ * Returns -1 if no string is fretted
+ * @returns {number} Number (1-based) of the lowest-pitched fretted string
+ */
+export function firstString(frets) {
+    return frets.findIndex(f => f.length > 0);
+}
+
+
 /**
  * Normalize the format and the position of the shape:
  * 1. Transform a string into an array : "022100" --> [0, 2, 2, 1, 0, 0]

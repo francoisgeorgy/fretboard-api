@@ -1,6 +1,6 @@
 // import Tonal from "tonal";
 import { Distance, interval, Interval, Note } from "tonal";
-import {normalizeFrets} from "./utils.js";
+import {normalizeFrets, firstString} from "./utils.js";
 import {DEF_TUNING, NOT_FRETTED_NUMBER} from "./conf";
 import {normalizeFretsFormat, normalizeFretsPosition} from "./utils";
 import Assert from "assert-js";
@@ -60,15 +60,18 @@ export class Shape {
 
         if (normalizePosition) this.frets = normalizeFretsPosition(this.frets);
 
-        // TODO: compute lowestFret and lowestString
+        this.computePosition();
 
         // ROOT:
 
         // TODO: normalize root if given as a string
         if (!this.hasOwnProperty("root")) {
             this.root = {};
-            this.root['string'] = this.lowestString();
-            this.root['fret'] = this.frets[this.root.string][0];    // by default takes the first fretted note on the first played string
+            // by default takes the first fretted note on the first played string
+            // this.root['string'] = this.lowestString();
+            // this.root['fret'] = this.frets[this.root.string][0];
+            this.root['string'] = this.position.string;
+            this.root['fret'] = this.position.fret;
         }
 
         // INTERVALS:
@@ -89,6 +92,7 @@ export class Shape {
      *
      */
     update() {
+        this.computePosition();
         this.computeIntervals();
         this.computeNotes();
     }
@@ -131,9 +135,18 @@ export class Shape {
      * Returns -1 if no string is fretted
      * @returns {number} Number (1-based) of the lowest-pitched fretted string
      */
+/*
     lowestString() {
         let i = this.frets.findIndex(f => f.length > 0);
         return i;
+    }
+*/
+    computePosition() {
+        let f = firstString(this.frets);
+        this.position = {
+            string: f,
+            fret: this.frets[f][0]
+        }
     }
 
     /**
@@ -145,30 +158,30 @@ export class Shape {
         this.intervals = [];
         this.simpleIntervals = [];
 
-        for (let i = 0; i < this.frets.length; i++) {  // strings
+        for (let string = 0; string < this.frets.length; string++) {  // strings
 
-            let intv = [];
+            let intervals = [];
 
-            if (this.frets[i].length === 0) {
-                this.simpleIntervals.push(intv);
+            if (this.frets[string].length === 0) {
+                this.simpleIntervals.push(intervals);
                 continue;
             }
 
             // get number of semitones from the root string to this string:
-            let semitones_from_root = Distance.semitones(this.tuning[this.root.string], this.tuning[i]);     // Get the distance between two notes in semitones:
+            let semitones_from_root = Distance.semitones(this.tuning[this.root.string], this.tuning[string]);     // Get the distance between two notes in semitones:
 
             // console.log(`string semitones_from_root=${semitones_from_root}`);
 
-            for (let f = 0; f < this.frets[i].length; f++) {  // frets
+            for (let fret = 0; fret < this.frets[string].length; fret++) {  // frets
 
                 // console.log(`string ${i} fret ${f}`);
 
                 // get interval name between this shape's note and the shape's root note:
-                let interval_from_root = Interval.fromSemitones(semitones_from_root + this.frets[i][f] - this.root.fret);   // Get interval name from semitones number:
+                let interval_from_root = Interval.fromSemitones(semitones_from_root + this.frets[string][fret] - this.root.fret);   // Get interval name from semitones number:
 
                 // console.log(`string ${i} fret ${f} : interval_from_root=${interval_from_root}`);
 
-                intv.push((i === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root);
+                intervals.push((string === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root);
 
                 // this.intervals[i] = (i === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root;
 
@@ -180,7 +193,7 @@ export class Shape {
                 }
             }
 
-            this.intervals.push(intv);
+            this.intervals.push(intervals);
         }
 
         return this;
@@ -200,19 +213,19 @@ export class Shape {
         // let rootAccidental = rootTokens[1];
         let previousAccidental = rootTokens[1];
 
-        for (let i = 0; i < this.frets.length; i++) {  // strings
+        for (let string = 0; string < this.frets.length; string++) {  // strings
 
             let notes = [];
 
-            if (this.frets[i].length === 0) {
+            if (this.frets[string].length === 0) {
                 this.notes.push(notes);
                 continue;
             }
 
-            for (let f = 0; f < this.frets[i].length; f++) {  // frets
+            for (let fret = 0; fret < this.frets[string].length; fret++) {  // frets
 
                 // get the note name:
-                let note = Distance.transpose(this.tuning[i], Interval.fromSemitones(this.frets[i][f]));
+                let note = Distance.transpose(this.tuning[string], Interval.fromSemitones(this.frets[string][fret]));
 
                 //
                 // We try to have the same kind of accidental across all notes.
@@ -277,23 +290,32 @@ export class Shape {
     */
 
     /**
-     *
+     * The position is for the first fretted note of the first played string
      * @param fret
      * @param string
      * @returns {Shape}
      */
-    moveTo({fret=-1, string=-1} = {}) {
+    moveTo({fret = -1, string = -1} = {}) {
 
         //FIXME: re-implement with new canonical format
 
         let changed = false;
-        if (fret >= 0) {
-            let delta = fret - this.frets[this.lowestString()];
-            this.frets = this.frets.map(f => f === NOT_FRETTED_NUMBER ? NOT_FRETTED_NUMBER : f + delta);
-            this.root.fret = this.root.fret + delta;
-            changed = true;
 
+        if (fret >= 0) {
+
+            let delta = fret - this.position.fret;
+
+            if (delta !== 0) {
+                this.root.fret += delta;
+                for (let s = 0; s < this.frets.length; s++) {  // strings
+                    for (let f = 0; f < this.frets[s].length; f++) {  // frets
+                        this.frets[s][f] += delta;
+                    }
+                }
+                changed = true;
+            }
         }
+
 
         if (string >= 0) {
 
