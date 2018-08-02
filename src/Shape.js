@@ -34,8 +34,16 @@ import enharmonics from "enharmonics";
  * - tuning
  * - tuningIntervals (from low string to high string)
  *
+ * Moving and tranposing:
+ *
+ * - moving (moveTo, translate...) do not change the shape. The intervals may change depending on the tuning.
+ * - transposing do change the intervals. The shape may change depending on the tuning.
  */
 export class Shape {
+
+    //TODO: - construct Shape by frets : DONE
+    //TODO: - construct Shape by intervals
+    //TODO: - construct Shape by notes
 
     /**
      *
@@ -347,7 +355,105 @@ export class Shape {
      * @param strings
      */
     translateVerticalBy(strings) {
-        //TODO
+
+        if (strings === 0) return this;
+
+        if (strings < 0) {
+            for (let i=0; i>strings; i--) {
+                let first = this.frets.shift();
+                this.frets.push(first);
+            }
+        } else {
+            for (let i=0; i<strings; i++) {
+                let last = this.frets.pop();
+                this.frets.unshift(last);
+            }
+        }
+
+        this.root.string += strings;
+
+        this.update();
+
+        return this;
+    }
+
+    /**
+     * Transpose across strings.
+     * The intervals are not changed. The shape may change depending on the tuning.
+     * @param string positive for transposing towards high, negative tor transposing towards low.
+     */
+    transposeVertical(strings, rollover=false) {
+
+        if (strings === 0) return this;
+
+        if (strings < 0) {
+            for (let i=0; i>strings; i--) {
+            }
+        } else {
+            // first, just translate the shape as is:
+            for (let i=0; i<strings; i++) {
+                let last = this.frets.pop();
+                this.frets.unshift(last);
+            }
+
+            this.root.string += strings;
+
+            console.log(this.frets);
+
+            // then, adapt the frets to keep the intervals as they are:
+            // for (let string = 0; string < this.frets.length; string++) {
+
+            // we do not change the first fretted string
+            // therefore we have frets.length-1 strings to adapt
+
+            //
+            //  7   8                   8     10               C       D
+            //      8     10            8     10  11           G       A   Bb
+            //  7      9  10        7      9  10           D       E   F
+            //  7      9  10        7   8     10           A   Bb      C
+            //  7   8     10       (7)  8     10          (E)  F       G
+            //      8     10       (7) (8)   (10)             (C)     (D)
+            //
+
+            let correction = 0;
+
+            for (let i = 1; i < this.frets.length; i++) {
+
+                let currentString = (i + strings) % this.tuning.length;
+
+                // let toString = (fromString + strings) % this.tuning.length;
+
+                let precedingString = (currentString + this.tuning.length - 1) % this.tuning.length;
+
+                // let intervalChange = Distance.semitones(this.tuning[fromString], this.tuning[toString]);
+                let d = Distance.semitones(this.tuning[precedingString], this.tuning[currentString]);
+
+                //TODO: rollover
+
+                let currentStringBefore = (i - 1 + strings) % this.tuning.length;
+                let precedingStringBefore = (currentStringBefore + this.tuning.length - 1) % this.tuning.length;
+                let dBefore = Distance.semitones(this.tuning[precedingStringBefore], this.tuning[currentStringBefore]);
+
+                // let correction = Math.abs((d - dBefore) % 12);
+                correction += (dBefore - d) % 12;
+
+                console.log(`strings ${precedingString} --> ${currentString} d=${d} dBefore=${dBefore} correction=${correction} frets=${this.frets[currentString]}`);
+
+                this.frets[currentString].forEach((element, index, array) => array[index] = element + correction);
+
+
+
+                // console.log((i + strings) % this.tuning.length, intervalChange, this.tuningIntervals);
+            }
+
+            this.frets[0] = [];
+
+        }
+
+        // this.root.string += strings;
+
+        this.update();
+
         return this;
     }
 
@@ -371,4 +477,10 @@ export class Shape {
         return this;
     }
 
+    setRoot({fret, string}) {
+        //TODO
+        return this;
+    }
+
 } // Shape
+

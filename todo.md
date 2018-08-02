@@ -1,4 +1,11 @@
 
+### create Shape from:
+
+- frets
+- intervals
+- notes
+- scale
+
 ### Shape property:
 
     barre : strings to barre with first finger. First string can be specified, otherwise is implied.
