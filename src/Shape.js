@@ -292,6 +292,7 @@ export class Shape {
 
     /**
      * The position is for the first fretted note of the first played string
+     * The "shape" is not changed. The intervals may change depending on the tuning.
      * @param fret
      * @param string
      * @param boolean when moving by string, string 6 is moved to string 1, etc...
@@ -331,9 +332,43 @@ export class Shape {
         return this;
     }
 
-    //TODO: transposeHorizontal(interval)   : across frets first, then across strings if needed
+    /**
+     * Similar to moveTo(frets)
+     * @param frets
+     */
+    translateHorizontalBy(frets) {
+        //TODO
+        return this;
+    }
 
-    //TODO: transposeVertical(interval)     : across strings first, then across frets if needed
+    /**
+     * Similar to moveTo(strings)
+     * The "shape" is not changed. The intervals may change depending on the tuning.
+     * @param strings
+     */
+    translateVerticalBy(strings) {
+        //TODO
+        return this;
+    }
 
+    /**
+     * First, transpose across frets, then across strings if needed.
+     * The intervals are not changed. The shape may change depending on the tuning.
+     * @param interval
+     */
+    transposeHorizontalBy(interval) {
+        //TODO
+        return this;
+    }
+
+    /**
+     * First, transpose across strings, then across frets if needed.
+     * The intervals are not changed. The shape may change depending on the tuning.
+     * @param interval
+     */
+    transposeVerticalBy(interval) {
+        //TODO
+        return this;
+    }
 
 } // Shape
