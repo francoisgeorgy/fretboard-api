@@ -337,7 +337,7 @@ export class Shape {
      * @param frets
      */
     translateHorizontalBy(frets) {
-        //TODO
+        this.moveTo({fret: this.position.fret + frets});
         return this;
     }
 

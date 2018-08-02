@@ -162,3 +162,68 @@ test('moveTo', () => {
                 [ 'B4', 'C5' ] ],
         simpleNotes: [ 'C', 'D', 'E', 'F', 'G', 'A', 'B' ] });
 });
+
+test('translateHorizontalBy', () => {
+    let s = new Shape({frets:"8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8"});
+    s.translateHorizontalBy(-3);
+    expect(s).toEqual({
+        frets:
+            [ [ 5, 7 ],
+                [ 4, 5, 7 ],
+                [ 4, 6, 7 ],
+                [ 4, 6, 7 ],
+                [ 5, 7 ],
+                [ 4, 5 ] ],
+        tuning: [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ],
+        tuningIntervals: [ '1P', '4P', '4P', '4P', '3M', '4P' ],
+        position: { string: 0, fret: 5 },
+        root: { string: 0, fret: 5 },
+        intervals:
+            [ [ 'R', '2M' ],
+                [ '3M', '4P', '5P' ],
+                [ '6M', '7M', '8P' ],
+                [ '9M', '10M', '11P' ],
+                [ '12P', '13M' ],
+                [ '14M', '15P' ] ],
+        simpleIntervals: [ 'R', '2M', '3M', '4P', '5P', '6M', '7M' ],
+        notes:
+            [ [ 'A2', 'B2' ],
+                [ 'C#3', 'D3', 'E3' ],
+                [ 'F#3', 'G#3', 'A3' ],
+                [ 'B3', 'C#4', 'D4' ],
+                [ 'E4', 'F#4' ],
+                [ 'G#4', 'A4' ] ],
+        simpleNotes: [ 'A', 'B', 'C#', 'D', 'E', 'F#', 'G#' ] });
+
+    s.translateHorizontalBy(3);
+    expect(s).toEqual({
+        frets:
+            [ [ 8, 10 ],
+                [ 7, 8, 10 ],
+                [ 7, 9, 10 ],
+                [ 7, 9, 10 ],
+                [ 8, 10 ],
+                [ 7, 8 ] ],
+        tuning: [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ],
+        tuningIntervals: [ '1P', '4P', '4P', '4P', '3M', '4P' ],
+        position: { string: 0, fret: 8 },
+        root: { string: 0, fret: 8 },
+        intervals:
+            [ [ 'R', '2M' ],
+                [ '3M', '4P', '5P' ],
+                [ '6M', '7M', '8P' ],
+                [ '9M', '10M', '11P' ],
+                [ '12P', '13M' ],
+                [ '14M', '15P' ] ],
+        simpleIntervals: [ 'R', '2M', '3M', '4P', '5P', '6M', '7M' ],
+        notes:
+            [ [ 'C3', 'D3' ],
+                [ 'E3', 'F3', 'G3' ],
+                [ 'A3', 'B3', 'C4' ],
+                [ 'D4', 'E4', 'F4' ],
+                [ 'G4', 'A4' ],
+                [ 'B4', 'C5' ] ],
+        simpleNotes: [ 'C', 'D', 'E', 'F', 'G', 'A', 'B' ]});
+
+
+});
