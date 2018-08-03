@@ -32,15 +32,13 @@ TODO
 
     interval = tuning[toString] - tuning[fromString] + toFret - fromFret
     
-    f(0, 8, 3, 1) = G3 - E2 + 1 - 0 = 
+    f(0, 8, 3, 1) = G3 - E2 + 1 - 0 = 8
     
 
 ### fret = f(note, string)
 
-    condition: note >= tuning[string]
-    
     fret = (note - tuning[string]) / semitone
 
 ### fret = f(fromFret, fromString, toString)
 
-TODO
+    fret = fret(note(fromFret, fromString), toString);
