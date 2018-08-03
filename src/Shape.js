@@ -10,8 +10,14 @@ import enharmonics from "enharmonics";
 /**
  * Build a shape from a partial or complete definition.
  *
+ * If a Shape is created directly, that is, without using a Fretboard method, than the Shape will instantiate its own
+ * Fretboard object. Later on, the shape can be added to a Fretboard and its own fretboard object will be replaced by
+ * the one she's being attached to.
+ *
  * The final shape will have, at least, the following properties:
  *
+ * - root.string : define the shape's position on the fretbard (with root.fret)
+ * - root.fret : define the shape's position on the fretbard (with root.string)
  * - frets : array of one element per string
  * - intervals
  * - simpleIntervals
@@ -20,8 +26,6 @@ import enharmonics from "enharmonics";
  * - position : first fret of the first played string
  * - notes
  * - simpleNotes
- * - root.string
- * - root.fret
  * - firstFret : the lowest fret number (>= 0)              TODO
  * - firstString : the lowest fret number (> 0)             TODO
  *
@@ -45,11 +49,15 @@ export class Shape {
     //TODO: - construct Shape by intervals
     //TODO: - construct Shape by notes
 
+    //TODO: - attachToFretboard() (or, simpler: setFretboard() or placeOnFretboard())
+
     /**
      *
      * @param shape
      */
-    constructor(shape, normalizePosition = false) {
+    constructor(shape, fretboard, normalizePosition = false) {
+
+        //TODO: instantiate Fretboard object if fretboard parameter is undefined
 
         Assert.hasProperty('frets', shape);
 
@@ -58,10 +66,10 @@ export class Shape {
         // TUNING:
 
         if (!this.hasOwnProperty('tuning')) {
-            this.tuning = DEF_TUNING;
+            this.tuning = DEF_TUNING;           //TODO: move to Fretboard
         }
 
-        this.computeTuningIntervals();
+        this.computeTuningIntervals();  //TODO: move to Fretboard
 
         // FRETS:
 
@@ -135,8 +143,8 @@ export class Shape {
      */
     computeTuningIntervals() {
         this.tuningIntervals = Array(this.tuning.length).fill(null);
-        for(let i = 0; i < this.tuning.length; i++) {
-            this.tuningIntervals[i] = interval(this.tuning[i > 0 ? (i-1) : 0], this.tuning[i]);
+        for (let i = 0; i < this.tuning.length; i++) {
+            this.tuningIntervals[i] = interval(this.tuning[i > 0 ? (i - 1) : 0], this.tuning[i]);
         }
     }
 
@@ -144,12 +152,13 @@ export class Shape {
      * Returns -1 if no string is fretted
      * @returns {number} Number (1-based) of the lowest-pitched fretted string
      */
-/*
-    lowestString() {
-        let i = this.frets.findIndex(f => f.length > 0);
-        return i;
-    }
-*/
+
+    /*
+        lowestString() {
+            let i = this.frets.findIndex(f => f.length > 0);
+            return i;
+        }
+    */
     computePosition() {
         let f = firstString(this.frets);
         this.position = {
@@ -359,12 +368,12 @@ export class Shape {
         if (strings === 0) return this;
 
         if (strings < 0) {
-            for (let i=0; i>strings; i--) {
+            for (let i = 0; i > strings; i--) {
                 let first = this.frets.shift();
                 this.frets.push(first);
             }
         } else {
-            for (let i=0; i<strings; i++) {
+            for (let i = 0; i < strings; i++) {
                 let last = this.frets.pop();
                 this.frets.unshift(last);
             }
@@ -382,16 +391,16 @@ export class Shape {
      * The intervals are not changed. The shape may change depending on the tuning.
      * @param string positive for transposing towards high, negative tor transposing towards low.
      */
-    transposeVertical(strings, rollover=false) {
+    transposeVertical(strings, rollover = false) {
 
         if (strings === 0) return this;
 
         if (strings < 0) {
-            for (let i=0; i>strings; i--) {
+            for (let i = 0; i > strings; i--) {
             }
         } else {
             // first, just translate the shape as is:
-            for (let i=0; i<strings; i++) {
+            for (let i = 0; i < strings; i++) {
                 let last = this.frets.pop();
                 this.frets.unshift(last);
             }
@@ -442,7 +451,6 @@ export class Shape {
                 this.frets[currentString].forEach((element, index, array) => array[index] = element + correction);
 
 
-
                 // console.log((i + strings) % this.tuning.length, intervalChange, this.tuningIntervals);
             }
 
@@ -473,6 +481,18 @@ export class Shape {
      * @param interval
      */
     transposeVerticalBy(interval) {
+        //TODO
+        return this;
+    }
+
+    /**
+     * Set a new position for the shape's root.
+     * The intervals do not change. The frets are re-positionned.
+     * @param string
+     * @param fret
+     * @returns {Shape}
+     */
+    transposeTo(string, fret) {
         //TODO
         return this;
     }

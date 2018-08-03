@@ -33,6 +33,8 @@ Allow several shapes to be placed on a single fretboard.
     shape2.moveTo({string: 2, fret:3})
     shape1.reset()
 
+Idea: find all common notes across all shapes on the fretboard
+
 Q: when moving across strings, adapt (update) the shape according to the current fretboard's tuning? 
 A: yes, if the shape has a tuning defined, no if the shape was defined without any tuning indication. 
 

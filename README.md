@@ -1,6 +1,20 @@
 # fretboard-api
 
-    c = new Chord('C')
+Usage:
+
+1) Instantiate a *Fretboard*. The fretboard will define:
+    - number of strings
+    - tuning
+    - number of frets
+2) Place _*Shape*_ on the Fretboard. A _shape_ is a collection of fretted note. This can be a chord, an interval, a scale, etc.
+3) Shapes can then be moved and transposed.
+
+When _*moving*_ a shape, the shape's *form* never changes. If the shape is moved to a different string, then the shape's intervals 
+are changed depending on the tuning.
+
+When _*transposing*_ a shape, the shape's *intervals* never changes. If the shape is transposed to a different string, then the shape's frets 
+are changed depending on the tuning.
+
 
 ### Strings numbering
 
