@@ -5,6 +5,7 @@ import {DEF_TUNING, NOT_FRETTED_NUMBER} from "./conf";
 import {normalizeFretsFormat, normalizeFretsPosition} from "./utils";
 import Assert from "assert-js";
 import enharmonics from "enharmonics";
+import {Fretboard} from "./Fretboard";
 
 
 /**
@@ -55,21 +56,22 @@ export class Shape {
      *
      * @param shape
      */
-    constructor(shape, fretboard, normalizePosition = false) {
+    constructor(shape, fretboard = null, normalizePosition = false) {
 
-        //TODO: instantiate Fretboard object if fretboard parameter is undefined
+        //TODO:
 
         Assert.hasProperty('frets', shape);
 
         Object.assign(this, shape);
 
-        // TUNING:
+        // FRETBOARD:
 
-        if (!this.hasOwnProperty('tuning')) {
-            this.tuning = DEF_TUNING;           //TODO: move to Fretboard
+        if (fretboard === null) {
+            // we create or own fretboard instance if we don't receive one
+            this.fretboard = new Fretboard();   //TODO: tuning parameter
+        } else {
+            this.fretboard = fretboard;
         }
-
-        this.computeTuningIntervals();  //TODO: move to Fretboard
 
         // FRETS:
 
@@ -112,6 +114,7 @@ export class Shape {
         this.computePosition();
         this.computeIntervals();
         this.computeNotes();
+        return this;
     }
 
     /**
@@ -124,47 +127,39 @@ export class Shape {
 
     /**
      *
-     * @returns {*}
+     * @param fretboard
      */
-    getTuning() {
-        return this.tuning;
+    setFretboard(fretboard) {
+
+        //TODO: test me
+
+        this.fretboard = fretboard;
+        this.update();
+        return this;
     }
 
     /**
      *
-     * @param tuning
+     * @param fret
+     * @param string
+     * @returns {Shape}
      */
-    setTuning(tuning) {
-        this.tuning = tuning;
+    setRoot({fret, string}) {
+        //TODO
+        return this;
     }
 
     /**
-     * [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ] --> [ '1P', '4P', '4P', '4P', '3M', '4P' ]
+     *
+     * @returns {Shape}
      */
-    computeTuningIntervals() {
-        this.tuningIntervals = Array(this.tuning.length).fill(null);
-        for (let i = 0; i < this.tuning.length; i++) {
-            this.tuningIntervals[i] = interval(this.tuning[i > 0 ? (i - 1) : 0], this.tuning[i]);
-        }
-    }
-
-    /**
-     * Returns -1 if no string is fretted
-     * @returns {number} Number (1-based) of the lowest-pitched fretted string
-     */
-
-    /*
-        lowestString() {
-            let i = this.frets.findIndex(f => f.length > 0);
-            return i;
-        }
-    */
     computePosition() {
         let f = firstString(this.frets);
         this.position = {
             string: f,
             fret: this.frets[f][0]
-        }
+        };
+        return this;
     }
 
     /**
@@ -185,23 +180,12 @@ export class Shape {
                 continue;
             }
 
-            // get number of semitones from the root string to this string:
-            let semitones_from_root = Distance.semitones(this.tuning[this.root.string], this.tuning[string]);     // Get the distance between two notes in semitones:
-
-            // console.log(`string semitones_from_root=${semitones_from_root}`);
-
-            for (let fret = 0; fret < this.frets[string].length; fret++) {  // frets
-
-                // console.log(`string ${i} fret ${f}`);
+            for (let fret of this.frets[string]) {
 
                 // get interval name between this shape's note and the shape's root note:
-                let interval_from_root = Interval.fromSemitones(semitones_from_root + this.frets[string][fret] - this.root.fret);   // Get interval name from semitones number:
-
-                // console.log(`string ${i} fret ${f} : interval_from_root=${interval_from_root}`);
+                let interval_from_root = this.fretboard.interval(this.root.string, this.root.fret, string, fret);
 
                 intervals.push((string === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root);
-
-                // this.intervals[i] = (i === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root;
 
                 // get the simplified name of this interval:
                 let si = Interval.simplify(interval_from_root);       // Get the simplified version of an interval:
@@ -226,7 +210,7 @@ export class Shape {
         this.notes = [];
         this.simpleNotes = [];
 
-        let rootNote = Distance.transpose(this.tuning[this.root.string], Interval.fromSemitones(this.root.fret));
+        let rootNote = Distance.transpose(this.fretboard.tuning[this.root.string], Interval.fromSemitones(this.root.fret));
         let rootTokens = Note.tokenize(rootNote);
         // let rootAccidental = rootTokens[1];
         let previousAccidental = rootTokens[1];
@@ -243,7 +227,8 @@ export class Shape {
             for (let fret = 0; fret < this.frets[string].length; fret++) {  // frets
 
                 // get the note name:
-                let note = Distance.transpose(this.tuning[string], Interval.fromSemitones(this.frets[string][fret]));
+                // let note = Distance.transpose(this.fretboard.tuning[string], Interval.fromSemitones(this.frets[string][fret]));
+                let note = this.fretboard.note(string, this.frets[string][fret]);
 
                 //
                 // We try to have the same kind of accidental across all notes.
@@ -303,7 +288,7 @@ export class Shape {
         }
 
         key(root) {
-            return this.transpose(fret(this.lowestString(), root, this.tuning));
+            return this.transpose(fret(this.lowestString(), root, this.fretboard.tuning));
         }
     */
 
@@ -393,6 +378,8 @@ export class Shape {
      */
     transposeVertical(strings, rollover = false) {
 
+        //FIXME: redo with: 1) transpose root, 2) compute from intervals
+
         if (strings === 0) return this;
 
         if (strings < 0) {
@@ -428,20 +415,20 @@ export class Shape {
 
             for (let i = 1; i < this.frets.length; i++) {
 
-                let currentString = (i + strings) % this.tuning.length;
+                let currentString = (i + strings) % this.fretboard.tuning.length;
 
-                // let toString = (fromString + strings) % this.tuning.length;
+                // let toString = (fromString + strings) % this.fretboard.tuning.length;
 
-                let precedingString = (currentString + this.tuning.length - 1) % this.tuning.length;
+                let precedingString = (currentString + this.fretboard.tuning.length - 1) % this.fretboard.tuning.length;
 
-                // let intervalChange = Distance.semitones(this.tuning[fromString], this.tuning[toString]);
-                let d = Distance.semitones(this.tuning[precedingString], this.tuning[currentString]);
+                // let intervalChange = Distance.semitones(this.fretboard.tuning[fromString], this.fretboard.tuning[toString]);
+                let d = Distance.semitones(this.fretboard.tuning[precedingString], this.fretboard.tuning[currentString]);
 
                 //TODO: rollover
 
-                let currentStringBefore = (i - 1 + strings) % this.tuning.length;
-                let precedingStringBefore = (currentStringBefore + this.tuning.length - 1) % this.tuning.length;
-                let dBefore = Distance.semitones(this.tuning[precedingStringBefore], this.tuning[currentStringBefore]);
+                let currentStringBefore = (i - 1 + strings) % this.fretboard.tuning.length;
+                let precedingStringBefore = (currentStringBefore + this.fretboard.tuning.length - 1) % this.fretboard.tuning.length;
+                let dBefore = Distance.semitones(this.fretboard.tuning[precedingStringBefore], this.fretboard.tuning[currentStringBefore]);
 
                 // let correction = Math.abs((d - dBefore) % 12);
                 correction += (dBefore - d) % 12;
@@ -451,7 +438,7 @@ export class Shape {
                 this.frets[currentString].forEach((element, index, array) => array[index] = element + correction);
 
 
-                // console.log((i + strings) % this.tuning.length, intervalChange, this.tuningIntervals);
+                // console.log((i + strings) % this.fretboard.tuning.length, intervalChange, this.fretboard.tuningIntervals);
             }
 
             this.frets[0] = [];
@@ -497,10 +484,4 @@ export class Shape {
         return this;
     }
 
-    setRoot({fret, string}) {
-        //TODO
-        return this;
-    }
-
 } // Shape
-

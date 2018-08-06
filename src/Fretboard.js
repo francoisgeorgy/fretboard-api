@@ -1,7 +1,7 @@
 import {mandatory} from "./utils";
 import {Shape} from "./Shape";
 import {DEF_TUNING} from "./conf";
-import {Distance, Interval} from "tonal";
+import {Distance, interval, Interval} from "tonal";
 
 /**
  *
@@ -42,10 +42,22 @@ export class Fretboard {
      */
     setTuning(tuning) {
         this.tuning = tuning;
+/*
         this.shapes.forEach(function(s) {
             //TODO: only change shape's tuning if the shape was created WITH a tuning.
             s.setTuning(tuning);
         });
+*/
+    }
+
+    /**
+     * [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ] --> [ '1P', '4P', '4P', '4P', '3M', '4P' ]
+     */
+    computeTuningIntervals() {
+        this.tuningIntervals = Array(this.tuning.length).fill(null);
+        for (let i = 0; i < this.tuning.length; i++) {
+            this.tuningIntervals[i] = interval(this.tuning[i > 0 ? (i - 1) : 0], this.tuning[i]);
+        }
     }
 
     /**
@@ -126,6 +138,22 @@ export class Fretboard {
     }
 
     /**
+     *
+     * @param fromString
+     * @param fromFret
+     * @param toString
+     * @param toFret
+     * @returns {number}
+     */
+    semitones(fromString, fromFret, toString, toFret) {
+        return Distance.semitones(this.tuning[fromString], this.tuning[toString]) + toFret - fromFret;
+    }
+
+    interval(fromString, fromFret, toString, toFret) {
+        return Interval.fromSemitones(this.semitones(fromString, fromFret, toString, toFret));
+    }
+
+    /**
      * Syntaxe 1: fret(note, string)
      * Syntaxe 2: fret(fromString, fromFret, toString, toFret, minFret, maxFret)
      * @returns {*}
@@ -189,18 +217,6 @@ export class Fretboard {
      */
     fretHigh(fromString, fromFret, toString) {
         return this.fret(fromString, fromFret, toString, fromFret, 0);
-    }
-
-    /**
-     *
-     * @param fromString
-     * @param fromFret
-     * @param toString
-     * @param toFret
-     * @returns {number}
-     */
-    interval(fromString, fromFret, toString, toFret) {
-        return Distance.semitones(this.tuning[fromString], this.tuning[toString]) + toFret - fromFret;
     }
 
 
