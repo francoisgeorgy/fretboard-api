@@ -1,7 +1,7 @@
 import {mandatory} from "./utils";
 import {Shape} from "./Shape";
 import {DEF_TUNING} from "./conf";
-import {Distance, interval, Interval} from "tonal";
+import {Distance, Interval} from "tonal";
 
 /**
  *
@@ -18,6 +18,7 @@ export class Fretboard {
         this.maxFret = 24;
         this.shapes = [];
         this.nextID = 0;
+        this.computeTuningIntervals();
     }
 
     /**
@@ -54,9 +55,17 @@ export class Fretboard {
      * [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ] --> [ '1P', '4P', '4P', '4P', '3M', '4P' ]
      */
     computeTuningIntervals() {
+        // this.tuningIntervals = Array(this.tuning.length).fill(null);
         this.tuningIntervals = Array(this.tuning.length).fill(null);
         for (let i = 0; i < this.tuning.length; i++) {
-            this.tuningIntervals[i] = interval(this.tuning[i > 0 ? (i - 1) : 0], this.tuning[i]);
+            //this.tuningIntervals[i - 1] = interval(this.tuning[i > 0 ? (i - 1) : 0], this.tuning[i]);
+            // this.tuningIntervals[i] = Distance.interval(this.tuning[i - 1], this.tuning[i]);
+            this.tuningIntervals[i] = Interval.simplify(
+                Distance.interval(
+                    this.tuning[(i -1 + this.tuning.length) % this.tuning.length],
+                    this.tuning[i]
+                )
+            );
         }
     }
 
