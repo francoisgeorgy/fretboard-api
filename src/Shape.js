@@ -64,6 +64,8 @@ export class Shape {
 
         Object.assign(this, shape);
 
+        this.onlyPositiveIntervals = true;  //TODO
+
         // FRETBOARD:
 
         if (fretboard === null) {
@@ -185,7 +187,18 @@ export class Shape {
                 // get interval name between this shape's note and the shape's root note:
                 let interval_from_root = this.fretboard.interval(this.root.string, this.root.fret, string, fret);
 
-                intervals.push((string === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root);
+                // transform negative interval to positive intervals: (take the inversion)
+                if (this.onlyPositiveIntervals && interval_from_root.startsWith('-')) {
+                    let i = Interval.semitones(interval_from_root);
+                    while (i < 0) i += 12;
+                    interval_from_root = Interval.fromSemitones(i);
+                }
+                // if (interval_from_root.startsWith('-')) {
+                //     console.log('simplify negative interval ', interval_from_root, Interval.invert(interval_from_root));
+                // }
+
+                // intervals.push((string === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root);
+                intervals.push((string === this.root.string) && (interval_from_root === "1P") ? "R" : Interval.simplify(interval_from_root));
 
                 // get the simplified name of this interval:
                 let si = Interval.simplify(interval_from_root);       // Get the simplified version of an interval:
@@ -375,6 +388,8 @@ export class Shape {
      * Transpose across strings.
      * The intervals are not changed. The shape may change depending on the tuning.
      *
+     * THE RELATIVE INTERVALS ARE CONSERVED.
+     *
      * We can not simply transpose the root and then re-compute the frets positions from the intervals
      * because intervals can be sometimes have two possible positions. Therefore, since we want to
      * keep the shape as close to its original form as possible, we will adjust the frets string by
@@ -383,6 +398,8 @@ export class Shape {
      * @param string positive for transposing towards high, negative tor transposing towards low.
      */
     transposeVertical(strings, rollover = false) {
+
+        console.log(`transposeVertical(${strings}, ${rollover})`);
 
         //FIXME: redo with: 1) transpose root, 2) compute from intervals
 
@@ -398,109 +415,162 @@ export class Shape {
 
         if (strings < 0) {
 
-            for (let i = 0; i > strings; i--) {
-            }
+            // TODO: transform backward transposition to forward transposition.
+
+            return this.transposeVertical(strings + this.fretboard.tuning.length - 1);
+
+            // for (let i = 0; i > strings; i--) {
+            // }
 
         } else {
+
+            // let fromString = this.root.string;
 
             // Transpose toward high strings
 
             // first, just translate the shape as is:
-            for (let i = 0; i < strings; i++) {
+            // for (let i = 0; i < strings; i++) {
+            //     let last = this.frets.pop();
+            //     this.frets.unshift(last);
+            // }
+
+            for (let t = 0; t < strings; t++) {
+
                 let last = this.frets.pop();
                 this.frets.unshift(last);
-            }
-
-            this.root.string += strings;
-
-            console.log(this.frets);
-
-            // then, adapt the frets to keep the intervals as they are:
-            // for (let string = 0; string < this.frets.length; string++) {
-
-            // we do not change the first fretted string
-            // therefore we have frets.length-1 strings to adapt
-
-            //
-            //  7   8                   8     10               C       D
-            //      8     10            8     10  11           G       A   Bb
-            //  7      9  10        7      9  10           D       E   F
-            //  7      9  10        7   8     10           A   Bb      C
-            //  7   8     10       (7)  8     10          (E)  F       G
-            //      8     10       (7) (8)   (10)             (C)     (D)
-            //
 
 
-            //
-            //  by 1:  before --> after:  5 --> 0, 0 --> 1, ..., 4 --> 5
-            //
+                // this.root.string += strings;
+                this.root.string = (this.root.string + 1) % this.fretboard.tuning.length;
+                let fromString = (this.root.string + 1) % this.fretboard.tuning.length;
 
-            let correction = 0;
+                // console.log(this.frets);
 
-            for (let i = 0; i < this.frets.length; i++) {
+                // then, adapt the frets to keep the intervals as they are:
+                // for (let string = 0; string < this.frets.length; string++) {
 
-                // the string before the transposition:
-                let s0 = (i - 1 + this.fretboard.tuning.length) % this.fretboard.tuning.length;
-                let i0 = this.fretboard.tuningIntervals[s0];
+                // we do not change the first fretted string
+                // therefore we have frets.length-1 strings to adapt
 
-                // the string after the transposition:
-                //let s1 = (i + strings) % this.fretboard.tuning.length;
-                let s1 = i;
-                let i1 = this.fretboard.tuningIntervals[s1];
+                //
+                //  7   8                   8     10               C       D
+                //      8     10            8     10  11           G       A   Bb
+                //  7      9  10        7      9  10           D       E   F
+                //  7      9  10        7   8     10           A   Bb      C
+                //  7   8     10       (7)  8     10          (E)  F       G
+                //      8     10       (7) (8)   (10)             (C)     (D)
+                //
 
-                // did the interval change?:
-                // let delta = i > 0
-                //     ? Interval.semitones(i1) - Interval.semitones(i0)
-                //     : Interval.semitones(i0);
 
-                let delta = Interval.semitones(i1);
+                //
+                //  by 1:  before --> after:  5 --> 0, 0 --> 1, ..., 4 --> 5
+                //
 
-                // let delta = Interval.semitones(i1) - Interval.semitones(i0);
+                let correction = 0;
 
-                let d = Distance.semitones(this.fretboard.tuning[s0], this.fretboard.tuning[s1]);   // DEBUG
+                for (let i = 0; i< this.frets.length; i++) {
 
-                // correction -= delta;
-                correction = - delta;
+                    let string = (fromString + i) % this.fretboard.tuning.length;
 
-                console.log(`i=${i}: s0=${s0} --> s1=${s1}: delta = ${i1} - ${i0} = ${delta}, d=${d}, correction=${correction}`);
+                    // the string before the transposition:
+                    // let s0 = (string - 1 + this.fretboard.tuning.length) % this.fretboard.tuning.length;
+                    // let i0 = this.fretboard.tuningIntervals[s0];
+                    let s0 = string;
+                    let i0 = this.fretboard.tuningIntervals[s0];
 
-                // this.frets[s1].forEach((element, index, array) => array[index] = element + correction);
+                    // the string after the transposition:
+                    //let s1 = (i + strings) % this.fretboard.tuning.length;
+                    // let s1 = string;
+                    // let i1 = this.fretboard.tuningIntervals[s1];
+                    let s1 = (string + 1) % this.fretboard.tuning.length;
+                    let i1 = this.fretboard.tuningIntervals[s1];
 
-                // console.log(this.frets[s1]);
-                this.frets[s1].forEach(
-                    (element, index, array) => {
-                        // console.log(`${s1}: ${index} := ${element} + ${correction}`);
-                        array[index] = element + correction
-                    });
+                    // did the interval change?:
+                    // let delta = i > 0
+                    //     ? Interval.semitones(i1) - Interval.semitones(i0)
+                    //     : Interval.semitones(i0);
+                    let delta = Interval.semitones(i1) - Interval.semitones(i0);
 
-                // console.log();
+                    // let delta = Interval.semitones(i1);
 
-                /*
+                    // let delta = Interval.semitones(i1) - Interval.semitones(i0);
 
-                let currentString = (i + strings) % this.fretboard.tuning.length;
+                    let d = Distance.semitones(this.fretboard.tuning[s0], this.fretboard.tuning[s1]);   // DEBUG
 
-                // let toString = (fromString + strings) % this.fretboard.tuning.length;
+                    /*
+                                    if ((Math.abs(d) % 12) === 0) {
+                                        correction = 0;
+                                        console.log('no correction');
+                                    } else {
+                                        correction -= delta;
+                                    }
+                    */
 
-                let precedingString = (currentString + this.fretboard.tuning.length - 1) % this.fretboard.tuning.length;
+                    if ((Interval.semitones(i0) === 0) || (Interval.semitones(i1) === 0)) {
+                        // console.log(`no correction because we transpose to a unison string ${s0}-->${s1}`);
+                    } else {
+                        correction -= delta;
+                    }
 
-                // let intervalChange = Distance.semitones(this.fretboard.tuning[fromString], this.fretboard.tuning[toString]);
-                let d = Distance.semitones(this.fretboard.tuning[precedingString], this.fretboard.tuning[currentString]);
+                    // correction -= delta;
+                    // correction = -delta;
 
-                //TODO: rollover
+                    // console.log(`string=${string}: transpose from string s0=${s0} to string s1=${s1}: delta = ${i1} - ${i0} = ${delta}, correction=${correction}, semitones=${d}`);
 
-                let currentStringBefore = (i - 1 + strings) % this.fretboard.tuning.length;
-                let precedingStringBefore = (currentStringBefore + this.fretboard.tuning.length - 1) % this.fretboard.tuning.length;
-                let dBefore = Distance.semitones(this.fretboard.tuning[precedingStringBefore], this.fretboard.tuning[currentStringBefore]);
+                    // this.frets[s1].forEach((element, index, array) => array[index] = element + correction);
 
-                // let correction = Math.abs((d - dBefore) % 12);
-                correction += (dBefore - d) % 12;
 
-                console.log(`strings ${precedingString} --> ${currentString} d=${d} dBefore=${dBefore} correction=${correction} frets=${this.frets[currentString]}`);
+                    if ((Math.abs(d) % 12) === 0) {
+                        // correction = 0;
+                        // console.log('no correction, s1 := s0');
 
-                this.frets[currentString].forEach((element, index, array) => array[index] = element + correction);
-                */
+                        this.frets[s1] = this.frets[s0];
 
-                // console.log((i + strings) % this.fretboard.tuning.length, intervalChange, this.fretboard.tuningIntervals);
+                    } else {
+
+                        // console.log(this.frets[s1]);
+                        this.frets[s1].forEach(
+                            (element, index, array) => {
+                                // console.log(`${s1}: ${index} := ${element} + ${correction}`);
+                                array[index] = element + correction
+                            });
+
+                    }
+
+
+                    // console.log();
+
+                    /*
+
+                    let currentString = (i + strings) % this.fretboard.tuning.length;
+
+                    // let toString = (fromString + strings) % this.fretboard.tuning.length;
+
+                    let precedingString = (currentString + this.fretboard.tuning.length - 1) % this.fretboard.tuning.length;
+
+                    // let intervalChange = Distance.semitones(this.fretboard.tuning[fromString], this.fretboard.tuning[toString]);
+                    let d = Distance.semitones(this.fretboard.tuning[precedingString], this.fretboard.tuning[currentString]);
+
+                    //TODO: rollover
+
+                    let currentStringBefore = (i - 1 + strings) % this.fretboard.tuning.length;
+                    let precedingStringBefore = (currentStringBefore + this.fretboard.tuning.length - 1) % this.fretboard.tuning.length;
+                    let dBefore = Distance.semitones(this.fretboard.tuning[precedingStringBefore], this.fretboard.tuning[currentStringBefore]);
+
+                    // let correction = Math.abs((d - dBefore) % 12);
+                    correction += (dBefore - d) % 12;
+
+                    console.log(`strings ${precedingString} --> ${currentString} d=${d} dBefore=${dBefore} correction=${correction} frets=${this.frets[currentString]}`);
+
+                    this.frets[currentString].forEach((element, index, array) => array[index] = element + correction);
+                    */
+
+                    // console.log((i + strings) % this.fretboard.tuning.length, intervalChange, this.fretboard.tuningIntervals);
+
+                }
+
+
+                // this.update();
             }
 
             // this.frets[0] = [];
