@@ -1,4 +1,6 @@
 
+
+
 ### create Shape from:
 
 - frets
@@ -10,7 +12,7 @@
 
     barre : strings to barre with first finger. First string can be specified, otherwise is implied.
     fretboard : pointer to parent
-       
+    stackedIntervals       
 
 ### Shape methods:
 

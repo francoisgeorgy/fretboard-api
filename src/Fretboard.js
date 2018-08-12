@@ -1,7 +1,7 @@
 import {mandatory} from "./utils";
 import {Shape} from "./Shape";
-import {DEF_TUNING} from "./conf";
 import {Distance, Interval} from "tonal";
+import {Tuning} from "./Tuning";
 
 /**
  *
@@ -12,7 +12,7 @@ export class Fretboard {
      *
      * @param tuning
      */
-    constructor({tuning = DEF_TUNING} = {}) {
+    constructor({tuning = Tuning.guitar.standard} = {}) {
         this.tuning = tuning;
         this.minFret = 0;
         this.maxFret = 24;
