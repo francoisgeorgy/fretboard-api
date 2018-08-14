@@ -42,3 +42,16 @@ TODO
 ### fret = f(fromFret, fromString, toString)
 
     fret = fret(note(fromFret, fromString), toString);
+
+## Moving accross strings
+
+Which corrections (frets +/-) we need to do if we move a shape to another string?
+
+    for each fretted note:
+        interval_1 = note(string_to) - note(string_from)
+        interval_2 = tuning(string_to) - tuning(string_from)
+        correction = interval_2 - interval_1 
+    
+        1. get the interval between the note before and the note after 
+    1. get the interval between the  
+
