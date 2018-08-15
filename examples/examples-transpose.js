@@ -8,11 +8,12 @@ console.log(s.frets);
 console.log(s.intervals);
 console.log();
 
-for (let i = 0; i < 5; i++) {
-    s.transposeVertical(1);
+// /for (let i = 0; i < 5; i++) {
+//     s.transposeVertical(1);
+    s.transposeV(1);
     console.log(s.frets);
     console.log(s.intervals);
     console.log();
-}
+// }
 
 // The last iteration must be equal to the start
