@@ -15,6 +15,9 @@ are changed depending on the tuning.
 When _*transposing*_ a shape, the shape's *intervals* never changes. If the shape is transposed to a different string, then the shape's frets 
 are changed depending on the tuning.
 
+### Assumptions
+
+- western tonal music: 12 semitones
 
 ### Strings numbering
 

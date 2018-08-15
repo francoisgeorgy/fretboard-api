@@ -489,7 +489,9 @@ export class Shape {
 
         //TODO: what to do with the fingering ?
 
-        if (strings === 0) return this;
+        strings = strings % this.fretboard.tuning.length;   //FIXME: never mutate a function argument
+
+        if ((strings % this.fretboard.tuning.length) === 0) return this;
 
         if (strings < 0) {
 
@@ -531,7 +533,8 @@ export class Shape {
                     let tuning_from = this.fretboard.tuning[string_from];
                     let tuning_to = this.fretboard.tuning[string_to];
 
-                    let tuning_change = Interval.simplify(Distance.interval(tuning_from, tuning_to));
+                    // let tuning_change = Interval.simplify(Distance.interval(tuning_from, tuning_to));
+                    let tuning_change = Distance.semitones(tuning_from, tuning_to) % 12;
 
                     console.log(`string from=${string_from} to=${string_to} tuning from=${tuning_from} to=${tuning_to} change=${tuning_change}`);
 
@@ -540,7 +543,8 @@ export class Shape {
                         let note_from = this.fretboard.note(string_from, this.frets[i][k]);
                         let note_to = this.fretboard.note(string_to, new_frets[(i + 1) % this.fretboard.tuning.length][k]);
 
-                        let note_change = Interval.simplify(Distance.interval(note_from, note_to));
+                        //let note_change = Interval.simplify(Distance.interval(note_from, note_to));
+                        let note_change = Distance.semitones(note_from, note_to) % 12;
 
                         console.log(`   note from=${note_from} to=${note_to} change=${note_change}`);
                     }

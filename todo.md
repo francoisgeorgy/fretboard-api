@@ -1,6 +1,5 @@
 
 
-
 ### create Shape from:
 
 - frets
