@@ -7,6 +7,18 @@ import Assert from "assert-js";
 import enharmonics from "enharmonics";
 import {Fretboard} from "./Fretboard";
 
+/*
+function copy(o) {
+    var output, v, key;
+    output = Array.isArray(o) ? [] : {};
+    for (key in o) {
+        v = o[key];
+        output[key] = (typeof v === "object" && v !== null) ? copy(v) : v;
+    }
+    return output;
+}
+*/
+
 
 /**
  * Build a shape from a partial or complete definition.
@@ -469,6 +481,8 @@ export class Shape {
         return this;
     }
 
+
+
     /**
      * TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
      *
@@ -487,6 +501,8 @@ export class Shape {
      */
     transposeV(strings, rollover = false) {
 
+        // console.log(`transposeV(${strings})`);
+
         //TODO: what to do with the fingering ?
 
         strings = strings % this.fretboard.tuning.length;   //FIXME: never mutate a function argument
@@ -495,11 +511,16 @@ export class Shape {
 
         if (strings < 0) {
 
-            // -1 --> +5
+            // -1 --> +4
 
-            return this.transposeVertical(strings + this.fretboard.tuning.length);
+            // console.log();
+            // console.log(`change transposeV(${strings}) to transpose(${strings + this.fretboard.tuning.length - 1})`);
+
+            return this.transposeV(strings + this.fretboard.tuning.length - 1);
 
         } else {
+
+            // console.log(`now: ${this.frets}`);
 
             for (let t = 0; t < strings; t++) {
 
@@ -514,11 +535,33 @@ export class Shape {
                 //             get semitones from root to current note in new shape
                 //             compare and correct if needed
 
-
                 // first, just translate the shape as is:
 
-                let new_frets = this.frets.slice(0, -1);
-                new_frets.unshift(this.frets[this.frets.length-1]);
+                // let new_frets = this.frets.slice(0, -1);     // copy references !
+                // new_frets.unshift(this.frets[this.frets.length-1]);
+
+                // we can not use slice because slice copy references if the array contains objects or arrays
+
+                // var output, v, key;
+/*
+// copy references !
+                let v;
+                let new_frets = [];
+                v = this.frets[this.frets.length - 1];
+                new_frets.push(v);
+                for (let s = 0; s < this.frets.length - 1; s++) {
+                    v = this.frets[s];
+                    new_frets.push(v);
+                }
+*/
+                // let new_frets = Object.assign(this.frets);   // copy references !
+                // let [...new_frets] = this.frets;    // copy references !
+                let new_frets = JSON.parse(JSON.stringify(this.frets));
+                let v = new_frets[new_frets.length - 1];
+                new_frets.pop();
+                new_frets.unshift(v);
+
+                // console.log(`A: ${this.frets} - ${new_frets}`);
 
                 // this.root.string = (this.root.string + 1) % this.fretboard.tuning.length;
                 let new_root_string = (this.root.string + 1) % this.fretboard.tuning.length;
@@ -527,10 +570,14 @@ export class Shape {
                 let root_from = this.fretboard.note(this.root.string, this.root.fret);
                 let root_to = this.fretboard.note(new_root_string, this.root.fret);
 
-                console.log(`root from ${root_from} to ${root_to}`);
+                // FIXME: if root move to unison string, move it to lowest (pitched) unison string
+
+                // console.log(`root from ${root_from} to ${root_to}`);
 
                 // for each string
                 for (let i = 0; i< this.frets.length; i++) {        // for each string...
+
+                    // console.log(`B: ${this.frets}`);
 
                     let string_from = (this.root.string + i) % this.fretboard.tuning.length;
                     let string_to = (string_from + 1) % this.fretboard.tuning.length;
@@ -540,13 +587,12 @@ export class Shape {
 
                     let tuning_change = Distance.semitones(tuning_from, tuning_to) % 12;
 
-                    console.log(`string ${string_from} --> ${string_to} tuning ${tuning_from} --> ${tuning_to} change=${tuning_change}`);
+                    // console.log(`string ${string_from} --> ${string_to} tuning ${tuning_from} --> ${tuning_to} change=${tuning_change}`);
 
                     if (tuning_change === 0) {
-                        console.log(`   strings in unison, copy ${this.frets[string_from]}`);
-                        // new_frets[string_to] = this.frets[string_from];
+                        // console.log(`   strings in unison, copy ${this.frets[string_from]}`);
                         new_frets[string_to] = new_frets[string_from];
-                        console.log();
+                        // console.log();
                         continue;
                     }
 
@@ -554,7 +600,7 @@ export class Shape {
                     for (let k = 0; k < this.frets[string_from].length; k++) {        // for each fretted note...
 
                         if ((string_from === this.root.string) && (k = this.root.fret)) {
-                            console.log('   root note, skip');
+                            // console.log('   root note, skip');
                             continue;
                         }
 
@@ -564,99 +610,34 @@ export class Shape {
                         let semi_from = Distance.semitones(root_from, note_from);
                         let semi_to = Distance.semitones(root_to, note_to);
 
-                        //let note_change = Interval.simplify(Distance.interval(note_from, note_to));
-                        let note_change = Distance.semitones(note_from, note_to) % 12;
-
-                        console.log(`   note: ${note_from} --> ${note_to} : ${note_change} / semitones: ${semi_from} --> ${semi_to}`);
+                        // let note_change = Distance.semitones(note_from, note_to);
+                        // console.log(`   note: ${note_from} --> ${note_to} : ${note_change} / semitones: ${semi_from} --> ${semi_to}`);
 
                         if (semi_to !== semi_from) {
-                            new_frets[string_to][k] += semi_from - semi_to;
+                            // console.log(`C: ${this.frets}`);
+                            new_frets[string_to][k] = (new_frets[string_to][k] + semi_from - semi_to) % 12;
+                            // console.log(`D: ${this.frets}`);
                         }
 
                     }
 
-                    console.log();
+                    // console.log();
 
                 }
+
+                // console.log(`${this.frets} --> ${new_frets}`);
 
                 this.frets = new_frets;
+
                 this.root.string = new_root_string;
 
-                // for each fretted note:
-                //     interval_1 = note(string_to) - note(string_from)
-                //     interval_2 = tuning(string_to) - tuning(string_from)
-                //     correction = interval_2 - interval_1
-/*
-                let correction = 0;
+                this.update();
 
-                // then apply corrections depending on tuning:
-                for (let i = 0; i< this.frets.length; i++) {        // for each string...
-
-                    // let string = (fromString + i) % this.fretboard.tuning.length;
-
-                    let string_from = i;
-                    let string_to = (string_from + 1) % this.fretboard.tuning.length;
-
-                    let tuning_from = this.fretboard.tuning[string_from];
-                    let tuning_to = this.fretboard.tuning[string_to];
-
-                    // let tuning_change = Interval.simplify(Distance.interval(tuning_from, tuning_to));
-                    let tuning_change = Distance.semitones(tuning_from, tuning_to) % 12;
-
-                    console.log(`string from=${string_from} to=${string_to} tuning from=${tuning_from} to=${tuning_to} change=${tuning_change}`);
-
-                    for (let k = 0; k < this.frets[i].length; k++) {        // for each fretted note...
-
-                        let note_from = this.fretboard.note(string_from, this.frets[i][k]);
-                        let note_to = this.fretboard.note(string_to, new_frets[(i + 1) % this.fretboard.tuning.length][k]);
-
-                        //let note_change = Interval.simplify(Distance.interval(note_from, note_to));
-                        let note_change = Distance.semitones(note_from, note_to) % 12;
-
-                        console.log(`   note from=${note_from} to=${note_to} change=${note_change}`);
-                    }
-*/
-
-/*
-                    // the string before the transposition:
-                    let s0 = string;
-                    let i0 = this.fretboard.tuningIntervals[s0];
-
-                    // the string after the transposition:
-                    let s1 = (string + 1) % this.fretboard.tuning.length;
-                    let i1 = this.fretboard.tuningIntervals[s1];
-
-                    // did the interval change?:
-
-                    let semi0 = Interval.semitones(i0);
-                    let semi1 = Interval.semitones(i1);
-
-                    if ((semi0 === 0) || (semi1 === 0)) {
-                        // console.log(`no correction because we transpose to a unison string ${s0}-->${s1}`);
-                    } else {
-                        // let delta = Interval.semitones(i1) - Interval.semitones(i0);
-                        // correction -= delta;
-                        correction -= semi1 - semi0;
-                    }
-
-                    // let d = Distance.semitones(this.fretboard.tuning[s0], this.fretboard.tuning[s1]);   // DEBUG
-                    // console.log(`string=${string}: transpose from string s0=${s0} to string s1=${s1}: delta = ${i1} - ${i0} = ${delta}, correction=${correction}, semitones=${d}`);
-
-                    if ((Math.abs(Distance.semitones(this.fretboard.tuning[s0], this.fretboard.tuning[s1])) % 12) === 0) {  // strings in unison
-                        this.frets[s1] = this.frets[s0];
-                    } else {
-                        this.frets[s1].forEach(
-                            (element, index, array) => {
-                                array[index] = element + correction
-                            });
-                    }
-                }
-*/
             }
 
         }
 
-        this.update();
+        // this.update();
 
         return this;
     }

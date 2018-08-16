@@ -149,3 +149,20 @@ semitones from the root
                 get semitones from root to current note in new shape
                 compare and correct if needed
     
+
+
+Reverse:
+
+        E A D G B E     E A D G B E
+    +1: 0 1 2 3 4 5     5 0 1 2 3 4       
+
+        E A D G B E     E A D G B E
+    -1: 5 0 1 2 3 4     0 1 2 3 4 5
+    
+        4 5 0 1 2 3     +1
+        3 4 5 0 1 2     +1   
+        2 3 4 5 0 1     +1
+        1 2 3 4 5 0     +1  
+        0 1 2 3 4 5     +1         
+
+    -1 ==> -1 + 6 = 5
