@@ -11,11 +11,17 @@ s = new Shape({frets:"5 7 7 6 5 5"});
 console.log(`${s.frets}  ${s.intervalsSimple}`);
 console.log();
 
-for (let i = 0; i < 6; i++) {
+for (let i = 0; i < 7; i++) {
     s.transposeV(1);
     console.log(`${s.frets}  ${s.intervalsSimple}`);
     console.log();
 }
+
+console.log(s);
+
+// s.autocorrectRoot();
+// s.update();
+// console.log(s);
 
 
 /*

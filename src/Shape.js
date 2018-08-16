@@ -633,12 +633,42 @@ export class Shape {
 
                 this.update();
 
+                //TODO: make this optional:
+/*
+                if (this.root.string > Math.floor(this.fretboard.tuning.length / 2)) {
+                    this.autocorrectRoot();
+                    this.update();
+                }
+*/
+
             }
 
         }
 
         // this.update();
 
+        return this;
+    }
+
+    /**
+     * Set the root to the lowest pitched string possible (find the lowest string with a unison interval to the current root)
+     */
+    autocorrectRoot() {
+        let stop = false;
+        for (let string = 0; string< this.intervals.length; string++) {        // for each string...
+            // for each fretted note on the current string:
+            for (let fret = 0; fret < this.intervals[string].length; fret++) {        // for each fretted note...
+                let d = Interval.semitones(this.intervals[string][fret]);
+                console.log(`${string} ${this.frets[string][fret]} : ${this.intervals[string][fret]} : ${d}`);
+                if ((Interval.semitones(this.intervals[string][fret]) % 12) === 0) {
+                    this.root.string = string;
+                    this.root.fret = this.frets[string][fret];
+                    stop = true;
+                    break;
+                }
+            }
+            if (stop) break;
+        }
         return this;
     }
 
