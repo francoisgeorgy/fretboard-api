@@ -97,7 +97,7 @@ semitones from the root
     B       7        4
     G          4     3 
     D             0  2 
-    A             7  1
+    A             7  1  E
     E       R        0
 
     tuning  note     note index
@@ -105,7 +105,7 @@ semitones from the root
     E       7        4 
     B          3     3 must be corrected to 4     
     G             0  2
-    D             7  1 
+    D             7  1  A
     A       R        0
     E       7        5
 
@@ -148,5 +148,4 @@ semitones from the root
                 get semitones from root to current note in original shape     
                 get semitones from root to current note in new shape
                 compare and correct if needed
-    
     
