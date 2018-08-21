@@ -484,10 +484,8 @@ export class Shape {
 
 
     /**
-     * TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST TEST
-     *
-     *
      * Transpose across strings.
+     *
      * The intervals are not changed. The shape may change depending on the tuning.
      *
      * THE RELATIVE INTERVALS ARE CONSERVED.
@@ -499,9 +497,9 @@ export class Shape {
      *
      * @param string positive for transposing towards high, negative tor transposing towards low.
      */
-    transposeV(strings, rollover = false) {
+    transposeByStrings(strings, autocorrectRoot = true, rollover = false) {
 
-        // console.log(`transposeV(${strings})`);
+        console.log(`transposeByStrings(${strings})`);
 
         //TODO: what to do with the fingering ?
 
@@ -510,15 +508,18 @@ export class Shape {
         if ((strings % this.fretboard.tuning.length) === 0) return this;
 
         if (strings < 0) {
-
             // -1 --> +4
+            strings = strings + this.fretboard.tuning.length - 1;
+        }
 
-            // console.log();
-            // console.log(`change transposeV(${strings}) to transpose(${strings + this.fretboard.tuning.length - 1})`);
+        console.log(`${strings}`);
 
-            return this.transposeV(strings + this.fretboard.tuning.length - 1);
-
-        } else {
+        //     // console.log();
+        //     // console.log(`change transposeV(${strings}) to transpose(${strings + this.fretboard.tuning.length - 1})`);
+        //
+        //     return this.transposeByStrings(strings + this.fretboard.tuning.length - 1);
+        //
+        // } else {
 
             // console.log(`now: ${this.frets}`);
 
@@ -633,17 +634,16 @@ export class Shape {
 
                 this.update();
 
-                //TODO: make this optional:
-/*
-                if (this.root.string > Math.floor(this.fretboard.tuning.length / 2)) {
-                    this.autocorrectRoot();
-                    this.update();
+                if (autocorrectRoot) {
+                    if (this.root.string > Math.floor(this.fretboard.tuning.length / 2)) {
+                        this.autocorrectRoot();
+                        this.update();
+                    }
                 }
-*/
 
             }
 
-        }
+        // }
 
         // this.update();
 
@@ -651,6 +651,16 @@ export class Shape {
     }
 
     /**
+     * Transpose the shape so that the root is on the specified string
+     * @param stringTo
+     * @param rollover
+     */
+    transposeToString(rootString, rollover = false) {
+        return this.transposeByStrings(rootString - this.root.string, rollover);
+    }
+
+
+        /**
      * Set the root to the lowest pitched string possible (find the lowest string with a unison interval to the current root)
      */
     autocorrectRoot() {
