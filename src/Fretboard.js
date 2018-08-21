@@ -60,12 +60,19 @@ export class Fretboard {
         for (let i = 0; i < this.tuning.length; i++) {
             //this.tuningIntervals[i - 1] = interval(this.tuning[i > 0 ? (i - 1) : 0], this.tuning[i]);
             // this.tuningIntervals[i] = Distance.interval(this.tuning[i - 1], this.tuning[i]);
-            this.tuningIntervals[i] = Interval.simplify(
+            let simple = Interval.simplify(
                 Distance.interval(
                     this.tuning[(i -1 + this.tuning.length) % this.tuning.length],
                     this.tuning[i]
                 )
             );
+            this.tuningIntervals[i] = simple === '-1P' ? '1P' : simple;
+            // this.tuningIntervals[i] = Interval.simplify(
+            //     Distance.interval(
+            //         this.tuning[(i -1 + this.tuning.length) % this.tuning.length],
+            //         this.tuning[i]
+            //     )
+            // );
         }
     }
 

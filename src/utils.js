@@ -1,5 +1,4 @@
 import Tonal from "tonal";
-import {NOT_FRETTED_NUMBER} from "./conf";
 
 /**
  * Called if a parameter is missing and
@@ -32,10 +31,10 @@ function minFret(frets) {
 
 
 /**
- * Returns -1 if no string is fretted
+ * Returns -1 if no string is played
  * @returns {number} Number (1-based) of the lowest-pitched fretted string
  */
-export function firstString(frets) {
+export function firstPlayedString(frets) {
     return frets.findIndex(f => f.length > 0);
 }
 

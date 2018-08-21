@@ -1,6 +1,6 @@
-import { Fretboard } from './fretboard.js';
-import { Shape } from './shape.js';
+import { Fretboard } from './Fretboard.js';
+import { Shape } from './Shape.js';
 import * as Utils from './utils.js';
-import { SHAPES } from './data/shapes.js';
+import * as SHAPES from './data/index.js';
 
 export { Fretboard, Shape, Utils, SHAPES };
