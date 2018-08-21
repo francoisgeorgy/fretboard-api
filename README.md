@@ -153,6 +153,17 @@ With all optional attributes:
         // offset: 1,       --> determined if lowest root has fret > 0
     }
     
+# Tests
+
+All tests:
+
+    yarn test
+    
+One specific test:
+            
+    yarn test Fretboard.test.js
+    
+    
 # Resources:
 
 - https://en.wikipedia.org/wiki/Guitar_tunings

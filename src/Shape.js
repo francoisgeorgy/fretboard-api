@@ -49,6 +49,8 @@ export class Shape {
 
     //TODO: - attachToFretboard() (or, simpler: setFretboard() or placeOnFretboard())
 
+    //TODO: simplify 8P,15P,... to 1P ?
+
     /**
      *
      * @param shape

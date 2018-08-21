@@ -1,5 +1,3 @@
-import {normalizeFretsFormat, normalizeFretsPosition} from "../src/utils";
-import {NOT_FRETTED_NUMBER} from "../src/conf";
 import {Shape} from "../src/Shape";
 
 test('Shapes', () => {
@@ -11,8 +9,8 @@ test('Shapes', () => {
         position: { string: 0, fret: 0 },
         root: { string: 0, fret: 0 },
         intervals:
-            [ [ 'R' ], [ '5P' ], [ '8P' ], [ '10M' ], [ '12P' ], [ '15P' ] ],
-        simpleIntervals: [ 'R', '5P', '3M' ],
+            [ [ '1P' ], [ '5P' ], [ '8P' ], [ '10M' ], [ '12P' ], [ '15P' ] ],
+        simpleIntervals: [ '1P', '5P', '8P', '3M' ],
         notes:
             [ [ 'E2' ], [ 'B2' ], [ 'E3' ], [ 'Ab3' ], [ 'Cb4' ], [ 'Fb4' ] ],
         simpleNotes: [ 'E', 'B', 'Ab', 'Cb', 'Fb' ] });
@@ -24,8 +22,8 @@ test('Shapes', () => {
         position: { string: 0, fret: 8 },
         root: { string: 0, fret: 8 },
         intervals:
-            [ [ 'R' ], [ '5P' ], [ '8P' ], [ '10M' ], [ '12P' ], [ '15P' ] ],
-        simpleIntervals: [ 'R', '5P', '3M' ],
+            [ [ '1P' ], [ '5P' ], [ '8P' ], [ '10M' ], [ '12P' ], [ '15P' ] ],
+        simpleIntervals: [ '1P', '5P', '8P', '3M' ],
         notes:
             [ [ 'C3' ], [ 'G3' ], [ 'C4' ], [ 'E4' ], [ 'G4' ], [ 'C5' ] ],
         simpleNotes: [ 'C', 'G', 'E' ] });
@@ -36,8 +34,8 @@ test('Shapes', () => {
         // tuningIntervals: [ '1P', '4P', '4P', '4P', '3M', '4P' ],
         position: { string: 0, fret: 5 },
         root: { string: 0, fret: 5 },
-        intervals: [ [ 'R' ], [ '7m' ], [ '10M' ], [ '12P' ] ],
-        simpleIntervals: [ 'R', [], '7m', '3M', '5P', [] ],
+        intervals: [ [ '1P' ], [ '7m' ], [ '10M' ], [ '12P' ] ],
+        simpleIntervals: [ '1P', [], '7m', '3M', '5P', [] ],
         notes: [ [ 'A2' ], [], [ 'G3' ], [ 'Db4' ], [ 'Fb4' ], [] ],
         simpleNotes: [ 'A', 'G', 'Db', 'Fb' ] });
 
@@ -47,8 +45,8 @@ test('Shapes', () => {
         // tuningIntervals: [ '1P', '4P', '4P', '4P', '3M', '4P' ],
         position: { string: 0, fret: 5 },
         root: { string: 0, fret: 5 },
-        intervals: [ [ 'R' ], [ '7m' ], [ '10M' ], [ '12P' ] ],
-        simpleIntervals: [ 'R', [], '7m', '3M', '5P', [] ],
+        intervals: [ [ '1P' ], [ '7m' ], [ '10M' ], [ '12P' ] ],
+        simpleIntervals: [ '1P', [], '7m', '3M', '5P', [] ],
         notes: [ [ 'A2' ], [], [ 'G3' ], [ 'Db4' ], [ 'Fb4' ], [] ],
         simpleNotes: [ 'A', 'G', 'Db', 'Fb' ] });
 
@@ -71,13 +69,13 @@ test('moveTo', () => {
         position: { string: 0, fret: 8 },
         root: { string: 0, fret: 8 },
         intervals:
-            [ [ 'R', '2M' ],
+            [ [ '1P', '2M' ],
                 [ '3M', '4P', '5P' ],
                 [ '6M', '7M', '8P' ],
                 [ '9M', '10M', '11P' ],
                 [ '12P', '13M' ],
                 [ '14M', '15P' ] ],
-        simpleIntervals: [ 'R', '2M', '3M', '4P', '5P', '6M', '7M' ],
+        simpleIntervals: [ '1P', '2M', '3M', '4P', '5P', '6M', '7M', '8P' ],
         notes:
             [ [ 'C3', 'D3' ],
                 [ 'E3', 'F3', 'G3' ],
@@ -104,13 +102,13 @@ test('translateHorizontalBy', () => {
         position: { string: 0, fret: 5 },
         root: { string: 0, fret: 5 },
         intervals:
-            [ [ 'R', '2M' ],
+            [ [ '1P', '2M' ],
                 [ '3M', '4P', '5P' ],
                 [ '6M', '7M', '8P' ],
                 [ '9M', '10M', '11P' ],
                 [ '12P', '13M' ],
                 [ '14M', '15P' ] ],
-        simpleIntervals: [ 'R', '2M', '3M', '4P', '5P', '6M', '7M' ],
+        simpleIntervals: [ '1P', '2M', '3M', '4P', '5P', '6M', '7M', '8P' ],
         notes:
             [ [ 'A2', 'B2' ],
                 [ 'C#3', 'D3', 'E3' ],
@@ -134,13 +132,13 @@ test('translateHorizontalBy', () => {
         position: { string: 0, fret: 8 },
         root: { string: 0, fret: 8 },
         intervals:
-            [ [ 'R', '2M' ],
+            [ [ '1P', '2M' ],
                 [ '3M', '4P', '5P' ],
                 [ '6M', '7M', '8P' ],
                 [ '9M', '10M', '11P' ],
                 [ '12P', '13M' ],
                 [ '14M', '15P' ] ],
-        simpleIntervals: [ 'R', '2M', '3M', '4P', '5P', '6M', '7M' ],
+        simpleIntervals: [ '1P', '2M', '3M', '4P', '5P', '6M', '7M', '8P' ],
         notes:
             [ [ 'C3', 'D3' ],
                 [ 'E3', 'F3', 'G3' ],
