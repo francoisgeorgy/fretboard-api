@@ -10,7 +10,7 @@
         }
         #main {
             font-family: monospace;
-            /*white-space: pre;*/
+            white-space: pre;
         }
         #main > div {
             padding: 10px 0;
@@ -37,9 +37,9 @@
 
     function logObj(o, labelText) {
         let entry = document.createElement('div');
-        entry.innerHTML = JSON.stringify(o);    //, null, 2);
+        entry.innerHTML = JSON.stringify(o, null, 2);
         if (labelText) {
-            let label = document.createElement('div');
+            let label = document.createElement('pre');
             label.innerText = labelText;
             entry.insertAdjacentElement('afterbegin', label);
         }
