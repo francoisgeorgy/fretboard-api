@@ -6,7 +6,7 @@ Usage:
     - number of strings
     - tuning
     - number of frets
-2) Place _*Shape*_ on the Fretboard. A _shape_ is a collection of fretted note. This can be a chord, an interval, a scale, etc.
+2) Place _*Shape*_ on the Fretboard. A _shape_ is a collection of played positions. This can be a chord, an interval, a scale, etc.
 3) Shapes can then be moved and transposed.
 
 When _*moving*_ a shape, the shape's *form* never changes. If the shape is moved to a different string, then the shape's intervals 
@@ -23,7 +23,7 @@ are changed depending on the tuning.
 
 For the user: strings are numbered starting at 1 and from the lowest pitched to the highest pitched.
 
-Implementation: strings are in an array 0-index.
+Implementation: strings are in an 0-indexed array.
 
 For a standard tuning, strings are 1=E, 2=A, 3=D, 4=G, 5=B, 6=E
 
@@ -31,7 +31,7 @@ For a standard tuning, strings are 1=E, 2=A, 3=D, 4=G, 5=B, 6=E
 
 Frets are numbered starting at 0 and from the head of the neck towards the bridge.
 
-Fret number 0 is the nut, or the "zero fret" installed close the the nut on certain guitars.
+Fret number 0 is the nut, or the "zero fret" installed close the the nut on some guitars.
 
 ## `frets` and `fingers` format
 
@@ -46,11 +46,16 @@ Example2:
 
 C major scale:
 
-    [[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10] [7, 8]]
+    [ [8, 10], 
+      [7, 8, 10], 
+      [7, 9, 10], 
+      [7, 9, 10], 
+      [8, 10] 
+      [7, 8] ]
     
 A7 chord:    
     
-    [[5], [], [5], [6], [5] []]
+    [ [5], [], [5], [6], [5] [] ]
 
 #### Allowed input formats:
 
@@ -58,17 +63,19 @@ Frets and fingers can be specified as strings or arrays. They will always be nor
 
 `X` or `x` must be used to define a non-played (muted) string.
 
-With only one fretted note per string:
+'0' denote a played open-string.
 
-    "022100" --> [[0], [2], [2], [1], [0], [0]]
+With only one played note per string:
+
+    "022100" --> [ [0], [2], [2], [1], [0], [0] ]
     
-    "5X565X" --> [[5], [], [5], [6], [5] []]
+    "5X565X" --> [ [5], [], [5], [6], [5] [] ]
     
 space are allowed, useful for frets > 9:
 
     "8 10 10 9 8 8" --> [8, 10, 10, 9, 8, 8]        
     
-When more than one fretted note per string use a comma to separate the strings:
+When there are more than one played note per string, use a comma to separate the strings:
 
     "24,124,134,134,24,12" --> [[2, 4], [1, 2, 4], [1, 3, 4], [1, 3, 4], [2, 4], [1, 2]]
     
@@ -81,11 +88,11 @@ When more than one fretted note per string use a comma to separate the strings:
 
 Examples:
 
-one fretted note per string:
+one played note per string:
 
     [8, 10, 10, 9, 8, 8] --> [[0], [2], [2], [1], [0], [0]]
 
-more than one fretted note per string:
+more than one played note per string:
 
     [[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10] [7, 8]] --> [[2, 4], [1, 2, 4], [1, 3, 4], [1, 3, 4], [2, 4] [1, 2]]
 
@@ -111,7 +118,7 @@ With all optional attributes:
         suffix: "",         // all other characteristics
         bass: "",           // for slash chords                                 --> is it possible to determine the bass automatically?
         inversion: 0,       // 0 for no inversion, 1 for first inversion, ...   --> is it possible to determine the inversion automatically?
-        root: 5,            // string number of the root note                   --> by default take the lowest pitched fretted string
+        root: 5,            // string number of the root note                   --> by default take the lowest pitched played string
         CAGED: "E",         // index of the pattern shape for this chord shape
         frets: "022100",    // X means string muted
         fingers: "032100"   // 0 means no finger on that string but the string should be played
@@ -138,7 +145,7 @@ With all optional attributes:
         root: "0 1"    // string index 0, fret 1   format: "<string> <fret>"
     }
         
-- root: by default the first fretted note on the lowest pitched played string will be considered as the root.
+- root: by default the first played note on the lowest pitched played string will be considered as the root.
 
 
 ## Free shape
