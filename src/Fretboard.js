@@ -11,11 +11,12 @@ export class Fretboard {
     /**
      *
      * @param tuning
+     * @param frets
      */
-    constructor({tuning = Tuning.guitar.standard} = {}) {
+    constructor({tuning = Tuning.guitar.standard, frets = 24} = {}) {
         this.tuning = tuning;
         this.minFret = 0;
-        this.maxFret = 24;
+        this.maxFret = frets;
         this.shapes = [];
         this.nextID = 0;
         this.computeTuningIntervals();
