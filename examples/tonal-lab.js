@@ -1,5 +1,6 @@
 import {Distance, Note, Interval} from "tonal";
 import enharmonics from "enharmonics";
+import {intervalSimple} from "../src/humanizer";
 
 let note = 'F#2';
 console.log(note, Note.tokenize(note), enharmonics(note), enharmonics.simplify(note));
@@ -54,20 +55,23 @@ console.log(d, d + 24, Interval.fromSemitones(d + 24));
 d = Interval.semitones('-2m');
 console.log(d, d + 12, Interval.fromSemitones(d + 12)); // 7M
 
-for (const i of ['1P', '3M', '12m', '15P']) {
-    console.log(`Interval.props(${i}) :`);
-    console.log(Interval.props(i));
-    console.log(`ic: ${Interval.ic(i)}`);
-}
-
 //   C   D   E   F   G   A   B     C   D   E   F   G   A   B     C
 //   1   2   3   4   5   6   7     8   9  10  11  12  13  14    15
 //   1   2   3   4   5   6   7     1   2   3   4   5   6   7     1
 //                                               12m
 
-for (let s=0; s<16; s++) {
+for (let s=0; s<48; s++) {
+    if (s % 12 === 0) console.log();
     let i = Interval.fromSemitones(s);
+    let p = Interval.props(i);
+    // console.log(p);
     // console.log(`Interval.props(${i}) :`);
     // console.log(Interval.props(i));
-    console.log(`${s} chroma: ${Interval.chroma(i)}, ic: ${Interval.ic(i)}`);
+    console.log(`${s} num: ${p.num}, chroma: ${Interval.chroma(i)}, q: ${p.q}, type: ${p.type}, name: ${p.name}, ic: ${Interval.ic(i)} // ${intervalSimple(i)}`);
+}
+
+for (const i of ['1P', '3m', '3M', '5d', '5A', '12m', '15P', '20d']) {
+    console.log(`Interval.props(${i}) :`);
+    console.log(Interval.props(i));
+    // console.log(`ic: ${Interval.ic(i)}`);
 }

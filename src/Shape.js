@@ -1,4 +1,4 @@
-import { Distance, interval, Interval, Note } from "tonal";
+import { Distance, Interval, Note } from "tonal";
 import {normalizeFrets, firstPlayedString} from "./utils.js";
 import {normalizeFretsFormat, normalizeFretsPosition} from "./utils";
 import Assert from "assert-js";
