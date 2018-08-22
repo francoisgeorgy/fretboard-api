@@ -17,7 +17,8 @@ import {Fretboard} from "./Fretboard";
  * - root.string : define the shape's position on the fretbard (with root.fret)
  * - root.fret : define the shape's position on the fretbard (with root.string)
  * - frets : array of one element per string
- * - intervals
+ * - intervals : for each played note, the interval from the root. For non played string, an empty array.
+ * - chromas : for each played note, the chroma of the note. For non played string, an empty array.
  * - simpleIntervals
  * - stackedIntervals (from low to high notes)              TODO
  * - reverseStackedIntervals (from high to low notes)       TODO
@@ -60,6 +61,8 @@ export class Shape {
     constructor(shape, fretboard = null, normalizePosition = false) {
 
         Assert.hasProperty('frets', shape);
+
+        //TODO: accept a string for shape param.
 
         Object.assign(this, shape);
 
@@ -185,17 +188,21 @@ export class Shape {
      */
     computeIntervals() {
 
-        this.intervals = [];
-        this.intervalsSimple = [];
+        //TODO: use Internal.props() to simplify the code
+
+        this.intervals = [];        // one array per string; empty array for non-played strings
+        this.chromas = [];          // one array per string; empty array for non-played strings
         this.simpleIntervals = [];
 
         for (let string = 0; string < this.frets.length; string++) {  // strings
 
             let intervals = [];
-            let intervalsSimple = [];
+            let chromas = [];
+            // let intervalsSimple = [];
 
             if (this.frets[string].length === 0) {
-                this.simpleIntervals.push(intervals);
+                this.intervals.push(intervals);
+                this.chromas.push(chromas);
                 continue;
             }
 
@@ -216,7 +223,7 @@ export class Shape {
                 // intervals.push((string === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root);
                 // intervalsSimple.push((string === this.root.string) && (interval_from_root === "1P") ? "R" : simple);
                 intervals.push(interval_from_root);
-                intervalsSimple.push(simple);
+                chromas.push(Interval.chroma(interval_from_root));
 
                 // get the simplified name of this interval:
                 // if ((si === "1P") || (si === "8P")) si = "R";
@@ -226,7 +233,7 @@ export class Shape {
             }
 
             this.intervals.push(intervals);
-            this.intervalsSimple.push(intervalsSimple);
+            this.chromas.push(chromas);
         }
 
         return this;

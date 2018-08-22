@@ -53,3 +53,21 @@ console.log(d, d + 24, Interval.fromSemitones(d + 24));
 
 d = Interval.semitones('-2m');
 console.log(d, d + 12, Interval.fromSemitones(d + 12)); // 7M
+
+for (const i of ['1P', '3M', '12m', '15P']) {
+    console.log(`Interval.props(${i}) :`);
+    console.log(Interval.props(i));
+    console.log(`ic: ${Interval.ic(i)}`);
+}
+
+//   C   D   E   F   G   A   B     C   D   E   F   G   A   B     C
+//   1   2   3   4   5   6   7     8   9  10  11  12  13  14    15
+//   1   2   3   4   5   6   7     1   2   3   4   5   6   7     1
+//                                               12m
+
+for (let s=0; s<16; s++) {
+    let i = Interval.fromSemitones(s);
+    // console.log(`Interval.props(${i}) :`);
+    // console.log(Interval.props(i));
+    console.log(`${s} chroma: ${Interval.chroma(i)}, ic: ${Interval.ic(i)}`);
+}

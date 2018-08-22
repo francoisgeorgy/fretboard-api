@@ -7,6 +7,7 @@ import {normalizeFretsFormat} from "../src/utils";
 
 let testShapes = [
     "022100",
+    "X32010",
     "8 10 10 9 8 8",
     "5X565X",
     "5 X 5 6 5 X",

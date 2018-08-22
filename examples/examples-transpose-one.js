@@ -21,14 +21,14 @@ for (let i = 0; i < 5; i++) {
 
 
 s = new Shape({frets:"5 7 7 6 5 5"});
-console.log(`${s.frets}  ${s.intervalsSimple}`);
+console.log(`${s.frets}  ${s.chromas}`);
 console.log();
 
 s.transposeV(1);
-console.log(`${s.frets}  ${s.intervalsSimple}`);
+console.log(`${s.frets}  ${s.chromas}`);
 console.log();
 
 s.transposeV(-1);
-console.log(`${s.frets}  ${s.intervalsSimple}`);
+console.log(`${s.frets}  ${s.chromas}`);
 console.log();
 

@@ -56,10 +56,13 @@ module.exports = [ serverConfig, clientConfig ];
 */
 
 module.exports = {
-    entry: {
-        index: path.resolve('./src/index.js'),  // to have dist/index.js instead of default dist/main.js
-    },
+    // entry: {
+    //     index: path.resolve('./src/index.js'),
+    // },
+    entry: './src/index.js',
     output: {
+        path: path.resolve(__dirname, 'dist'),
+        filename: 'index.js',   // to have dist/index.js instead of default dist/main.js
         library: "fretboardApi",
         libraryTarget: "umd"
     },
