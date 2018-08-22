@@ -1,8 +1,8 @@
 const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
 
-/*
-const path = require('path');
 
+const path = require('path');
+/*
 const serverConfig = {
     target: 'node',
     output: {
@@ -56,6 +56,9 @@ module.exports = [ serverConfig, clientConfig ];
 */
 
 module.exports = {
+    entry: {
+        index: path.resolve('./src/index.js'),  // to have dist/index.js instead of default dist/main.js
+    },
     output: {
         library: "fretboardApi",
         libraryTarget: "umd"
