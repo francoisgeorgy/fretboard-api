@@ -3,9 +3,14 @@ import {Shape} from "../src/Shape";
 
 test('normalizeFretsFormat', () => {
     expect(normalizeFretsFormat("022100")).toEqual([[0], [2], [2], [1], [0], [0]]);
+    expect(normalizeFretsFormat([0, 2, 2, 1, 0, 0])).toEqual([[0], [2], [2], [1], [0], [0]]);
+    expect(normalizeFretsFormat(["0", "2", "2", "1", "0", "0"])).toEqual([[0], [2], [2], [1], [0], [0]]);
     expect(normalizeFretsFormat("8 10 10 9 8 8")).toEqual([[8], [10], [10], [9], [8], [8]]);
+    expect(normalizeFretsFormat([8, 10, 10, 9, 8, 8])).toEqual([[8], [10], [10], [9], [8], [8]]);
+    expect(normalizeFretsFormat(["8", "10", "10", "9", "8", "8"])).toEqual([[8], [10], [10], [9], [8], [8]]);
     expect(normalizeFretsFormat("5X565X")).toEqual([[5], [], [5], [6], [5], []]);
     expect(normalizeFretsFormat("5 X 5 6 5 X")).toEqual([[5], [], [5], [6], [5], []]);
+    expect(normalizeFretsFormat([5, "X", 5, 6, 5, "X"])).toEqual([[5], [], [5], [6], [5], []]);
     expect(normalizeFretsFormat("24,124,134,134,24,12")).toEqual([[2, 4], [1, 2, 4], [1, 3, 4], [1, 3, 4], [2, 4], [1, 2]]);
     expect(normalizeFretsFormat("8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8")).toEqual([[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10], [7, 8]]);
 });

@@ -101,10 +101,32 @@ function multiStrings2array(s) {
 }
 */
 
+/*
+function fretsStringToArray(str) {
+
+    let fs = str.toUpperCase().replace(/\s+/g, ' ');  // replace multiples blanks with one space
+
+    if (fs.indexOf(',') < 0) {
+        // only one fretted note per string
+        // "022100" --> [[0], [2], [2], [1], [0], [0]]
+        let a = fs.indexOf(' ') >= 0 ? fs.split(' ') : Array.from(fs);
+        // return a.map(s => s.toUpperCase() === 'X' ? [] : s.split(' ').map(e => parseInt(e, 10)));
+    } else {
+        // "8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8" --> [[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10], [7, 8]]
+        let a = fs.replace(/,\sg, ',').split(',');
+        // return a.map(s => {
+        //     if (s.toUpperCase() === 'X') return [];
+        //     return (s.indexOf(' ') >= 0 ? s.split(' ') : Array.from(s)).map(e => parseInt(e, 10));
+        // });
+    }
+
+}
+*/
 
 /**
  * "022100" --> [[0], [2], [2], [1], [0], [0]]
  * "8 10 10 9 8 8" --> [[8], [10], [10], [9], [8], [8]]
+ * [8, 10, 10, 9, 8, 8] --> [[8], [10], [10], [9], [8], [8]]
  * "24,124,134,134,24,12" --> [[2, 4], [1, 2, 4], [1, 3, 4], [1, 3, 4], [2, 4], [1, 2]]
  * "8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8" --> [[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10], [7, 8]]
  * @param {?(array|string)} frets - frets.
@@ -112,21 +134,45 @@ function multiStrings2array(s) {
  */
 export function normalizeFretsFormat(frets) {
 
-    if (typeof frets !== 'string') return frets;
+    // if (typeof frets !== 'string') return frets;
+
+    if (Array.isArray(frets)) {
+        if (Array.isArray(frets[0])) {
+            return frets;
+        }
+        return frets.map(s => {
+            if (typeof s === 'string') {
+                return s.toUpperCase() === 'X' ? [] : [parseInt(s, 10)];
+            } else {
+                return [s];
+            }
+        });
+    }
 
     let fs = frets.toUpperCase().replace(/\s+/g, ' ');  // replace multiples blanks with one space
 
     if (fs.indexOf(',') < 0) {
         // only one fretted note per string
-        // "022100" --> [[0], [2], [2], [1], [0], [0]]
-        let a = fs.indexOf(' ') >= 0 ? fs.split(' ') : Array.from(fs);
-        return a.map(s => s.toUpperCase() === 'X' ? [] : s.split(' ').map(e => parseInt(e, 10)));
-    } else {
-        // "8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8" --> [[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10], [7, 8]]
-        let a = fs.replace(/,\s*/g, ',').split(',');
+        let a = fs.indexOf(' ') >= 0
+            ? fs.split(' ')     // "8 10 ..." --> ["8", "10", ...]
+            : Array.from(fs);   // "022100" --> ["0", "2", "2", "1", "0", "0"]
         return a.map(s => {
             if (s.toUpperCase() === 'X') return [];
-            return (s.indexOf(' ') >= 0 ? s.split(' ') : Array.from(s)).map(e => parseInt(e, 10));
+            return [parseInt(s, 10)]
+        });
+        // return a.map(s => s.toUpperCase() === 'X'
+        //         ? []
+        //         : Array.from(s).map(e => parseInt(e, 10)));
+        //         // : s.split(' ').
+        //         //     map(e => parseInt(e, 10)));
+    } else {
+        let a = fs.replace(/,\s*/g, ',').split(',');    // "8 10, 7 8 10, ..." --> ["8 10", "7 8 10", ...]
+        return a.map(s => {
+            if (s.toUpperCase() === 'X') return [];
+            return (s.indexOf(' ') >= 0
+                        ? s.split(' ')              // ["8 10", ...] --> [["8", "10"], ...]
+                        : Array.from(s)             // ["24", "124", ...] --> [["2", "4"], ["1", "2", "4"], ...]
+                    ).map(e => parseInt(e, 10));    // [[2, 4], [1, 2, 4], ...]
         });
     }
 
