@@ -24,10 +24,6 @@
             margin-bottom: 3px;
         }
 */
-        #header {
-
-        }
-
         .code {
             margin: 10px;
             padding: 10px;
@@ -42,27 +38,17 @@
 
     <script>
         var api = fretboardApi;
-/*
-        function stringify(o) {
-            return JSON.stringify(o, function(k,v) { return v instanceof Array ? JSON.stringify(v) : v }, 2)
-                .replace(/"\[/g, '[')
-                .replace(/\]"/g, ']')
-                .replace(/\\"/g, '"')
-                .replace(/""/g, '"');
-        }
-*/
         function printObj(o) {
             document.write(`<div class="code">${o.toString()}</div>`);
         }
-
     </script>
 
     <h1>fretboard-api</h1>
     <div id="header">
-        <a href="caged.html">CAGED</a>
     </div>
 
     <div id="main">
+        <h2>Transposition</h2>
         Create a Fretboard object:
         <script>
             // let api = fretboardApi;
@@ -70,28 +56,22 @@
             printObj(f);
         </script>
 
-        Add a Shape corresponding to an open major chord:
-        <script>
-            var s = f.addShape({shape: {frets: '0 2 2 1 0 0'}});
-            printObj(s);
-        </script>
-
-        Move this shape to the 8th fret:
-        <script>
-            s.moveTo({fret: 8});
-            printObj(s);
-        </script>
-
         Add a Shape corresponding to the C major scale:
         <script>
-            var s2 = f.addShape({shape: {frets: '8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8'}});
-            printObj(s2);
+            var s = f.addShape({shape: {frets: '8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8'}});
+            printObj(s);
         </script>
 
         Transpose this shape down one string, which gives us the F major scale:
         <script>
-            s2.transposeByStrings(1);
-            printObj(s2);
+            s.transposeByStrings(1);
+            printObj(s);
+        </script>
+
+        Transpose this shape up one string, to get back to the C major scale:
+        <script>
+            s.transposeByStrings(-1);
+            printObj(s);
         </script>
 
     </div>

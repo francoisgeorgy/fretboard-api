@@ -263,11 +263,13 @@ export class Shape {
                 continue;
             }
 
-            for (let fret = 0; fret < this.frets[string].length; fret++) {  // frets
+            for (let fretIndex = 0; fretIndex < this.frets[string].length; fretIndex++) {  // frets
+
+                let fret = this.frets[string][fretIndex];   // only to make code easier to read
 
                 // get the note name:
                 // let note = Distance.transpose(this.fretboard.tuning[string], Interval.fromSemitones(this.frets[string][fret]));
-                let note = this.fretboard.note(string, this.frets[string][fret]);
+                let note = this.fretboard.note(string, fret);
 
                 //
                 // We try to have the same kind of accidental across all notes.
@@ -285,9 +287,12 @@ export class Shape {
                 // after correction:  B2 C#3 D#3 E3 F#3 G#3 A#3 B3 C#4 D#4 E4 F#4 G#4 Bb4 B4
                 //                           ^^^        ^^^ ^^^    ^^^ ^^^
 
-                let t = Note.tokenize(note);
+                let t = Note.tokenize(note);     // returns an array of strings [letter, accidental, octave, modifier]
+
+                // console.log(`string ${string} fret ${fret} --> ${note} --> ${t}`);
+
                 // if (t[1] !== rootAccidental) {
-                if (t[1] !== previousAccidental) {
+                if ((t[1] !== '') && (t[1] !== previousAccidental)) {
                     for (let h of enharmonics(note)) {
                         let k = Note.tokenize(h);
                         // if (k[1] === t[1]) {
@@ -610,7 +615,7 @@ export class Shape {
     }
 
     toString() {
-        let {fretboard, tuning, id, ...o} = this;   // do not print some attributes
+        let {fretboard, tuning, id, onlyPositiveIntervals, ...o} = this;   // do not print some attributes
         return stringify(o);
     }
 
