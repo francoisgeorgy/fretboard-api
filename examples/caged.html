@@ -8,30 +8,29 @@
         body {
             font-family: sans-serif;
         }
-/*
-        #main {
-            font-family: monospace;
-            white-space: pre;
+
+        #header {
+            margin: 0 0 10px 0;
+            padding: 0 0 10px 0;
+            border-bottom: 1px solid #ccc;
         }
-        #main > div {
-            padding: 10px 0;
-            border-bottom: 1px solid #aaa;
-        }
-        #main > div > div {
-            font-family: sans-serif;
-            font-weight: bold;
-            font-size: 84%;
-            margin-bottom: 3px;
-        }
-*/
+
         .code {
             margin: 10px;
             padding: 10px;
             border: 1px solid #ddd;
             background-color: #eee;
             font-family: monospace;
+        }
+
+        .code.example {
+            color: darkgreen;
+        }
+
+        .code.result {
             white-space: pre;
         }
+
     </style>
 </head>
 <body>
@@ -39,16 +38,24 @@
     <script>
         var api = fretboardApi;
         function printObj(o) {
-            document.write(`<div class="code">${o.toString()}</div>`);
+            document.write(`<div class="code result">${o.toString()}</div>`);
         }
     </script>
 
     <h1>fretboard-api</h1>
     <div id="header">
+        <a href="index.html">home</a>
+        <a href="caged.html">CAGED</a>
+        <a href="octaves.html">Octaves</a>
+        <a href="transpose.html">Transposition</a>
     </div>
 
+    <h2>Predefined CAGED shapes</h2>
     <div id="main">
-        <h2>CAGED shapes:</h2>
+
+        <div class="code example">
+            fretboardApi.SHAPES.CAGED
+        </div>
         <script>
             for (const name in api.SHAPES.CAGED) {
                 printObj(new api.Shape(api.SHAPES.CAGED[name]));

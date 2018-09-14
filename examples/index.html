@@ -8,24 +8,11 @@
         body {
             font-family: sans-serif;
         }
-/*
-        #main {
-            font-family: monospace;
-            white-space: pre;
-        }
-        #main > div {
-            padding: 10px 0;
-            border-bottom: 1px solid #aaa;
-        }
-        #main > div > div {
-            font-family: sans-serif;
-            font-weight: bold;
-            font-size: 84%;
-            margin-bottom: 3px;
-        }
-*/
-        #header {
 
+        #header {
+            margin: 0 0 10px 0;
+            padding: 0 0 10px 0;
+            border-bottom: 1px solid #ccc;
         }
 
         .code {
@@ -34,8 +21,16 @@
             border: 1px solid #ddd;
             background-color: #eee;
             font-family: monospace;
+        }
+
+        .code.example {
+            color: darkgreen;
+        }
+
+        .code.result {
             white-space: pre;
         }
+
     </style>
 </head>
 <body>
@@ -52,18 +47,25 @@
         }
 */
         function printObj(o) {
-            document.write(`<div class="code">${o.toString()}</div>`);
+            document.write(`<div class="code result">${o.toString()}</div>`);
         }
 
     </script>
 
     <h1>fretboard-api</h1>
     <div id="header">
+        <a href="index.html">home</a>
         <a href="caged.html">CAGED</a>
+        <a href="octaves.html">Octaves</a>
+        <a href="transpose.html">Transposition</a>
+        <a href="tunings.html">Tunings</a>
     </div>
 
     <div id="main">
         Create a Fretboard object:
+        <div class="code example">
+            f = new api.Fretboard();
+        </div>
         <script>
             // let api = fretboardApi;
             var f = new api.Fretboard();
@@ -71,24 +73,36 @@
         </script>
 
         Add a Shape corresponding to an open major chord:
+        <div class="code example">
+            s = f.addShape({shape: {frets: "0 2 2 1 0 0"}});
+        </div>
         <script>
-            var s = f.addShape({shape: {frets: '0 2 2 1 0 0'}});
+            var s = f.addShape({shape: {frets: "0 2 2 1 0 0"}});
             printObj(s);
         </script>
 
         Move this shape to the 8th fret:
+        <div class="code example">
+            s.moveTo({fret: 8});
+        </div>
         <script>
             s.moveTo({fret: 8});
             printObj(s);
         </script>
 
         Add a Shape corresponding to the C major scale:
+        <div class="code example">
+            s2 = f.addShape({shape: {frets: "8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8"}});
+        </div>
         <script>
-            var s2 = f.addShape({shape: {frets: '8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8'}});
+            var s2 = f.addShape({shape: {frets: "8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8"}});
             printObj(s2);
         </script>
 
         Transpose this shape down one string, which gives us the F major scale:
+        <div class="code example">
+            s2.transposeByStrings(1);
+        </div>
         <script>
             s2.transposeByStrings(1);
             printObj(s2);

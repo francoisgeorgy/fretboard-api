@@ -38,7 +38,10 @@
     <script>
         var api = fretboardApi;
         function printObj(o) {
-            document.write(`<div class="code result">${o.toString()}</div>`);
+            if (o.hasOwnProperty("toString"))
+                document.write(`<div class="code result">${o.toString()}</div>`);
+            else
+                document.write(`<div class="code result">${JSON.stringify(o, null, 2)}</div>`);
         }
     </script>
 
@@ -50,26 +53,18 @@
         <a href="transpose.html">Transposition</a>
     </div>
 
-    <h2>Octaves shapes</h2>
+    <h2>Predefined tunings</h2>
     <div id="main">
 
-        Simple definition:
         <div class="code example">
-            var s = new api.Shape({frets: "0X2"});
+            console.log(fretboardApi.Tuning);
         </div>
         <script>
-            var s = new api.Shape({frets: "0X2"});
-            printObj(s);
-        </script>
-
-        Predefined octave shapes:
-        <div class="code example">
-            fretboardApi.SHAPES.OCTAVES
-        </div>
-        <script>
-            for (const name in api.SHAPES.OCTAVES) {
-                printObj(new api.Shape(api.SHAPES.OCTAVES[name]));
-            }
+            printObj(api.Tuning);
+            // for (const name in api.Tuning) {
+            //     printObj(name);
+            //     printObj(api.Tuning[name]);
+            // }
         </script>
 
     </div>

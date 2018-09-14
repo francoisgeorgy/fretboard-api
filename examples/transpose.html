@@ -8,30 +8,29 @@
         body {
             font-family: sans-serif;
         }
-/*
-        #main {
-            font-family: monospace;
-            white-space: pre;
+
+        #header {
+            margin: 0 0 10px 0;
+            padding: 0 0 10px 0;
+            border-bottom: 1px solid #ccc;
         }
-        #main > div {
-            padding: 10px 0;
-            border-bottom: 1px solid #aaa;
-        }
-        #main > div > div {
-            font-family: sans-serif;
-            font-weight: bold;
-            font-size: 84%;
-            margin-bottom: 3px;
-        }
-*/
+
         .code {
             margin: 10px;
             padding: 10px;
             border: 1px solid #ddd;
             background-color: #eee;
             font-family: monospace;
+        }
+
+        .code.example {
+            color: darkgreen;
+        }
+
+        .code.result {
             white-space: pre;
         }
+
     </style>
 </head>
 <body>
@@ -39,17 +38,24 @@
     <script>
         var api = fretboardApi;
         function printObj(o) {
-            document.write(`<div class="code">${o.toString()}</div>`);
+            document.write(`<div class="code result">${o.toString()}</div>`);
         }
     </script>
 
     <h1>fretboard-api</h1>
     <div id="header">
+        <a href="index.html">home</a>
+        <a href="caged.html">CAGED</a>
+        <a href="octaves.html">Octaves</a>
+        <a href="transpose.html">Transposition</a>
     </div>
 
+    <h2>Transposition</h2>
     <div id="main">
-        <h2>Transposition</h2>
         Create a Fretboard object:
+        <div class="code example">
+            f = new api.Fretboard();
+        </div>
         <script>
             // let api = fretboardApi;
             var f = new api.Fretboard();
@@ -57,18 +63,27 @@
         </script>
 
         Add a Shape corresponding to the C major scale:
+        <div class="code example">
+            s = f.addShape({shape: {frets: '8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8'}});
+        </div>
         <script>
             var s = f.addShape({shape: {frets: '8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8'}});
             printObj(s);
         </script>
 
         Transpose this shape down one string, which gives us the F major scale:
+        <div class="code example">
+            s.transposeByStrings(1);
+        </div>
         <script>
             s.transposeByStrings(1);
             printObj(s);
         </script>
 
         Transpose this shape up one string, to get back to the C major scale:
+        <div class="code example">
+            s.transposeByStrings(-1);
+        </div>
         <script>
             s.transposeByStrings(-1);
             printObj(s);
@@ -77,40 +92,4 @@
     </div>
 
 </body>
-<script>
-
-    // If the browser support ES6 modules:
-    //import Slider from './index.js';
-/*
-    function logObj(o, labelText) {
-        let entry = document.createElement('div');
-        entry.innerHTML = JSON.stringify(o, null, 2);
-        if (labelText) {
-            let label = document.createElement('pre');
-            label.innerText = labelText;
-            entry.insertAdjacentElement('afterbegin', label);
-        }
-        document.getElementById('main').insertAdjacentElement('beforeend', entry);
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-
-        // For browser that do not support ES6 modules yet:
-        let api = fretboardApi;
-
-        // logObj(api.SHAPES, 'SHAPES');
-
-        let f = new api.Fretboard();
-        logObj(f, 'fretboard');
-
-        // f.addShape({shape: {frets:'0 2 2 1 0 0'}, fret: 8});
-        let s = f.addShape({shape: {frets:'0 2 2 1 0 0'}});
-        logObj(s, 'shape');
-
-        s.moveTo({fret: 8});
-        logObj(s, 'shape moved to fret 8');
-
-    });
-*/
-</script>
 </html>
