@@ -1,0 +1,73 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>fretboard-api examples</title>
+    <script src="../dist/index.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        #header {
+            margin: 0 0 10px 0;
+            padding: 0 0 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .code {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #eee;
+            font-family: monospace;
+        }
+
+        .code.example {
+            color: darkgreen;
+        }
+
+        .code.result {
+            white-space: pre;
+        }
+
+    </style>
+</head>
+<body>
+
+    <script>
+        var api = fretboardApi;
+        function printObj(o) {
+            if (o.hasOwnProperty("toString"))
+                document.write(`<div class="code result">${o.toString()}</div>`);
+            else
+                document.write(`<div class="code result">${JSON.stringify(o, null, 2)}</div>`);
+        }
+    </script>
+
+    <h1>fretboard-api</h1>
+    <div id="header">
+        <a href="index.html">home</a>
+        <a href="caged.html">CAGED</a>
+        <a href="octaves.html">Octaves</a>
+        <a href="transpose.html">Transposition</a>
+    </div>
+
+    <h2>Predefined tunings</h2>
+    <div id="main">
+
+        <div class="code example">
+            console.log(fretboardApi.Tuning);
+        </div>
+        <script>
+            printObj(api.Tuning);
+            // for (const name in api.Tuning) {
+            //     printObj(name);
+            //     printObj(api.Tuning[name]);
+            // }
+        </script>
+
+    </div>
+
+</body>
+</html>

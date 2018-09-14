@@ -1,0 +1,68 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>fretboard-api examples</title>
+    <script src="../dist/index.js"></script>
+    <style>
+        body {
+            font-family: sans-serif;
+        }
+
+        #header {
+            margin: 0 0 10px 0;
+            padding: 0 0 10px 0;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .code {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #eee;
+            font-family: monospace;
+        }
+
+        .code.example {
+            color: darkgreen;
+        }
+
+        .code.result {
+            white-space: pre;
+        }
+
+    </style>
+</head>
+<body>
+
+    <script>
+        var api = fretboardApi;
+        function printObj(o) {
+            document.write(`<div class="code result">${o.toString()}</div>`);
+        }
+    </script>
+
+    <h1>fretboard-api</h1>
+    <div id="header">
+        <a href="index.html">home</a>
+        <a href="caged.html">CAGED</a>
+        <a href="octaves.html">Octaves</a>
+        <a href="transpose.html">Transposition</a>
+    </div>
+
+    <h2>Predefined CAGED shapes</h2>
+    <div id="main">
+
+        <div class="code example">
+            fretboardApi.SHAPES.CAGED
+        </div>
+        <script>
+            for (const name in api.SHAPES.CAGED) {
+                printObj(new api.Shape(api.SHAPES.CAGED[name]));
+            }
+        </script>
+
+    </div>
+
+</body>
+</html>
