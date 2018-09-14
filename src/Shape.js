@@ -4,6 +4,7 @@ import {normalizeFretsFormat, normalizeFretsPosition} from "./utils";
 import Assert from "assert-js";
 import enharmonics from "enharmonics";
 import {Fretboard} from "./Fretboard";
+import stringify from "json-stringify-pretty-compact";
 
 /**
  * Build a shape from a partial or complete definition.
@@ -19,7 +20,7 @@ import {Fretboard} from "./Fretboard";
  * - frets : array of one element per string
  * - intervals : for each played note, the interval from the root. For non played string, an empty array.
  * - chromas : for each played note, the chroma of the note. For non played string, an empty array.
- * - simpleIntervals
+ * - simpleIntervals : intervals with simplified names; simpleIntervals are not sorted
  * - stackedIntervals (from low to high notes)              TODO
  * - reverseStackedIntervals (from high to low notes)       TODO
  * - position : first fret of the first played string
@@ -183,7 +184,7 @@ export class Shape {
     }
 
     /**
-     *
+     * Add intervals, chromas and simpleIntervals properties
      * @returns {Shape}
      */
     computeIntervals() {
@@ -607,5 +608,11 @@ export class Shape {
         //TODO
         return this;
     }
+
+    toString() {
+        let {fretboard, tuning, id, ...o} = this;   // do not print some attributes
+        return stringify(o);
+    }
+
 
 } // Shape

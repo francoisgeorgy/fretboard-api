@@ -3,11 +3,12 @@
 <head>
     <meta charset="utf-8">
     <title>fretboard-api examples</title>
-    <script src="../dist/main.js"></script>
+    <script src="../dist/index.js"></script>
     <style>
         body {
             font-family: sans-serif;
         }
+/*
         #main {
             font-family: monospace;
             white-space: pre;
@@ -22,13 +23,62 @@
             font-size: 84%;
             margin-bottom: 3px;
         }
+*/
+        .code {
+            margin: 10px;
+            padding: 10px;
+            border: 1px solid #ddd;
+            background-color: #eee;
+            font-family: monospace;
+            white-space: pre;
+        }
     </style>
 </head>
 <body>
+
+    <script>
+        var api = fretboardApi;
+/*
+        function stringify(o) {
+            return JSON.stringify(o, function(k,v) { return v instanceof Array ? JSON.stringify(v) : v }, 2)
+                .replace(/"\[/g, '[')
+                .replace(/\]"/g, ']')
+                .replace(/\\"/g, '"')
+                .replace(/""/g, '"');
+        }
+*/
+        function printObj(o) {
+            document.write(`<div class="code">${o.toString()}</div>`);
+        }
+
+    </script>
+
     <h1>fretboard-api</h1>
     <div id="header">
     </div>
-    <div id="main"></div>
+
+    <div id="main">
+        Create a Fretboard object:
+        <script>
+            // let api = fretboardApi;
+            var f = new api.Fretboard();
+            printObj(f);
+        </script>
+
+        Add a Shape:
+        <script>
+            var s = f.addShape({shape: {frets:'0 2 2 1 0 0'}});
+            printObj(s);
+        </script>
+
+        Move this shape to the 8th fret:
+        <script>
+            s.moveTo({fret: 8});
+            printObj(s);
+        </script>
+
+    </div>
+
 </body>
 <script>
 
@@ -48,10 +98,11 @@
 
     document.addEventListener("DOMContentLoaded", function() {
 
+/*
         // For browser that do not support ES6 modules yet:
         let api = fretboardApi;
 
-        logObj(api.SHAPES, 'SHAPES');
+        // logObj(api.SHAPES, 'SHAPES');
 
         let f = new api.Fretboard();
         logObj(f, 'fretboard');
@@ -63,7 +114,7 @@
         s.moveTo({fret: 8});
         logObj(s, 'shape moved to fret 8');
 
-
+*/
     });
 
 </script>

@@ -2,6 +2,7 @@ import {mandatory} from "./utils";
 import {Shape} from "./Shape";
 import {Distance, Interval} from "tonal";
 import {Tuning} from "./Tuning";
+import stringify from "json-stringify-pretty-compact";
 
 /**
  *
@@ -236,5 +237,10 @@ export class Fretboard {
         return this.fret(fromString, fromFret, toString, fromFret, 0);
     }
 
+
+    toString() {
+        let s = stringify(this);
+        return s;
+    }
 
 } // Fretboard

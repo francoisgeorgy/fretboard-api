@@ -2,53 +2,51 @@ import {Shape} from "../src/Shape";
 
 test('Shapes', () => {
 
-    expect(new Shape({frets:"022100"})).toMatchObject({
-        frets: [ [ 0 ], [ 2 ], [ 2 ], [ 1 ], [ 0 ], [ 0 ] ],
-        // tuning: [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ],
-        // tuningIntervals: [ '1P', '4P', '4P', '4P', '3M', '4P' ],
-        position: { string: 0, fret: 0 },
-        root: { string: 0, fret: 0 },
-        intervals:
-            [ [ '1P' ], [ '5P' ], [ '8P' ], [ '10M' ], [ '12P' ], [ '15P' ] ],
-        simpleIntervals: [ '1P', '5P', '8P', '3M' ],
-        notes:
-            [ [ 'E2' ], [ 'B2' ], [ 'E3' ], [ 'Ab3' ], [ 'Cb4' ], [ 'Fb4' ] ],
-        simpleNotes: [ 'E', 'B', 'Ab', 'Cb', 'Fb' ] });
+    expect(new Shape({frets: "022100"})).toMatchObject({
+        frets: [[0], [2], [2], [1], [0], [0]],
+        position: {string: 0, fret: 0},
+        root: {string: 0, fret: 0},
+        chromas: [[0], [7], [0], [4], [7], [0]],
+        intervals: [['1P'], ['5P'], ['8P'], ['10M'], ['12P'], ['15P']],
+        simpleIntervals: ['1P', '5P', '8P', '3M'],
+        notes: [['E2'], ['B2'], ['E3'], ['Ab3'], ['Cb4'], ['Fb4']],
+        simpleNotes: ['E', 'B', 'Ab', 'Cb', 'Fb']
+    });
 
-    expect(new Shape({frets:"8 10 10 9 8 8"})).toMatchObject({
-        frets: [ [ 8 ], [ 10 ], [ 10 ], [ 9 ], [ 8 ], [ 8 ] ],
-        // tuning: [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ],
-        // tuningIntervals: [ '1P', '4P', '4P', '4P', '3M', '4P' ],
-        position: { string: 0, fret: 8 },
-        root: { string: 0, fret: 8 },
-        intervals:
-            [ [ '1P' ], [ '5P' ], [ '8P' ], [ '10M' ], [ '12P' ], [ '15P' ] ],
-        simpleIntervals: [ '1P', '5P', '8P', '3M' ],
-        notes:
-            [ [ 'C3' ], [ 'G3' ], [ 'C4' ], [ 'E4' ], [ 'G4' ], [ 'C5' ] ],
-        simpleNotes: [ 'C', 'G', 'E' ] });
+    expect(new Shape({frets: "8 10 10 9 8 8"})).toMatchObject({
+        frets: [[8], [10], [10], [9], [8], [8]],
+        position: {string: 0, fret: 8},
+        root: {string: 0, fret: 8},
+        chromas: [[0], [7], [0], [4], [7], [0]],
+        intervals: [['1P'], ['5P'], ['8P'], ['10M'], ['12P'], ['15P']],
+        simpleIntervals: ['1P', '5P', '8P', '3M'],
+        notes: [['C3'], ['G3'], ['C4'], ['E4'], ['G4'], ['C5']],
+        simpleNotes: ['C', 'G', 'E']
+    });
 
-    expect(new Shape({frets:"5X565X"})).toMatchObject({
-        frets: [ [ 5 ], [], [ 5 ], [ 6 ], [ 5 ], [] ],
-        // tuning: [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ],
-        // tuningIntervals: [ '1P', '4P', '4P', '4P', '3M', '4P' ],
-        position: { string: 0, fret: 5 },
-        root: { string: 0, fret: 5 },
-        intervals: [ [ '1P' ], [ '7m' ], [ '10M' ], [ '12P' ] ],
-        simpleIntervals: [ '1P', [], '7m', '3M', '5P', [] ],
-        notes: [ [ 'A2' ], [], [ 'G3' ], [ 'Db4' ], [ 'Fb4' ], [] ],
-        simpleNotes: [ 'A', 'G', 'Db', 'Fb' ] });
+    const s = {
+        frets: [[5], [], [5], [6], [5], []],
+        position: {string: 0, fret: 5},
+        root: {string: 0, fret: 5},
+        chromas: [[0], [], [10], [4], [7], []],
+        intervals:  [["1P"], [], ["7m"], ["10M"], ["12P"], []],
+        simpleIntervals: ['1P', '7m', '3M', '5P'],
+        notes: [['A2'], [], ['G3'], ['Db4'], ['Fb4'], []],
+        simpleNotes: ['A', 'G', 'Db', 'Fb']
+    };
 
-    expect(new Shape({frets:"5 X 5 6 5 X"})).toMatchObject({
-        frets: [ [ 5 ], [], [ 5 ], [ 6 ], [ 5 ], [] ],
-        // tuning: [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ],
-        // tuningIntervals: [ '1P', '4P', '4P', '4P', '3M', '4P' ],
-        position: { string: 0, fret: 5 },
-        root: { string: 0, fret: 5 },
-        intervals: [ [ '1P' ], [ '7m' ], [ '10M' ], [ '12P' ] ],
-        simpleIntervals: [ '1P', [], '7m', '3M', '5P', [] ],
-        notes: [ [ 'A2' ], [], [ 'G3' ], [ 'Db4' ], [ 'Fb4' ], [] ],
-        simpleNotes: [ 'A', 'G', 'Db', 'Fb' ] });
+    // test frets format:
+
+    //TODO: remove redondant tests; frets format is already tested in utils.test.js
+
+    expect(new Shape({frets: "5X565X"})).toMatchObject(s);
+    expect(new Shape({frets: "5 X 5 6 5 X"})).toMatchObject(s);
+    expect(new Shape({frets: "5,X,5,6,5,X"})).toMatchObject(s);
+    expect(new Shape({frets: "5, X, 5, 6, 5, X"})).toMatchObject(s);
+    expect(new Shape({frets: ['5', 'X', '5', '6', '5', 'X']})).toMatchObject(s);
+    expect(new Shape({frets: [5, 'X', 5, 6, 5, 'X']})).toMatchObject(s);
+
+    //TODO: test fret format with more than one played note per string
 
 });
 
@@ -97,8 +95,6 @@ test('translateHorizontalBy', () => {
                 [ 4, 6, 7 ],
                 [ 5, 7 ],
                 [ 4, 5 ] ],
-        // tuning: [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ],
-        // tuningIntervals: [ '1P', '4P', '4P', '4P', '3M', '4P' ],
         position: { string: 0, fret: 5 },
         root: { string: 0, fret: 5 },
         intervals:
@@ -127,8 +123,6 @@ test('translateHorizontalBy', () => {
                 [ 7, 9, 10 ],
                 [ 8, 10 ],
                 [ 7, 8 ] ],
-        // tuning: [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ],
-        // tuningIntervals: [ '1P', '4P', '4P', '4P', '3M', '4P' ],
         position: { string: 0, fret: 8 },
         root: { string: 0, fret: 8 },
         intervals:

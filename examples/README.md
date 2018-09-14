@@ -6,7 +6,7 @@ with yarn:
 
     yarn babel examples/example1.js
     
-Compile on the commane line:    
+Compile on the command line:    
      
     yarn babel examples/example1.js --out examples/compiled/example1.js
     yarn babel examples/example1.js --out-file examples/compiled/example1.compiled.js
