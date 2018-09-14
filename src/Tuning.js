@@ -1,3 +1,5 @@
+import stringify from "json-stringify-pretty-compact";
+
 export const Tuning = {
     bass4: {
         standard : ['E1', 'A1', 'D2', 'G2'],

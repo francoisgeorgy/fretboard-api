@@ -3,44 +3,11 @@
 <head>
     <meta charset="utf-8">
     <title>fretboard-api examples</title>
-    <script src="../dist/index.js"></script>
-    <style>
-        body {
-            font-family: sans-serif;
-        }
-
-        #header {
-            margin: 0 0 10px 0;
-            padding: 0 0 10px 0;
-            border-bottom: 1px solid #ccc;
-        }
-
-        .code {
-            margin: 10px;
-            padding: 10px;
-            border: 1px solid #ddd;
-            background-color: #eee;
-            font-family: monospace;
-        }
-
-        .code.example {
-            color: darkgreen;
-        }
-
-        .code.result {
-            white-space: pre;
-        }
-
-    </style>
+    <script src="index.js"></script>
+    <script src="docs.js"></script>
+    <link rel="stylesheet" href="docs.css">
 </head>
 <body>
-
-    <script>
-        var api = fretboardApi;
-        function printObj(o) {
-            document.write(`<div class="code result">${o.toString()}</div>`);
-        }
-    </script>
 
     <h1>fretboard-api</h1>
     <div id="header">
@@ -48,6 +15,7 @@
         <a href="caged.html">CAGED</a>
         <a href="octaves.html">Octaves</a>
         <a href="transpose.html">Transposition</a>
+        <a href="tunings.html">Tunings</a>
     </div>
 
     <h2>Transposition</h2>

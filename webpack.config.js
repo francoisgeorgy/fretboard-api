@@ -1,6 +1,6 @@
-const UglifyJSPlugin = require('uglifyjs-webpack-plugin')
-
-
+// const CopyWebpackPlugin = require('copy-webpack-plugin')
+const WebpackShellPlugin = require('webpack-shell-plugin');
+const UglifyJSPlugin = require('uglifyjs-webpack-plugin');
 const path = require('path');
 /*
 const serverConfig = {
@@ -88,5 +88,17 @@ module.exports = {
                 }
             })
         ]
-    }
+    },
+    plugins: [
+        // new WebpackShellPlugin({onBuildStart:['echo "Webpack Start"'], onBuildEnd:['echo "Webpack End"']})
+        new WebpackShellPlugin({
+            onBuildEnd: 'node copy-to-docs.js'
+        })
+       /* new CopyWebpackPlugin([
+            {  from: 'dist/index.js',
+                to: path.resolve(__dirname, 'docs') + '/index.js',
+                toType: 'file'
+            }
+        ])*/
+    ]
 };
