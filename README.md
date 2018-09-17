@@ -21,11 +21,15 @@ are changed depending on the tuning.
 
 ### Strings numbering
 
+#### for the user
+
 For the user: strings are numbered starting at 1 and from the lowest pitched to the highest pitched.
 
-Implementation: strings are in an 0-indexed array.
-
 For a standard tuning, strings are 1=E, 2=A, 3=D, 4=G, 5=B, 6=E
+
+#### for the coder (implementation)
+
+Implementation: strings are in an 0-indexed array.
 
 ### Frets numbering
 

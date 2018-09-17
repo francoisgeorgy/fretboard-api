@@ -1,8 +1,9 @@
 import {mandatory} from "./utils";
 import {Shape} from "./Shape";
-import {Distance, Interval} from "tonal";
+import {Distance, Interval, Note, Scale} from "tonal";
 import {Tuning} from "./Tuning";
 import stringify from "json-stringify-pretty-compact";
+import Assert from "assert-js";
 
 /**
  *
@@ -235,6 +236,81 @@ export class Fretboard {
      */
     fretHigh(fromString, fromFret, toString) {
         return this.fret(fromString, fromFret, toString, fromFret, 0);
+    }
+
+    /**
+     *
+     * @param note
+     * @param fromString
+     * @param fromFret
+     * @param toString
+     * @param toFret
+     */
+    findNote(note, fromString = 0, minFret = 0, maxFret = -1) {
+        Assert.true(fromString >= 0);
+        Assert.true(fromString < this.tuning.length);
+        Assert.true(minFret >= 0);
+        // let n = Note.props(note);
+        // let octave = n.oct === null ? Note.props(this.tuning[fromString]).oct : n.oct;
+        // console.log(octave);
+        let m = maxFret < 0 ? this.maxFret : Math.min(maxFret, this.maxFret);
+
+        Assert.true(minFret <= m);
+
+        let string = fromString;
+        let fret = -1;
+        while (true) {
+            let d = Distance.semitones(this.tuning[string], note);
+            // console.log(string, this.tuning[string], note, d);
+            if (d < 0) break;
+            if (d > m) {
+                string++;
+                if (string === this.tuning.length) break;
+                continue;
+            }
+            if (d >= minFret) {
+                fret = d;
+                break;
+            }
+        }
+        return fret < 0 ? null : {string, fret};
+    }
+
+    /**
+     *
+     * @param string
+     * @param fret
+     */
+    findNextNote(string, fret) {
+        let note = this.note(string, fret);
+        return this.findNote(note, string+1);
+    }
+
+    /**
+     * minfret will be fret
+     * @param string
+     * @param fret
+     */
+    findNextNoteForward(string, fret) {
+
+    }
+
+    /**
+     *
+     * @param nameOrTonic
+     * @param name
+     * @param string min string to start from
+     * @param fret min fret to start from
+     * @param minNotesPerString
+     * @param maxNotesPerString
+     * @param maxFretDistance
+     * @returns {null}
+     */
+    getScaleShape(name, string = 0, fret = 0, minNotesPerString = 1, maxNotesPerString = -1, maxFretDistance = -1) {
+
+        let notes = Scale.intervals(name);
+
+        return null;
     }
 
 

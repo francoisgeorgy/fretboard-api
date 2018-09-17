@@ -168,6 +168,18 @@ export class Shape {
     }
 
     /**
+     * Find the position (string, fret) for note
+     * @param note
+     * @param minString
+     * @param minFret
+     * @returns {Shape}
+     */
+    setRootNote(note, minString = -1, minFret = -1) {
+        //TODO
+        return this;
+    }
+
+    /**
      * The position is given by the first fret on the first played string.
      * @returns {Shape}
      */
@@ -613,6 +625,8 @@ export class Shape {
         //TODO
         return this;
     }
+
+
 
     toString() {
         let {fretboard, tuning, id, onlyPositiveIntervals, ...o} = this;   // do not print some attributes
