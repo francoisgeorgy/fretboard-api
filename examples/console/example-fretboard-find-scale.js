@@ -13,10 +13,23 @@ console.log(notes);
 let intervals = Scale.intervals("major");
 console.log(intervals);
 
-let note = Note.from({oct: 3}, "A");
-
+let note = Note.from({oct: 2}, "C");
 console.log(note, Note.name(note));
 
+let n = note;
+let k = 0;
+let c = 0;
+while (c < 20) {
+    let d = Distance.transpose(n, intervals[k % intervals.length]);
+    console.log(k, d);
+    k = (k + 1) % intervals.length;
+    if (k === 0) {
+        n = Distance.transpose(n, "8P");
+    }
+    c++;
+}
+
+/*
 for (let i of intervals) {
     // let n = Distance.transpose(note, i);
     let n = Distance.transpose("A2", i);
@@ -32,7 +45,7 @@ for (let i of intervals) {
     //TODO: do more than one octave
 
 }
-
+*/
 
 
 
