@@ -263,67 +263,49 @@ export class Fretboard {
         Assert.true(fromString >= 0);
 
         if (fromString >= this.numberOfStrings) return null;
-        // Assert.true(fromString < this.numberOfStrings);
+
         Assert.true(fromFret >= 0);
         Assert.true(minFret >= 0);
-        // let n = Note.props(note);
-        // let octave = n.oct === null ? Note.props(this.tuning[fromString]).oct : n.oct;
-        // console.log(octave);
-        // const max = maxFret < 0 ? this.maxFret : Math.min(maxFret, this.maxFret);
-
         Assert.true(minFret <= maxFret);
         Assert.true(fromFret <= maxFret);
 
         const withOctave = Note.oct(note) !== null;
         const t = withOctave ? this.tuning : this.tuningPitchClasses;
 
-        // console.log(`find: note=${note}, withOctave=${withOctave}, fromFret=${fromFret}, maxFret=${maxFret}`);
-
         let string = fromString;
         let fret = -1;
         while (true) {
 
             let d = Distance.semitones(t[string], note);
-            // console.log(`find: string=${string}, tuning=${t}, note=${note}, d=${d}`);
 
-            if (d < 0) {
-                // if (withOctave) {
-                    break;
-                // } else {
-                //     d += 12;    // add one octave
-                // }
+            if (d < 0) {    // should only occurs when using octaves
+                break;
             }
 
             if (!withOctave && (string === fromString) && (d < fromFret)) {
-                // if (withOctave) {
-                //     break;
-                // } else {
                 while (d < fromFret) d += 12;    // add one octave
-                // console.log(`find: d += 12 --> ${d}`);
-                // }
             }
 
             if (d > maxFret) {
                 string++;
-                // console.log(`find: d > ${maxFret}`);
                 if (string > toString) break;
                 continue;
             }
 
             if (string === fromString) {
-                // console.log(`find: string === fromString: d=${d}, fromFret=${fromFret}`);
                 if (d >= fromFret) {
                     fret = d;
                     break;
                 }
             } else {
-                // console.log(`find: string !== fromString: d=${d}, minFret=${minFret}`);
                 if (d >= minFret) {
                     fret = d;
                     break;
                 }
             }
+
             break;
+
         }
         return fret < 0 ? null : {string, fret};
     }
@@ -340,29 +322,21 @@ export class Fretboard {
      */
     findNext({string, fret}, {toString = this.tuning.length, minFret = 0, maxFret = this.maxFret} = {}) {
         const note = this.note(string, fret);
-        // const max = maxFret < 0 ? this.maxFret : Math.min(maxFret, this.maxFret);
         let s = string;
         let f = fret+1;
         if (f > maxFret) {
             // start at next string
             f = 0;
             s = s + 1;
-            // console.log(`findNext: next s=${s}, f=${f}`);
         }
-        // if (s > (toString < 0 ? this.tuning.length : toString)) return null;
         if (s >= toString) return null;
         return this.find(Note.pc(note), {fromString: s, fromFret: f });
     }
 
-    /**
-     * minfret will be fret
-     * @param string
-     * @param fret
-     */
-    findNextNoteForward(string, fret) {
-
+    findPrev({string, fret}, {toString = 0, minFret = 0, maxFret = this.maxFret} = {}) {
+        // TODO: implement findPrev()
+        return null;
     }
-
     /**
      *
      * @param nameOrTonic
