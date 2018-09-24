@@ -1,6 +1,6 @@
 import {Shape} from "../src/Shape";
 
-test('Shapes', () => {
+test('Shape by string', () => {
 
     expect(new Shape("022100")).toMatchObject({
         frets: [[0], [2], [2], [1], [0], [0]],
@@ -51,7 +51,23 @@ test('Shapes', () => {
 });
 
 
-test('moveTo', () => {
+test('Shape by object', () => {
+
+    expect(new Shape({frets: "022100", name:"E form"})).toMatchObject({
+        frets: [[0], [2], [2], [1], [0], [0]],
+        position: {string: 0, fret: 0},
+        root: {string: 0, fret: 0},
+        chromas: [[0], [7], [0], [4], [7], [0]],
+        intervals: [['1P'], ['5P'], ['8P'], ['10M'], ['12P'], ['15P']],
+        simpleIntervals: ['1P', '5P', '8P', '3M'],
+        notes: [['E2'], ['B2'], ['E3'], ['Ab3'], ['B3'], ['E4']],
+        simpleNotes: ['E', 'B', 'Ab']
+    });
+
+});
+
+
+test('Shape.moveTo', () => {
     let s = new Shape("5 7, 4 5 7, 4 6 7, 4 6 7, 5 7, 4 5");
     s.moveToFret(8);
     expect(s).toMatchObject({
@@ -84,7 +100,7 @@ test('moveTo', () => {
         simpleNotes: [ 'C', 'D', 'E', 'F', 'G', 'A', 'B' ] });
 });
 
-test('translateHorizontalBy', () => {
+test('Shape.translateHorizontalBy', () => {
     let s = new Shape("8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8");
     s.translateHorizontalBy(-3);
     expect(s).toMatchObject({

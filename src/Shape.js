@@ -1,6 +1,5 @@
 import { Distance, Interval, Note } from "tonal";
-import {normalizeFrets, firstPlayedString} from "./utils.js";
-import {normalizeFretsFormat, normalizeFretsPosition} from "./utils";
+import {firstPlayedString, normalizeFretsFormat, normalizeFretsPosition} from "./utils";
 import Assert from "assert-js";
 import enharmonics from "enharmonics";
 import {Fretboard} from "./Fretboard";
@@ -15,6 +14,8 @@ import stringify from "json-stringify-pretty-compact";
  *
  * The final shape will have, at least, the following properties:
  *
+ * - name: name of this shape                               TODO
+ * - type: "scale", "chord", "free"                         TODO  useful?
  * - root.string : define the shape's position on the fretbard (with root.fret)
  * - root.fret : define the shape's position on the fretbard (with root.string)
  * - frets : array of one element per string
@@ -45,13 +46,13 @@ import stringify from "json-stringify-pretty-compact";
  */
 export class Shape {
 
-    //TODO: - construct Shape by frets : DONE
+    //TODO: - construct Shape by frets as string : DONE
+    //TODO: - construct Shape by frets as array : DONE
     //TODO: - construct Shape by intervals
     //TODO: - construct Shape by notes
-
     //TODO: - attachToFretboard() (or, simpler: setFretboard() or placeOnFretboard())
-
     //TODO: simplify 8P,15P,... to 1P ?
+    //TODO: set/update "minor" property automatically; do the same for other qualities (for chord)
 
     /**
      *
@@ -61,12 +62,14 @@ export class Shape {
      */
     constructor(shape, {fretboard = null, normalizePosition = false} = {}) {
 
-        // Assert.hasProperty('frets', shape);
-
-        //TODO: accept a string for shape param.
-
-        // Object.assign(this, shape);
-        this.frets = shape;
+        if ((typeof shape === 'string') || Array.isArray(shape)) {
+            this.frets = shape;
+        } else if (typeof shape === 'object') {
+            Assert.hasProperty('frets', shape);
+            Object.assign(this, shape);
+        } else {
+            throw new Error("InvalidArgumentException");    // TODO: return a more helpful message
+        }
 
         this.onlyPositiveIntervals = true;  //TODO
 
