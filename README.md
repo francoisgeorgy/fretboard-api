@@ -163,6 +163,26 @@ With all optional attributes:
         root: "1 0"    // string 1, fret 0   format: "<string> <fret>"
         // offset: 1,       --> determined if lowest root has fret > 0
     }
+
+# API
+
+## Conventions
+
+### Method parameters
+
+The format is method(mandatoryParam1, mandatoryParam2, ... mandatoryParamN, {optionalParams})
+
+All _mandatory_ parameters are passed as normal parameters.
+
+All _optional_ parameters are passed as an object.
+
+If the method does not require any _mandatory_ parameter and only has _optional_ parameters, than the method has
+only one object parameter.
+
+### Parameters order
+
+When a method require both a string number and a fret number, then the order is always string, fret. 
+
     
 # Tests
 

@@ -1,4 +1,4 @@
-import {Shape} from "../src/Shape";
+import {Shape} from "../../src/Shape";
 
-console.log(new Shape({frets:"022100"}));
+console.log(new Shape("022100"));
 

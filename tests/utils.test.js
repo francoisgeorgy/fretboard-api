@@ -1,5 +1,5 @@
 import {normalizeFretsFormat, normalizeFretsPosition} from "../src/utils";
-import {Shape} from "../src/Shape";
+// import {Shape} from "../src/Shape";
 
 test('normalizeFretsFormat', () => {
     expect(normalizeFretsFormat("022100")).toEqual([[0], [2], [2], [1], [0], [0]]);

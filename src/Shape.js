@@ -59,13 +59,14 @@ export class Shape {
      * @param fretboard
      * @param normalizePosition
      */
-    constructor(shape, fretboard = null, normalizePosition = false) {
+    constructor(shape, {fretboard = null, normalizePosition = false} = {}) {
 
-        Assert.hasProperty('frets', shape);
+        // Assert.hasProperty('frets', shape);
 
         //TODO: accept a string for shape param.
 
-        Object.assign(this, shape);
+        // Object.assign(this, shape);
+        this.frets = shape;
 
         this.onlyPositiveIntervals = true;  //TODO
 
@@ -157,7 +158,7 @@ export class Shape {
      * @param string
      * @returns {Shape}
      */
-    setRoot({fret, string}) {
+    setRoot(string, fret) {
 
         //TODO: test me
 
@@ -168,13 +169,13 @@ export class Shape {
     }
 
     /**
-     * Find the position (string, fret) for note
+     *
      * @param note
      * @param minString
      * @param minFret
      * @returns {Shape}
      */
-    setRootNote(note, minString = -1, minFret = -1) {
+    setRootNote(note, {minString = -1, minFret = -1} = {}) {
         //TODO
         return this;
     }
@@ -356,13 +357,16 @@ export class Shape {
      * @param boolean when moving by string, string 6 is moved to string 1, etc...
      * @returns {Shape}
      */
-    moveTo({fret = -1, string = -1, rollover = true} = {}) {
+    moveTo(string, fret, {rollover = true} = {}) {
+
+        Assert.greaterThanOrEqual(0, fret);
+        Assert.greaterThanOrEqual(0, string);
 
         //FIXME: re-implement with new canonical format
 
         let changed = false;
 
-        if (fret >= 0) {
+        if (fret !== this.position.fret) {
 
             let delta = fret - this.position.fret;
 
@@ -378,7 +382,7 @@ export class Shape {
         }
 
 
-        if (string >= 0) {
+        if (string !== this.position.string) {
 
             //TODO: move across strings
 
@@ -391,11 +395,29 @@ export class Shape {
     }
 
     /**
+     *
+     * @param string
+     * @returns {Shape}
+     */
+    moveToString(string) {
+        return this.moveTo(string, this.position.fret)
+    }
+
+    /**
+     *
+     * @param fret
+     * @returns {Shape}
+     */
+    moveToFret(fret) {
+        return this.moveTo(this.position.string, fret)
+    }
+
+    /**
      * Similar to moveTo(frets)
      * @param frets
      */
     translateHorizontalBy(frets) {
-        this.moveTo({fret: this.position.fret + frets});
+        this.moveToFret(this.position.fret + frets);
         return this;
     }
 
@@ -441,7 +463,7 @@ export class Shape {
      *
      * @param string positive for transposing towards high, negative tor transposing towards low.
      */
-    transposeByStrings(strings, autocorrectRoot = true, rollover = false) {
+    transposeByStrings(strings, {autocorrectRoot = true, rollover = false} = {}) {
 
         // console.log(`transposeByStrings(${strings})`);
 
@@ -578,8 +600,8 @@ export class Shape {
      * @param stringTo
      * @param rollover
      */
-    transposeToString(rootString, rollover = false) {
-        return this.transposeByStrings(rootString - this.root.string, rollover);
+    transposeToString(rootString, {rollover = false} = {}) {
+        return this.transposeByStrings(rootString - this.root.string, {rollover});
     }
 
     /**
@@ -590,7 +612,7 @@ export class Shape {
         for (let string = 0; string< this.intervals.length; string++) {        // for each string...
             // for each fretted note on the current string:
             for (let fret = 0; fret < this.intervals[string].length; fret++) {        // for each fretted note...
-                let d = Interval.semitones(this.intervals[string][fret]);
+                // let d = Interval.semitones(this.intervals[string][fret]);
                 // console.log(`${string} ${this.frets[string][fret]} : ${this.intervals[string][fret]} : ${d}`);
                 if ((Interval.semitones(this.intervals[string][fret]) % 12) === 0) {
                     this.root.string = string;
@@ -626,8 +648,10 @@ export class Shape {
         return this;
     }
 
-
-
+    /**
+     * Returns the printable representation of this shape data structure
+     * @returns {string}
+     */
     toString() {
         let {fretboard, tuning, id, onlyPositiveIntervals, ...o} = this;   // do not print some attributes
         return stringify(o);

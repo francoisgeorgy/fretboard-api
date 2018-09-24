@@ -96,9 +96,9 @@ export class Fretboard {
      * @param string
      * @returns {Shape}
      */
-    addShape({shape=mandatory(), fret, string} = {}) {
+    addShape(shape, {string, fret} = {}) {
         let s = new Shape(Object.assign(shape, {tuning: this.tuning, id: this.uniqueId()}));
-        s.moveTo({fret, string});
+        s.moveTo(string, fret);
         this.shapes.push(s);
         return s;
     }
@@ -110,8 +110,8 @@ export class Fretboard {
      * @param string
      * @returns {Shape}
      */
-    addPattern({pattern=mandatory(), fret, string} = {}) {
-        return this.addShape({shape: pattern, fret, string})
+    addPattern(pattern, {string, fret} = {}) {
+        return this.addShape(pattern, {string, fret})
     }
 
     /**
@@ -121,11 +121,11 @@ export class Fretboard {
      * @param string
      * @returns {Shape}
      */
-    addChord({chordShape=mandatory(), fret, string} = {}) {
+    addChord(chordShape, {string, fret} = {}) {
 
         //TODO: verify that we have at most one note per string
 
-        return this.addShape({shape: chordShape, fret, string})
+        return this.addShape(chordShape, {string, fret})
     }
 
     /**
@@ -135,11 +135,11 @@ export class Fretboard {
      * @param string
      * @returns {Shape}
      */
-    addScale({scaleShape=mandatory(), fret, string} = {}) {
+    addScale(scaleShape, {string, fret} = {}) {
 
         //TODO: allow more than one note per string
 
-        return this.addShape({shape: scaleShape, fret, string})
+        return this.addShape(scaleShape, {string, fret})
     }
 
     /**
@@ -188,11 +188,13 @@ export class Fretboard {
      * @returns {*}
      */
     fret() {
+
         if (arguments.length === 2) {
             let note = arguments[0];
             let string = arguments[1];
             return Distance.semitones(this.tuning[string], note);
         }
+
         if (arguments.length > 2) {
             let fromString = arguments[0];
             let fromFret = arguments[1];
@@ -223,7 +225,9 @@ export class Fretboard {
 
             return f;
         }
+
         throw new Error("InvalidArgumentException");    // TODO: return a more helpful message
+
     }
 
     /**
@@ -348,7 +352,7 @@ export class Fretboard {
      * @param maxFretDistance
      * @returns {null}
      */
-    getScaleShape(name, string = 0, fret = 0, minNotesPerString = 1, maxNotesPerString = -1, maxFretDistance = -1) {
+    getScaleShape(name, {string = 0, fret = 0, minNotesPerString = 1, maxNotesPerString = -1, maxFretDistance = -1} = {}) {
 
         let notes = Scale.intervals(name);
 
@@ -357,8 +361,7 @@ export class Fretboard {
 
 
     toString() {
-        let s = stringify(this);
-        return s;
+        return stringify(this);
     }
 
 } // Fretboard

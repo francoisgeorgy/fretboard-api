@@ -29,8 +29,9 @@ Allow several shapes to be placed on a single fretboard.
     f = new Fretboard(...)
     shape1 = f.addShape(...)    
     shape2 = f.addShape(...)
-    shape1.moveTo({fret: 8})
-    shape2.moveTo({string: 2, fret:3})
+    shape1.moveToFret(8)
+    shape1.moveToString(2)
+    shape2.moveTo(2, 3)         // order is always string, fret.
     shape1.reset()
 
 Idea: find all common notes across all shapes on the fretboard
