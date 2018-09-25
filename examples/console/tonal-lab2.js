@@ -38,3 +38,9 @@ console.log(Note.props("C"));
 console.log(Note.tokenize("C"));        // [ 'C', '', '', '' ]
 console.log(Note.tokenize("C#3"));      // [ 'C', '#', '3', '' ]
 
+console.log(Interval.simplify("8P"));
+console.log(Interval.simplify("15P"));
+
+
+console.log(Interval.ic("8P"));
+console.log(Interval.ic("15P"));

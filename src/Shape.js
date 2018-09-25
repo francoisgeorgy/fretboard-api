@@ -1,5 +1,5 @@
 import { Distance, Interval, Note } from "tonal";
-import {firstPlayedString, normalizeFretsFormat, normalizeFretsPosition} from "./utils";
+import {firstPlayedString, normalizeInputFormat, normalizeFretsPosition} from "./utils";
 import Assert from "assert-js";
 import enharmonics from "enharmonics";
 import {Fretboard} from "./Fretboard";
@@ -84,7 +84,8 @@ export class Shape {
 
         // FRETS:
 
-        this.frets = normalizeFretsFormat(this.frets);
+        this.frets = normalizeInputFormat(this.frets);
+        if (this.fingers) this.fingers = normalizeInputFormat(this.fingers);
 
         if (normalizePosition) this.frets = normalizeFretsPosition(this.frets);
 

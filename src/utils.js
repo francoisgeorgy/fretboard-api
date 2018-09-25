@@ -132,7 +132,7 @@ function fretsStringToArray(str) {
  * @param {?(array|string)} frets - frets.
  * @return {array} array of fret numbers.
  */
-export function normalizeFretsFormat(frets) {
+export function normalizeInputFormat(frets) {
 
     // if (typeof frets !== 'string') return frets;
 

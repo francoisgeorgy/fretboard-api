@@ -65,11 +65,24 @@ import { Interval } from "tonal";
 //     semitones: 8,
 //     chroma: 8 }
 
-
+/*
 export function intervalSimple(str) {
     let i = Interval.props(str);
     if (i.chroma === 0) return 'R';
     let n = (i.num % 7) === 0 ? 7 : (i.num % 7);
     if ((i.q === 'M') || (i.q === 'P')) return '' + n;
     return i.q + n;
+}
+*/
+export function intervalText(interval, compound=false) {
+
+    let props = Interval.props(interval);
+
+    if (props.chroma === 0) return compound ? props.num.toString() : 'R';     // make optional
+
+    let t = compound ? props.num.toString() : props.simple.toString();
+
+    if ((props.q === 'M') || (props.q === 'P')) return t;
+
+    return t + props.q;
 }

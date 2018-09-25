@@ -6,7 +6,7 @@ let s = f.addShape("5 7, 4 5 7, 4 6 7, 4 6 7, 5 7, 4 5");
 
 console.log(s);
 
-let s2= f.addShape("7 9, 6 7 9, 6 8 9, 6 8 9, 7 9, 6 7");
+let s2= f.addShape({frets: "7 9, 6 7 9, 6 8 9, 6 8 9, 7 9, 6 7", fingers:"2 4, 1 2 4, 1 3 4, 1 3 4, 2 4, 1 2 4"});
 
 console.log(s2);
 
