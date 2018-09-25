@@ -237,6 +237,8 @@ export class Shape {
 
                 let simple = Interval.simplify(interval_from_root);       // Get the simplified version of an interval:
 
+                if (Interval.ic(simple) === 0) simple = '1P';   //TODO: document this simplification
+
                 // intervals.push((string === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root);
                 // intervalsSimple.push((string === this.root.string) && (interval_from_root === "1P") ? "R" : simple);
                 intervals.push(interval_from_root);
@@ -262,10 +264,50 @@ export class Shape {
      */
     computeNotes() {
 
-        this.notes = [];
-        this.simpleNotes = [];
+        // console.log(this);
+
+        // let r = Distance.transpose(this.fretboard.tuning[this.root.string], Interval.fromSemitones(this.root.fret));
+        // for (let is of this.intervals) {
+        //     for (let i of is) {
+        //         let n = Distance.transpose(r, i);
+        //         console.log(r, i, n);
+        //     }
+        // }
+        // return;
+
+        // this.notes = [];
+        // this.simpleNotes = [];
 
         let rootNote = Distance.transpose(this.fretboard.tuning[this.root.string], Interval.fromSemitones(this.root.fret));
+
+        this.notes = this.intervals.map(string => string.map(interval => Distance.transpose(rootNote, interval)));
+
+        this.simpleNotes = this.simpleIntervals.map(interval => Note.pc(Distance.transpose(rootNote, interval)));
+
+        /*
+        for (let is of this.intervals) {
+            for (let i of is) {
+                let note = Distance.transpose(rootNote, i);
+                this.notes.push(note);
+                // console.log(r, i, n);
+
+                // get the note name without the octave:
+                let pc = Note.pc(note);
+                if (!this.simpleNotes.includes(pc)) {
+                    this.simpleNotes.push(pc);          // ! simpleNotes are not sorted
+                }
+
+            }
+        }
+        */
+
+
+        // console.log(this.intervals);
+        // console.log(this.notes);
+        // console.log(this.simpleIntervals);
+        // console.log(this.simpleNotes);
+
+/*
         let rootTokens = Note.tokenize(rootNote);
         // let rootAccidental = rootTokens[1];
         let previousAccidental = rootTokens[1];
@@ -290,7 +332,7 @@ export class Shape {
                 //
                 // We try to have the same kind of accidental across all notes.
                 //
-                // Example with Shape({frets: "5 7, 4 5 7, 4 6 7, 4 6 7, 5 7, 4 5"})
+                // Example with Shape("5 7, 4 5 7, 4 6 7, 4 6 7, 5 7, 4 5")
                 //
                 // without correction: A2 B2 C#3 D3 E3 F#3 Ab3 A3 B3 Db4 D4 E4 F#4 G#4
                 // with correction:    A2 B2 C#3 D3 E3 F#3 G#3 A3 B3 C#4 D4 E4 F#4 G#4
@@ -305,7 +347,7 @@ export class Shape {
 
                 let t = Note.tokenize(note);     // returns an array of strings [letter, accidental, octave, modifier]
 
-                // console.log(`string ${string} fret ${fret} --> ${note} --> ${t}`);
+                console.log(`string ${string} fret ${fret} --> ${note} --> ${t}`);
 
                 // if (t[1] !== rootAccidental) {
                 if ((t[1] !== '') && (t[1] !== previousAccidental)) {
@@ -337,7 +379,7 @@ export class Shape {
 
             this.notes.push(notes);
         }
-
+*/
         return this;
     }
 
@@ -362,8 +404,8 @@ export class Shape {
      */
     moveTo(string, fret, {rollover = true} = {}) {
 
-        Assert.greaterThanOrEqual(0, fret);
         Assert.greaterThanOrEqual(0, string);
+        Assert.greaterThanOrEqual(0, fret);
 
         //FIXME: re-implement with new canonical format
 

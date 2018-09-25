@@ -96,11 +96,20 @@ export class Fretboard {
      * @param string
      * @returns {Shape}
      */
-    addShape(shape, {string, fret} = {}) {
-        let s = new Shape(Object.assign(shape, {tuning: this.tuning, id: this.uniqueId()}));
-        s.moveTo(string, fret);
-        this.shapes.push(s);
-        return s;
+    addShape(frets, {string, fret} = {}) {
+        // let s = new Shape(Object.assign(shape, {tuning: this.tuning, id: this.uniqueId()}));
+        let shape = new Shape(frets, {fretboard: this});
+        shape.id = this.uniqueId();
+        let s = shape.position.string;
+        if ((string !== undefined) && string >= 0) {
+            shape.moveToString(s);
+        }
+        let f = shape.position.string;
+        if ((fret !== undefined) && fret >= 0) {
+            shape.moveToFret(f);
+        }
+        this.shapes.push(shape);
+        return shape;
     }
 
     /**
