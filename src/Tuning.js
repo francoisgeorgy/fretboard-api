@@ -1,4 +1,3 @@
-import stringify from "json-stringify-pretty-compact";
 
 export const Tuning = {
     bass4: {

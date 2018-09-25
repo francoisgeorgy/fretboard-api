@@ -1,4 +1,3 @@
-import {mandatory} from "./utils";
 import {Shape} from "./Shape";
 import {Distance, Interval, Note, Scale} from "tonal";
 import {Tuning} from "./Tuning";
@@ -61,11 +60,8 @@ export class Fretboard {
      * [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ] --> [ '1P', '4P', '4P', '4P', '3M', '4P' ]
      */
     computeTuningIntervals() {
-        // this.tuningIntervals = Array(this.tuning.length).fill(null);
         this.tuningIntervals = Array(this.tuning.length).fill(null);
         for (let i = 0; i < this.tuning.length; i++) {
-            //this.tuningIntervals[i - 1] = interval(this.tuning[i > 0 ? (i - 1) : 0], this.tuning[i]);
-            // this.tuningIntervals[i] = Distance.interval(this.tuning[i - 1], this.tuning[i]);
             let simple = Interval.simplify(
                 Distance.interval(
                     this.tuning[(i -1 + this.tuning.length) % this.tuning.length],
@@ -73,12 +69,6 @@ export class Fretboard {
                 )
             );
             this.tuningIntervals[i] = simple === '-1P' ? '1P' : simple;
-            // this.tuningIntervals[i] = Interval.simplify(
-            //     Distance.interval(
-            //         this.tuning[(i -1 + this.numberOfStrings) % this.numberOfStrings],
-            //         this.tuning[i]
-            //     )
-            // );
         }
     }
 
@@ -92,12 +82,11 @@ export class Fretboard {
     /**
      *
      * @param shape
-     * @param fret
+     * @param frets
      * @param string
      * @returns {Shape}
      */
     addShape(frets, {string, fret} = {}) {
-        // let s = new Shape(Object.assign(shape, {tuning: this.tuning, id: this.uniqueId()}));
         let shape = new Shape(frets, {fretboard: this});
         shape.id = this.uniqueId();
         let s = shape.position.string;
@@ -213,7 +202,7 @@ export class Fretboard {
 
             let f = this.fret(this.note(fromString, fromFret), toString);
 
-            //TODO: try to simplify the following corrections:
+            //TODO: try to simplify the following corrections
 
             while (f < minFret) f += 12;
 
@@ -236,7 +225,6 @@ export class Fretboard {
         }
 
         throw new Error("InvalidArgumentException");    // TODO: return a more helpful message
-
     }
 
     /**
@@ -346,10 +334,20 @@ export class Fretboard {
         return this.find(Note.pc(note), {fromString: s, fromFret: f });
     }
 
+    /**
+     *
+     * @param string
+     * @param fret
+     * @param toString
+     * @param minFret
+     * @param maxFret
+     * @returns {null}
+     */
     findPrev({string, fret}, {toString = 0, minFret = 0, maxFret = this.maxFret} = {}) {
         // TODO: implement findPrev()
         return null;
     }
+
     /**
      *
      * @param nameOrTonic
@@ -368,7 +366,10 @@ export class Fretboard {
         return null;
     }
 
-
+    /**
+     * Returns the string representation of this fretboard data structure
+     * @returns {string}
+     */
     toString() {
         return stringify(this);
     }

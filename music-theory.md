@@ -4,6 +4,9 @@
 
 _Number_ : 1, 2, 3, ...
 
+In music theory, scale degree refers to the position of a particular note on a scale[3] relative to the tonic,
+the first and main note of the scale from which each octave is assumed to begin.
+
 https://en.wikipedia.org/wiki/Degree_(music)
 
 ## Pitch class

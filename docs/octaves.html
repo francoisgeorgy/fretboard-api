@@ -24,11 +24,11 @@
 
         Simple definition:
         <div class="code example">
-            var s = new api.Shape({frets: "0X2"});
+            var s = new api.Shape("0X2");
         </div>
         <script>
-            var s = new api.Shape({frets: "0X2"});
-            // printObj(s);
+            var s = new api.Shape("0X2");
+            printObj(s);
         </script>
 
         Predefined octave shapes:
@@ -39,12 +39,10 @@
             // for (const name in api.SHAPES.OCTAVES) {
             //     printObj(new api.Shape(api.SHAPES.OCTAVES[name]));
             // }
-        </script>
 
-
-        <script>
             console.log("fretboardApi.SHAPES.OCTAVES");
             printObj(fretboardApi.SHAPES.OCTAVES);
+
             console.log("fretboardApi.Tuning");
             printObj(fretboardApi.Tuning);
             // for (const name in api.Tuning) {

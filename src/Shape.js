@@ -1,7 +1,6 @@
 import { Distance, Interval, Note } from "tonal";
 import {firstPlayedString, normalizeInputFormat, normalizeFretsPosition} from "./utils";
 import Assert from "assert-js";
-import enharmonics from "enharmonics";
 import {Fretboard} from "./Fretboard";
 import stringify from "json-stringify-pretty-compact";
 
@@ -105,8 +104,6 @@ export class Shape {
         if (!this.hasOwnProperty("root")) {
             this.root = {};
             // by default takes the first fretted note on the first played string
-            // this.root['string'] = this.lowestString();
-            // this.root['fret'] = this.frets[this.root.string][0];
             this.root['string'] = this.position.string;
             this.root['fret'] = this.position.fret;
         }
@@ -148,9 +145,6 @@ export class Shape {
      * @param fretboard
      */
     setFretboard(fretboard) {
-
-        //TODO: test me
-
         this.fretboard = fretboard;
         this.update();
         return this;
@@ -264,123 +258,9 @@ export class Shape {
      * @returns {Shape}
      */
     computeNotes() {
-
-        // console.log(this);
-
-        // let r = Distance.transpose(this.fretboard.tuning[this.root.string], Interval.fromSemitones(this.root.fret));
-        // for (let is of this.intervals) {
-        //     for (let i of is) {
-        //         let n = Distance.transpose(r, i);
-        //         console.log(r, i, n);
-        //     }
-        // }
-        // return;
-
-        // this.notes = [];
-        // this.simpleNotes = [];
-
         let rootNote = Distance.transpose(this.fretboard.tuning[this.root.string], Interval.fromSemitones(this.root.fret));
-
         this.notes = this.intervals.map(string => string.map(interval => Distance.transpose(rootNote, interval)));
-
         this.simpleNotes = this.simpleIntervals.map(interval => Note.pc(Distance.transpose(rootNote, interval)));
-
-        /*
-        for (let is of this.intervals) {
-            for (let i of is) {
-                let note = Distance.transpose(rootNote, i);
-                this.notes.push(note);
-                // console.log(r, i, n);
-
-                // get the note name without the octave:
-                let pc = Note.pc(note);
-                if (!this.simpleNotes.includes(pc)) {
-                    this.simpleNotes.push(pc);          // ! simpleNotes are not sorted
-                }
-
-            }
-        }
-        */
-
-
-        // console.log(this.intervals);
-        // console.log(this.notes);
-        // console.log(this.simpleIntervals);
-        // console.log(this.simpleNotes);
-
-/*
-        let rootTokens = Note.tokenize(rootNote);
-        // let rootAccidental = rootTokens[1];
-        let previousAccidental = rootTokens[1];
-
-        for (let string = 0; string < this.frets.length; string++) {  // strings
-
-            let notes = [];
-
-            if (this.frets[string].length === 0) {
-                this.notes.push(notes);
-                continue;
-            }
-
-            for (let fretIndex = 0; fretIndex < this.frets[string].length; fretIndex++) {  // frets
-
-                let fret = this.frets[string][fretIndex];   // only to make code easier to read
-
-                // get the note name:
-                // let note = Distance.transpose(this.fretboard.tuning[string], Interval.fromSemitones(this.frets[string][fret]));
-                let note = this.fretboard.note(string, fret);
-
-                //
-                // We try to have the same kind of accidental across all notes.
-                //
-                // Example with Shape("5 7, 4 5 7, 4 6 7, 4 6 7, 5 7, 4 5")
-                //
-                // without correction: A2 B2 C#3 D3 E3 F#3 Ab3 A3 B3 Db4 D4 E4 F#4 G#4
-                // with correction:    A2 B2 C#3 D3 E3 F#3 G#3 A3 B3 C#4 D4 E4 F#4 G#4
-                //                                         ^^^       ^^^
-                // with the correction, Ab3 is changed to G#3 and Dd4 to C#4.
-                //
-                // Same with "7 9, 6 7 9, 6 8 9, 6 8 9, 7 9, 6 7"
-                //
-                // before correction: B2 C#3 Eb3 E3 F#3 Ab3 Bb3 B3 Db4 Eb4 E4 F#4 G#4 Bb4 B4
-                // after correction:  B2 C#3 D#3 E3 F#3 G#3 A#3 B3 C#4 D#4 E4 F#4 G#4 Bb4 B4
-                //                           ^^^        ^^^ ^^^    ^^^ ^^^
-
-                let t = Note.tokenize(note);     // returns an array of strings [letter, accidental, octave, modifier]
-
-                console.log(`string ${string} fret ${fret} --> ${note} --> ${t}`);
-
-                // if (t[1] !== rootAccidental) {
-                if ((t[1] !== '') && (t[1] !== previousAccidental)) {
-                    for (let h of enharmonics(note)) {
-                        let k = Note.tokenize(h);
-                        // if (k[1] === t[1]) {
-                        //     note = h;
-                        //     break;
-                        // }
-                        if (k[1] === previousAccidental) {
-                            note = h;
-                            break;
-                        }
-                    }
-                }
-
-                t = Note.tokenize(note);
-                if (t[1] !== '') previousAccidental = t[1];
-
-                notes.push(note);
-
-                // get the note name without the octave:
-                let pc = Note.pc(note);
-                if (!this.simpleNotes.includes(pc)) {
-                    this.simpleNotes.push(pc);          // ! simpleNotes are not sorted
-                }
-
-            }
-
-            this.notes.push(notes);
-        }
-*/
         return this;
     }
 
@@ -408,8 +288,6 @@ export class Shape {
         Assert.greaterThanOrEqual(0, string);
         Assert.greaterThanOrEqual(0, fret);
 
-        //FIXME: re-implement with new canonical format
-
         let changed = false;
 
         if (fret !== this.position.fret) {
@@ -426,7 +304,6 @@ export class Shape {
                 changed = true;
             }
         }
-
 
         if (string !== this.position.string) {
 
@@ -507,11 +384,9 @@ export class Shape {
      * keep the shape as close to its original form as possible, we will adjust the frets string by
      * string depending on the tuning.
      *
-     * @param string positive for transposing towards high, negative tor transposing towards low.
+     * @param strings positive for transposing towards high, negative tor transposing towards low.
      */
     transposeByStrings(strings, {autocorrectRoot = true, rollover = false} = {}) {
-
-        // console.log(`transposeByStrings(${strings})`);
 
         //TODO: what to do with the fingering ?
 
@@ -523,8 +398,6 @@ export class Shape {
             // -1 --> +4
             strings = strings + this.fretboard.tuning.length - 1;
         }
-
-        // console.log(`${strings}`);
 
         for (let t = 0; t < strings; t++) {
 
@@ -702,6 +575,5 @@ export class Shape {
         let {fretboard, tuning, id, onlyPositiveIntervals, ...o} = this;   // do not print some attributes
         return stringify(o);
     }
-
 
 } // Shape

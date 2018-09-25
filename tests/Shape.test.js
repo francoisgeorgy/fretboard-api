@@ -1,5 +1,7 @@
 import {Shape} from "../src/Shape";
 
+//TODO: add tests for shape that do not use all the strings
+
 test('Shape by string', () => {
 
     expect(new Shape("022100")).toMatchObject({

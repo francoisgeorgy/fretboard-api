@@ -25,17 +25,16 @@
             f = new api.Fretboard();
         </div>
         <script>
-            // let api = fretboardApi;
             var f = new api.Fretboard();
             printObj(f);
         </script>
 
         Add a Shape corresponding to an open major chord:
         <div class="code example">
-            s = f.addShape({shape: {frets: "0 2 2 1 0 0"}});
+            s = f.addShape("022100");
         </div>
         <script>
-            var s = f.addShape({shape: {frets: "0 2 2 1 0 0"}});
+            var s = f.addShape("022100");
             printObj(s);
         </script>
 
@@ -50,10 +49,10 @@
 
         Add a Shape corresponding to the C major scale:
         <div class="code example">
-            s2 = f.addShape({shape: {frets: "8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8"}});
+            s2 = f.addShape("8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8");
         </div>
         <script>
-            var s2 = f.addShape({shape: {frets: "8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8"}});
+            var s2 = f.addShape("8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8");
             printObj(s2);
         </script>
 
@@ -69,40 +68,4 @@
     </div>
 
 </body>
-<script>
-
-    // If the browser support ES6 modules:
-    //import Slider from './index.js';
-/*
-    function logObj(o, labelText) {
-        let entry = document.createElement('div');
-        entry.innerHTML = JSON.stringify(o, null, 2);
-        if (labelText) {
-            let label = document.createElement('pre');
-            label.innerText = labelText;
-            entry.insertAdjacentElement('afterbegin', label);
-        }
-        document.getElementById('main').insertAdjacentElement('beforeend', entry);
-    }
-
-    document.addEventListener("DOMContentLoaded", function() {
-
-        // For browser that do not support ES6 modules yet:
-        let api = fretboardApi;
-
-        // logObj(api.SHAPES, 'SHAPES');
-
-        let f = new api.Fretboard();
-        logObj(f, 'fretboard');
-
-        // f.addShape({shape: {frets:'0 2 2 1 0 0'}, fret: 8});
-        let s = f.addShape({shape: {frets:'0 2 2 1 0 0'}});
-        logObj(s, 'shape');
-
-        s.moveTo({fret: 8});
-        logObj(s, 'shape moved to fret 8');
-
-    });
-*/
-</script>
 </html>
