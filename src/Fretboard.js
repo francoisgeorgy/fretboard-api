@@ -176,16 +176,45 @@ export class Fretboard {
         return Distance.semitones(this.tuning[fromString], this.tuning[toString]) + toFret - fromFret;
     }
 
+    /**
+     *
+     * @param fromString
+     * @param fromFret
+     * @param toString
+     * @param toFret
+     * @returns {*}
+     */
     interval(fromString, fromFret, toString, toFret) {
         return Interval.fromSemitones(this.semitones(fromString, fromFret, toString, toFret));
     }
 
     /**
+     *
+     * @param note
+     * @param fromString
+     * @param fromFret
+     * @param toString
+     * @param toFret
+     * @returns {{string: number, fret: number}}
+     */
+    findPosition(note, {fromString=0, fromFret=0, toString=this.numberOfStrings, toFret=this.maxFret} = {}) {
+        //TODO: implement findPosition() with search including octave or not
+        let string = 0;
+        let fret = 0;
+
+        return {string, fret}
+    }
+
+    /**
+     * Find a position
+     *
      * Syntaxe 1: fret(note, string)
      * Syntaxe 2: fret(fromString, fromFret, toString, toFret, minFret, maxFret)
      * @returns {*}
      */
     fret() {
+
+        //TODO: re-implement
 
         if (arguments.length === 2) {
             let note = arguments[0];
@@ -359,12 +388,77 @@ export class Fretboard {
      * @param maxFretDistance
      * @returns {null}
      */
-    getScaleShape(name, {string = 0, fret = 0, minNotesPerString = 1, maxNotesPerString = -1, maxFretDistance = -1} = {}) {
+    // getScaleShape(name, {string = 0, fret = 0, minNotesPerString = 1, maxNotesPerString = -1, maxFretDistance = -1} = {}) {
+    //
+    //     let notes = Scale.intervals(name);
+    //
+    //     return null;
+    // }
 
-        let notes = Scale.intervals(name);
+    /**
+     * If the tonic is specified, than fret is ignored.
+     * If the tonic is specified with an octave, then string is the minimum string.
+     * The method tries to find the first fret for the tonic on the string specified.
+     *
+     * @param name Name of the scale "major", "minor", ...
+     * @param tonic Tonic "C", "C4", ...
+     * @param string
+     * @param fret
+     * @param minNotesPerString
+     * @param maxNotesPerString
+     * @param maxFretDistance
+     * @returns {null}
+     */
+    buildScale(name, {tonic = null, string = 0, fret = 0, minNotesPerString = 1, maxNotesPerString = -1, maxFretDistance = -1} = {}) {
+
+        // If a tonic with octave is specified, find the first position of this note, taking "string" and "fret" as minimal position.
+
+        let f = fret;
+        let s = string;
+
+        if (tonic) {
+            // note = tonic;
+            let p = Note.props(tonic);
+            if (p.oct === null) {
+                // tonic without octave
+                // search first position of this note on the string specified:
+                f = this.fret(tonic, string);
+            } else {
+                // tonic with octave
+                f = this.fret(tonic, string);
+            }
+        } else {
+            // use string and fret parameters
+            // note = this.note(string, fret);
+        }
+
+        let note = this.note(s, f);
+
+        console.log(note, s, f);
+
+        let intervals = Scale.intervals(name);
+
+        let n = note;
+        let k = 0;
+        let c = 0;
+        while (c < 20) {
+            let nn = Distance.transpose(n, intervals[k % intervals.length]);
+
+            // find position for nn
+            let ff = this.fret(nn, string);
+
+            console.log(k, nn, ff);
+
+            k = (k + 1) % intervals.length;
+            if (k === 0) {
+                n = Distance.transpose(n, "8P");
+            }
+            c++;
+        }
 
         return null;
     }
+
 
     /**
      * Returns the string representation of this fretboard data structure

@@ -7,14 +7,14 @@ let f = new Fretboard();
 // let scale = Key.scale("C major");
 // console.log(scale);
 
-let notes = Scale.notes("A", "major");
+let notes = Scale.notes("A", "major");      // [ 'A', 'B', 'C#', 'D', 'E', 'F#', 'G#' ]
 console.log(notes);
 
-let intervals = Scale.intervals("major");
+let intervals = Scale.intervals("major");   // [ '1P', '2M', '3M', '4P', '5P', '6M', '7M' ]
 console.log(intervals);
 
 let note = Note.from({oct: 2}, "C");
-console.log(note, Note.name(note));
+console.log(note, Note.name(note));         // C2 C2
 
 let n = note;
 let k = 0;
