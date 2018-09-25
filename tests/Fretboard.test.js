@@ -79,3 +79,13 @@ test('Fretboard', () => {
     // expect(f.interval(1, 0, 0, 0)).toEqual();      // -5
 
 });
+
+
+test('Fretboard find note', () => {
+
+    expect(f.find('C')).toEqual({ string: 0, fret: 8, note: 'C3' });
+    expect(f.find('C4')).toEqual({ string: 0, fret: 20, note: 'C4' });
+    expect(f.find('C', {minFret: 10, maxFret: 12})).toEqual({string: 2, fret: 10, note: 'C4'});
+    expect(f.find('C', {fromString: 1, minFret: 8, maxFret: 12})).toEqual({string: 2, fret: 10, note: 'C4'});
+
+});

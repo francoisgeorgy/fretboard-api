@@ -197,6 +197,7 @@ export class Fretboard {
      * @param toFret
      * @returns {{string: number, fret: number}}
      */
+    /*
     findPosition(note, {fromString=0, fromFret=0, toString=this.numberOfStrings, toFret=this.maxFret} = {}) {
         //TODO: implement findPosition() with search including octave or not
         let string = 0;
@@ -204,6 +205,7 @@ export class Fretboard {
 
         return {string, fret}
     }
+    */
 
     /**
      * Find a position
@@ -214,7 +216,7 @@ export class Fretboard {
      */
     fret() {
 
-        //TODO: re-implement
+        //TODO: re-implement or discard
 
         if (arguments.length === 2) {
             let note = arguments[0];
@@ -282,22 +284,21 @@ export class Fretboard {
      *
      * @param note : string, can be pitch (with octave) or pitch-class (without octave)
      * @param fromString : number
-     * @param fromFret : number, min fret for the first string (fromString)
      * @param toString : number, value -1 means no limit (use all strings)
      * @param minFret : number
      * @param maxFret : number, value -1 means no limit (up to fretboard.maxFret)
      * @returns {*}
      */
-    find(note, {fromString = 0, fromFret = 0, toString = this.numberOfStrings - 1, minFret = 0, maxFret = this.maxFret} = {}) {
+    find(note, {fromString = 0, toString = this.numberOfStrings - 1, minFret = 0, maxFret = this.maxFret} = {}) {
 
         Assert.true(fromString >= 0);
 
         if (fromString >= this.numberOfStrings) return null;
 
-        Assert.true(fromFret >= 0);
+        // Assert.true(fromFret >= 0);
         Assert.true(minFret >= 0);
         Assert.true(minFret <= maxFret);
-        Assert.true(fromFret <= maxFret);
+        // Assert.true(fromFret <= maxFret);
 
         const withOctave = Note.oct(note) !== null;
         const t = withOctave ? this.tuning : this.tuningPitchClasses;
@@ -312,8 +313,11 @@ export class Fretboard {
                 break;
             }
 
-            if (!withOctave && (string === fromString) && (d < fromFret)) {
-                while (d < fromFret) d += 12;    // add one octave
+            // if (!withOctave && (string === fromString) && (d < fromFret)) {
+            //     while (d < fromFret) d += 12;    // add one octave
+            // }
+            if (!withOctave && (string === fromString) && (d < minFret)) {
+                while (d < minFret) d += 12;    // add one octave
             }
 
             if (d > maxFret) {
@@ -322,22 +326,26 @@ export class Fretboard {
                 continue;
             }
 
-            if (string === fromString) {
-                if (d >= fromFret) {
-                    fret = d;
-                    break;
-                }
-            } else {
+            // if (string === fromString) {
+            //     if (d >= fromFret) {
+            //         fret = d;
+            //         break;
+            //     }
+            // } else {
                 if (d >= minFret) {
                     fret = d;
                     break;
+                } else {
+                    string++;
+                    if (string > toString) break;
+                    continue;
                 }
-            }
+            // }
 
             break;
 
         }
-        return fret < 0 ? null : {string, fret};
+        return fret < 0 ? null : {string, fret, note: this.note(string, fret)};
     }
 
     /**
@@ -400,6 +408,8 @@ export class Fretboard {
      * If the tonic is specified with an octave, then string is the minimum string.
      * The method tries to find the first fret for the tonic on the string specified.
      *
+     * Use sensible defaults.
+     *
      * @param name Name of the scale "major", "minor", ...
      * @param tonic Tonic "C", "C4", ...
      * @param string
@@ -407,9 +417,10 @@ export class Fretboard {
      * @param minNotesPerString
      * @param maxNotesPerString
      * @param maxFretDistance
+     * @param form can be used to select a CAGED form as base; takes precedence over string, minNotesPerString, maxNotesPerString and maxFretDistance
      * @returns {null}
      */
-    buildScale(name, {tonic = null, string = 0, fret = 0, minNotesPerString = 1, maxNotesPerString = -1, maxFretDistance = -1} = {}) {
+    buildScale(name, {tonic = null, form = null, string = 0, fret = 0, minNotesPerString = 1, maxNotesPerString = 3, maxFretDistance = 5} = {}) {
 
         // If a tonic with octave is specified, find the first position of this note, taking "string" and "fret" as minimal position.
 
@@ -445,7 +456,9 @@ export class Fretboard {
             let nn = Distance.transpose(n, intervals[k % intervals.length]);
 
             // find position for nn
-            let ff = this.fret(nn, string);
+            let ff = this.find(nn, {fromString: string, minFret: fret, maxFret: fret + maxFretDistance});
+
+            if (!ff.note) break;
 
             console.log(k, nn, ff);
 

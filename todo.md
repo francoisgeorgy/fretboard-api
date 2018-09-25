@@ -28,7 +28,7 @@ examples:
     
 Q: return a new Shape or modify in-place ? if return new Shape, add-it (or replace old) in the parent Fretboard ?
 
-    
+Q: do CAGED forms work with other tunings?    
     
 ### create from Shape:
 
