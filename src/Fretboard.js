@@ -402,7 +402,6 @@ export class Fretboard {
     //
     //     return null;
     // }
-
     /**
      * If the tonic is specified, than fret is ignored.
      * If the tonic is specified with an octave, then string is the minimum string.
@@ -410,50 +409,72 @@ export class Fretboard {
      *
      * Use sensible defaults.
      *
+     * If both maxFretsBefore and maxFretsAfter are specified, then maxFretsWidth is ignored
+     *
      * @param name Name of the scale "major", "minor", ...
      * @param tonic Tonic "C", "C4", ...
      * @param string
      * @param fret
      * @param minNotesPerString
      * @param maxNotesPerString
-     * @param maxFretDistance
-     * @param form can be used to select a CAGED form as base; takes precedence over string, minNotesPerString, maxNotesPerString and maxFretDistance
+     * @param maxFretsBefore relative to the tonic's fret, ignored if null
+     * @param maxFretsAfter relative to the tonic's fret, ignored if null
+     * @param maxFretsWidth
+     * @param octaves
      * @returns {null}
      */
-    buildScale(name, {tonic = null, form = null, string = 0, fret = 0, minNotesPerString = 1, maxNotesPerString = 3, maxFretDistance = 5} = {}) {
+
+    //buildScale(name, {tonic = null, form = null, string = 0, fret = 0, minNotesPerString = 1, maxNotesPerString = 3, maxFretDistance = 5, octaves = 1} = {}) {
+    buildScale(name, tonic, {
+        string = 0,
+        minNotesPerString = 1,
+        maxNotesPerString = 3,
+        maxFretsBefore = -1,
+        maxFretsAfter = 4,
+        // maxFretsWidth = 5,
+        octaves = 1} = {}) {
+
+        Assert.number(maxFretsBefore);
+        Assert.number(maxFretsAfter);
+        // Assert.number(maxFretsWidth);
 
         // If a tonic with octave is specified, find the first position of this note, taking "string" and "fret" as minimal position.
 
-        let f = fret;
+        // let f = fret;
+        let fret;       // tonic's fret
         let s = string;
 
-        if (tonic) {
+        // if (tonic) {
             // note = tonic;
             let p = Note.props(tonic);
             if (p.oct === null) {
                 // tonic without octave
                 // search first position of this note on the string specified:
-                f = this.fret(tonic, string);
+                fret = this.fret(tonic, string);
             } else {
                 // tonic with octave
-                f = this.fret(tonic, string);
+                fret = this.fret(tonic, string);
             }
-        } else {
-            // use string and fret parameters
-            // note = this.note(string, fret);
-        }
+        // } else {
+        //     // use string and fret parameters
+        //     // note = this.note(string, fret);
+        // }
 
-        let note = this.note(s, f);
+        // let note = this.note(s, fret);     // note will now includes the octave if that was not the case before
 
-        console.log(note, s, f);
+        // console.log(tonic, note, s, fret);
+
+        let maxWidth = (Number.isInteger(maxFretsBefore) && Number.isInteger(maxFretsAfter)) ? maxFretsAfter - maxFretsBefore : maxFretsWidth;
+
 
         let intervals = Scale.intervals(name);
 
-        let n = note;
+        let runningTonic = this.note(s, fret);  // will now includes the octave if that was not the case before
         let k = 0;
-        let c = 0;
-        while (c < 20) {
-            let nn = Distance.transpose(n, intervals[k % intervals.length]);
+        // let c = 0;  // security
+        let o = octaves;  // octave counter
+        while (o > 0) {
+            let nn = Distance.transpose(runningTonic, intervals[k % intervals.length]);
 
             // find position for nn
             let ff = this.find(nn, {fromString: string, minFret: fret, maxFret: fret + maxFretDistance});
@@ -464,9 +485,9 @@ export class Fretboard {
 
             k = (k + 1) % intervals.length;
             if (k === 0) {
-                n = Distance.transpose(n, "8P");
+                o--;
+                runningTonic = Distance.transpose(runningTonic, "8P");  // next octave
             }
-            c++;
         }
 
         return null;
