@@ -154,6 +154,12 @@ export class Fretboard {
         return this;
     }
 
+    replaceAllShapes(replacement = null) {
+        this.shapes = [];
+        this.nextID = 0;
+        if (replacement) this.addShape(replacement);
+    }
+
     /**
      *
      * @param string 0-indexed string number
