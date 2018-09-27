@@ -26,7 +26,7 @@
             fretboardApi.SHAPES.CAGED
         </div>
         <script>
-            for (const name in api.SHAPES.CAGED) {
+            for (name of Object.getOwnPropertyNames(api.SHAPES.CAGED)) {
                 printObj(new api.Shape(api.SHAPES.CAGED[name]));
             }
         </script>

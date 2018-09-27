@@ -1,3 +1,4 @@
+/*
 export const OCTAVES = [
     {
         name: 'Octave form open strings',    // octave string 1
@@ -32,8 +33,8 @@ export const OCTAVES = [
         frets: 'X X 0 X 3 X'
     }
 ];
+*/
 
-/*
 export const OCTAVES = {
     octave: {
         name: 'Octave form open strings',    // octave string 1
@@ -68,4 +69,4 @@ export const OCTAVES = {
         frets: 'X X 0 X 3 X'
     }
 };
-*/
+
