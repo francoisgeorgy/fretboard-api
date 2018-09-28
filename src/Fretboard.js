@@ -165,6 +165,26 @@ export class Fretboard {
 
     /**
      *
+     * @param id
+     * @returns {null}
+     */
+    getShapeById(id) {
+        //TODO: implement getShapeById()
+        return null;
+    }
+
+    /**
+     *
+     * @param name
+     * @returns {null}
+     */
+    getShapeByName(name) {
+        //TODO: implement getShapeByName()
+        return null;
+    }
+
+    /**
+     *
      * @param string 0-indexed string number
      * @param fret
      * @returns {*}
