@@ -15,6 +15,9 @@ export class Fretboard {
      * @param frets
      */
     constructor({tuning = Tuning.guitar.standard, frets = 24} = {}) {
+
+        //TODO: allow to specify tuning and number of strings (subset of tuning)
+
         this.tuning = tuning;
         // this.tuningPitchClasses = tuning;
         this.numberOfStrings = this.tuning.length;
