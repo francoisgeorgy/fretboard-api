@@ -46,6 +46,7 @@ We don't really need to link the shape to a fretboard, because we only need to k
 ## utilities:
 
     intervals(shape[, tuning]) --> Array
+    intervals(frets, root, tuning) --> Array
     
     intervalsSimple(intervals) --> Array
 
@@ -61,7 +62,7 @@ We don't really need to link the shape to a fretboard, because we only need to k
 
 ## shape creation:
 
-    shape(frets[, tuning, root, position]) --> shape
+    from(frets[, tuning, root, position]) --> shape
 
 ## shape modifiers:
 

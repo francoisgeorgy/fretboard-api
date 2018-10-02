@@ -51,6 +51,10 @@ export function normalizeInputFormat(frets) {
 
     // if (typeof frets !== 'string') return frets;
 
+    if ((frets === undefined) || (frets === null)) {
+        return null;
+    }
+
     if (Array.isArray(frets)) {
         if (Array.isArray(frets[0])) {
             return frets;
