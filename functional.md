@@ -7,8 +7,11 @@
 We don't really need to link the shape to a fretboard, because we only need to know the tuning.      
     
     s = shape(frets, tuning)        # create a shape with a specific tuning
-    
-    
+
+Freatbord: play this `shape` at this `position`with this `tuning` 
+
+    Fretboard.play(shape, position, tuning)
+        
     
 
 
