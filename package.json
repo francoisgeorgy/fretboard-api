@@ -1,46 +1,46 @@
 {
-  "name": "fretboard-api",
-  "version": "0.4.2",
-  "description": "A kind of API for fretboard diagrams",
-  "keywords": [
-    "fretboard",
-    "api"
-  ],
-  "main": "dist/index.js",
-  "repository": "https://github.com/francoisgeorgy/fretboard-api.git",
-  "author": "François Georgy <francois.georgy@gmail.com>",
-  "license": "MIT",
-  "files": [
-    "README.md",
-    "dist/index.js"
-  ],
-  "scripts": {
-    "dev": "webpack --mode development",
-    "build": "webpack --mode production",
-    "test": "jest"
-  },
-  "devDependencies": {
-    "babel-cli": "^6.26.0",
-    "babel-core": "^6.26.0",
-    "babel-jest": "^23.4.0",
-    "babel-loader": "^7.1.4",
-    "babel-plugin-transform-object-rest-spread": "^6.26.0",
-    "babel-preset-env": "^1.6.1",
-    "copy-webpack-plugin": "^4.5.2",
-    "esdoc": "^1.1.0",
-    "esdoc-standard-plugin": "^1.0.0",
-    "fs-extra": "^7.0.0",
-    "jest": "^23.4.0",
-    "webpack": "^4.5.0",
-    "webpack-cli": "^2.0.14",
-    "webpack-dev-server": "^3.1.3",
-    "webpack-shell-plugin": "^0.5.0"
-  },
-  "dependencies": {
-    "assert-js": "^0.19.0",
-    "enharmonics": "^1.0.3",
-    "immer": "^1.7.2",
-    "json-stringify-pretty-compact": "^1.2.0",
-    "tonal": "^2.0.0"
-  }
+    "name": "fretboard-api",
+    "version": "0.4.3",
+    "description": "A kind of API for fretboard diagrams",
+    "keywords": [
+        "fretboard",
+        "api"
+    ],
+    "main": "dist/index.js",
+    "repository": "https://github.com/francoisgeorgy/fretboard-api.git",
+    "author": "François Georgy <francois.georgy@gmail.com>",
+    "license": "MIT",
+    "files": [
+        "README.md",
+        "dist/index.js"
+    ],
+    "scripts": {
+        "dev": "webpack --mode development",
+        "build": "rimraf dist && babel src -d dist --copy-files",
+        "test": "jest"
+    },
+    "devDependencies": {
+        "babel-cli": "^6.26.0",
+        "babel-core": "^6.26.0",
+        "babel-jest": "^23.4.0",
+        "babel-loader": "^7.1.4",
+        "babel-plugin-transform-object-rest-spread": "^6.26.0",
+        "babel-preset-env": "^1.6.1",
+        "copy-webpack-plugin": "^4.5.2",
+        "esdoc": "^1.1.0",
+        "esdoc-standard-plugin": "^1.0.0",
+        "fs-extra": "^7.0.0",
+        "jest": "^23.4.0",
+        "webpack": "^4.5.0",
+        "webpack-cli": "^2.0.14",
+        "webpack-dev-server": "^3.1.3",
+        "webpack-shell-plugin": "^0.5.0"
+    },
+    "dependencies": {
+        "assert-js": "^0.19.0",
+        "enharmonics": "^1.0.3",
+        "immer": "^1.7.2",
+        "json-stringify-pretty-compact": "^1.2.0",
+        "tonal": "^2.0.0"
+    }
 }
