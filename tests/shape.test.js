@@ -42,6 +42,17 @@ test('shape with two notes only', () => {
 
 });
 
+test('add note to shape', () => {
+
+    expect(Shape.add(Shape.create("022100"), 4, 3)).toMatchObject({
+        frets: [[3], [], [5]],
+        fingers: null,
+        root: {string: 0, fret: 3}
+    });
+
+});
+
+
 /*
 test('Shape intervals and notes', () => {
 

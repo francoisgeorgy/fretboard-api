@@ -1,17 +1,13 @@
-import * as Fretboard from "../../src/fretboard";
-import {Tuning} from "../../src/Tuning.js";
+import {normalizeInputFormat} from "../../src/utils.js";
 
-console.log(Fretboard.computeTuningIntervals(Tuning.guitar.standard));
-console.log(Fretboard.computeTuningPitchClasses(Tuning.guitar.standard));
+// 'X' is a like a fret number
+console.log(normalizeInputFormat("0X2"));   // [ [ 0 ], [ 'X' ], [ 2 ] ]
+console.log(normalizeInputFormat("0,,2"));  // [ [ 0 ], [], [ 2 ] ]
+console.log(normalizeInputFormat("0,-,2")); // [ [ 0 ], [], [ 2 ] ]
+console.log(normalizeInputFormat("0-2"));   // [ [ 0 ], [], [ 2 ] ]
+console.log(normalizeInputFormat("0,2,,")); // [ [ 0 ], [ 2 ], [], [] ]
+console.log(normalizeInputFormat("24,-,134,,X,12"));  // [ [ 2, 4 ], [ 1, 4 ], [ 1, 'X', 4 ], [], [ 'X' ], [ 1, 2 ] ]
+console.log(normalizeInputFormat("24,1-4,134,,X,12"));  // Error invalid format
+console.log(normalizeInputFormat("24,1,134,X4,X,12"));  // Error invalid format
 
-console.log(Fretboard.computeTuningIntervals(Tuning.guitar.standard));
-console.log(Fretboard.computeTuningPitchClasses(Tuning.guitar.standard));
 
-console.log(Fretboard.computeTuningIntervals(Tuning.guitar.drop_d));        // !!! '-2M', '5P', '4P', '4P', '3M', '4P'
-console.log(Fretboard.computeTuningPitchClasses(Tuning.guitar.drop_d));
-
-console.log(Fretboard.computeTuningIntervals(Tuning.guitar7.drop_a));
-console.log(Fretboard.computeTuningPitchClasses(Tuning.guitar7.drop_a));
-
-console.log(Fretboard.computeTuningIntervals(Tuning.bass5.standard));
-console.log(Fretboard.computeTuningPitchClasses(Tuning.bass5.standard));

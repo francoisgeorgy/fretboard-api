@@ -13,12 +13,35 @@ const r = Fretboard.play(Shape.create("022100"));
 console.log(JSON.stringify(r));
 */
 
+
 const q = Fretboard.play(Fretboard.moveToFret(Shape.create("X32010"), 8));
 console.log(JSON.stringify(q));
 
-
 const r = Fretboard.play(Shape.create("X32010"), 8);
 console.log(JSON.stringify(r));
+
+
+console.log(Shape.add(Shape.create("022100"), 4, 3));
+
+console.log(Shape.add(Shape.create("0221X0"), 4, 3));
+
+console.log(Shape.add(Shape.create("02"), 4, 3));
+
+console.log(Shape.replace(Shape.create("022100"), 4, 3));
+
+console.log(Shape.replace(Shape.create("022100"), 4, null));
+
+console.log(Shape.replace(Shape.create("022100"), 4, ''));
+
+console.log(Shape.replace(Shape.create("022100"), 4, '-'));
+
+console.log(Shape.replace(Shape.create("022100"), 4, 'x'));
+
+// console.log(Shape.replace(Shape.create("022100"), 4, 'qwe'));
+
+console.log(Shape.replace(Shape.create("022100"), 4));
+
+console.log(Shape.compact(Shape.create("0-0---")));     // [ [ 0 ], [], [ 0 ] ],
 
 
 // console.log(p.frets === s.frets);   // true because of immer.js

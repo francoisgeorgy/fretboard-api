@@ -1,5 +1,6 @@
 import Assert from "assert-js";
 import {firstPlayedString, normalizeInputFormat} from "./utils";
+import produce from "immer";
 
 /**
  *
@@ -68,3 +69,81 @@ export const position = (shape) => {
         ? shape.frets[firstPlayedString(shape.frets)][0]
         : shape.position;
 };
+
+
+export const add = (shape, string, fret) => {
+
+    return produce(shape, draftShape => {
+
+        while ((draftShape.frets.length - 1) < string) {
+            draftShape.frets.push([]);
+        }
+
+        if (Array.isArray(draftShape.frets[string])) {
+            if (draftShape.frets[string][0] === 'X') {
+                draftShape.frets[string][0] = fret;
+            } else {
+                draftShape.frets[string].push(fret);
+            }
+        } else {
+            draftShape.frets[string] = [fret];
+        }
+
+    });
+
+};
+
+
+/**
+ * Works like "replace or add"
+ * @param shape
+ * @param string
+ * @param fret
+ * @returns {*}
+ */
+export const replace = (shape, string, fret) => {
+
+    return produce(shape, draftShape => {
+
+        while ((draftShape.frets.length - 1) < string) {
+            draftShape.frets.push([]);
+        }
+
+        if (fret === undefined || fret === null) {
+            draftShape.frets[string] = [];
+        } else if (typeof fret === 'string') {
+            if (fret === '-' || fret === '') {
+                draftShape.frets[string] = [];
+            } else if (fret.toUpperCase() === 'X') {
+                draftShape.frets[string] = ['X'];
+            } else {
+                throw new Error("invalid fret " + fret);
+            }
+        } else {
+            draftShape.frets[string] = [fret];
+        }
+
+    });
+
+};
+
+
+export const remove = (shape, string, fret) => {
+
+    return replace(shape, string, null);
+
+};
+
+
+export const compact = (shape) => {
+
+    return produce(shape, draftShape => {
+
+        while (draftShape.frets[draftShape.frets.length - 1].length === 0) {
+            draftShape.frets.pop();
+        }
+
+    });
+
+};
+
