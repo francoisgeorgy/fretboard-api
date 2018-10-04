@@ -1,6 +1,6 @@
 {
     "name": "fretboard-api",
-    "version": "0.4.12",
+    "version": "0.4.13",
     "description": "A kind of API for fretboard diagrams",
     "keywords": [
         "fretboard",
