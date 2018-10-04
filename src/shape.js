@@ -10,7 +10,7 @@ import produce from "immer";
 export const create = (shape) => {
 
     let o = {
-        frets: null,           // user specified
+        frets: [],             // user specified
         fingers: null,         // user specified
         root: null,            // user specified or auto-computed; root is absolute (relative to the fretboard)
         position: null,        // user specified or auto-computed; position is absolute (relative to the fretboard); position is only the fret number. position is always for the first played string.
@@ -32,11 +32,11 @@ export const create = (shape) => {
         ['frets', 'fingers'].map(p => o[p] = normalizeInputFormat(shape[p]));
         ['position', 'root'].map(p => o[p] = shape[p]);
 
-    } else {
-        throw new Error("InvalidArgumentException");    // TODO: return a more helpful message
+    // } else {
+    //     throw new Error("InvalidArgumentException");    // TODO: return a more helpful message
     }
 
-    console.log(o.frets);
+    // console.log(o.frets);
 
     if (o.frets.length === 0) {     // this allows the creation of empty shapes
         return o;

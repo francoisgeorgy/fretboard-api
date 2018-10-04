@@ -73,6 +73,9 @@ console.log(u);
 console.log(t.root === u.root); // false, the root has changed
 
 
+console.log(Shape.create());
+
+
 /*
 // console.log(p.frets === s.frets);   // true because of immer.js
 
