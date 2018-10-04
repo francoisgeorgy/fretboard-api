@@ -1,10 +1,39 @@
 import produce from "immer";
 import { Distance, Interval, Note } from "tonal";
-// import {firstPlayedString} from "./utils";
-// import {intervals, notes} from "./compute";
 import {Tuning} from './Tuning';
 import {Shape} from "./index.js";
 
+
+/**
+ * [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ] --> [ '1P', '4P', '4P', '4P', '3M', '4P' ]
+ *
+ * @param tuning
+ * @returns {ReadonlyArray<any>}
+ */
+export const computeTuningIntervals = (tuning = Tuning.guitar.standard) => {
+    const tuningIntervals = Array(tuning.length).fill(null);
+    for (let i = 0; i < tuning.length; i++) {
+        let simple = Interval.simplify(
+            Distance.interval(
+                tuning[(i - 1 + tuning.length) % tuning.length],
+                tuning[i]
+            )
+        );
+        tuningIntervals[i] = simple === '-1P' ? '1P' : simple;
+    }
+    return Object.freeze(tuningIntervals);
+};
+
+
+/**
+ * [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ] --> [ 'E', 'A', 'D', 'G', 'B', 'E' ]
+ *
+ * @param tuning
+ * @returns {ReadonlyArray<any>}
+ */
+export const computeTuningPitchClasses = (tuning = Tuning.guitar.standard) => {
+    return Object.freeze(tuning.map(Note.pc));
+};
 
 
 /**
@@ -15,9 +44,10 @@ import {Shape} from "./index.js";
  * @param toFret
  * @returns {number}
  */
-export const semitones = (fromString, fromFret, toString, toFret, tuning) => {
+export const semitones = (fromString, fromFret, toString, toFret, tuning = Tuning.guitar.standard) => {
     return Distance.semitones(tuning[fromString], tuning[toString]) + toFret - fromFret;
 };
+
 
 /**
  *
@@ -27,7 +57,7 @@ export const semitones = (fromString, fromFret, toString, toFret, tuning) => {
  * @param toFret
  * @returns {*}
  */
-export const interval = (fromString, fromFret, toString, toFret, tuning) => {
+export const interval = (fromString, fromFret, toString, toFret, tuning = Tuning.guitar.standard) => {
     return Interval.fromSemitones(semitones(fromString, fromFret, toString, toFret, tuning));
 };
 
@@ -37,13 +67,13 @@ export const interval = (fromString, fromFret, toString, toFret, tuning) => {
  * @param frets
  * @param root
  * @param tuning
- * @returns {Array}
+ * @returns {ReadonlyArray<any>}
  */
-export const intervals = (frets, root, tuning) => {
+export const intervals = (frets, root, tuning = Tuning.guitar.standard) => {
 
     //TODO: use Internal.props() to simplify the code
 
-    let intervals = [];        // one array per string; empty array for non-played strings
+    const intervals = [];        // one array per string; empty array for non-played strings
     // this.chromas = [];          // one array per string; empty array for non-played strings
     // this.simpleIntervals = [];
 
@@ -94,15 +124,74 @@ export const intervals = (frets, root, tuning) => {
 
     // console.log(intervals);
 
-    return intervals;
+    return Object.freeze(intervals);
 };
 
 
-export const notes = (shape, tuning) => {
+/**
+ *
+ * @param shape
+ * @param tuning
+ * @returns {ReadonlyArray<any>}
+ */
+export const notes = (shape, tuning = Tuning.guitar.standard) => {
     let rootNote = Distance.transpose(tuning[shape.root.string], Interval.fromSemitones(shape.root.fret));
-    return shape.intervals.map(string => string.map(interval => Distance.transpose(rootNote, interval)));
+    return Object.freeze(shape.intervals.map(string => string.map(interval => Distance.transpose(rootNote, interval))));
 };
 
+
+/**
+ * Find a position
+ *
+ * Syntaxe 1: fret(note, string)
+ * Syntaxe 2: fret(fromString, fromFret, toString, toFret, minFret, maxFret)
+ * @returns {*}
+ */
+/*
+export const fret = (note, string, tuning = Tuning.guitar.standard) => {
+
+    //TODO: re-implement or discard
+
+    if (arguments.length === 2) {
+        let note = arguments[0];
+        let string = arguments[1];
+        return Distance.semitones(this.tuning[string], note);
+    }
+
+    if (arguments.length > 2) {
+        let fromString = arguments[0];
+        let fromFret = arguments[1];
+        let toString = arguments[2];
+        let minFret = arguments.length > 3 ? arguments[3] : this.minFret;
+        let maxFret = arguments.length > 4 ? arguments[4] : this.maxFret;
+
+        let f = this.fret(this.note(fromString, fromFret), toString);
+
+        //TODO: try to simplify the following corrections
+
+        while (f < minFret) f += 12;
+
+        while (
+            (f >= minFret) &&
+            (
+                ((Math.abs(f - fromFret) > 0) && (f >= (minFret + 12))) ||
+                (f > maxFret))
+            ) f -= 12;
+
+        if ((f < (fromFret - 6)) && (maxFret >= (f+12))) f += 12;
+
+        while (
+            (
+                (fromFret - f) > 12) ||
+            (f < minFret)
+            ) f += 12;
+
+        return f;
+    }
+
+    throw new Error("InvalidArgumentException");    // TODO: return a more helpful message
+}
+*/
 
 /**
  * shape is not changed; intervals may change depending on the tuning.
@@ -112,7 +201,7 @@ export const notes = (shape, tuning) => {
  */
 export const moveToFret = (shape, fret) => {
 
-    console.log(`fretboard.moveToFret`);
+    // console.log(`fretboard.moveToFret`);
 
     return produce(shape, draftShape => {
 
@@ -131,6 +220,25 @@ export const moveToFret = (shape, fret) => {
     });
 };
 
+
+/**
+ * shape is not changed; intervals may change depending on the tuning.
+ * @param shape
+ * @param string
+ * @returns {*}
+ */
+/*
+export const moveToString = (shape, string) => {
+};
+
+
+export const transposeByString = (shape, string, tuning) => {
+    //--> shape
+};
+*/
+
+
+
 /**
  * Play this shape at this position with this tuning
  *
@@ -142,7 +250,7 @@ export const play = (shape, position = null, tuning = Tuning.guitar.standard) =>
 
     //TODO: Question: do we embed the tuning? because plying the shape is directly linked to the tuning
 
-    console.log('fretboard.play');  //, shape, position, tuning);
+    // console.log('fretboard.play');  //, shape, position, tuning);
 
     // let s = position ? moveToFret(shape, position) : shape
 

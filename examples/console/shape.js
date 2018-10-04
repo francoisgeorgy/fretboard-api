@@ -1,6 +1,6 @@
 import * as Shape from "../../src/shape";
 import * as Fretboard from "../../src/fretboard";
-import {Tuning} from "../../src/Tuning.js";
+// import {Tuning} from "../../src/Tuning.js";
 
 /*
 const s = Shape.create({frets: "022100", fingers: "123411"});
