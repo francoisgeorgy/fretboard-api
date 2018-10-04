@@ -36,6 +36,12 @@ export const create = (shape) => {
         throw new Error("InvalidArgumentException");    // TODO: return a more helpful message
     }
 
+    console.log(o.frets);
+
+    if (o.frets.length === 0) {     // this allows the creation of empty shapes
+        return o;
+    }
+
     if (!o.root) {
         // by default takes the first fretted note on the first played string
         let f = firstPlayedString(o.frets);
@@ -71,6 +77,24 @@ export const position = (shape) => {
 };
 
 
+/**
+ * Returns the position {string, fret} of the root
+ * @param shape
+ * @returns {*}
+ */
+export const root = (shape) => {
+    if (shape.root) {
+        return shape.root;
+    }
+    let f = firstPlayedString(shape.frets);
+    return {
+        string: f,
+        fret: shape.frets[f][0]
+    };
+};
+
+
+
 export const add = (shape, string, fret) => {
 
     return produce(shape, draftShape => {
@@ -88,6 +112,9 @@ export const add = (shape, string, fret) => {
         } else {
             draftShape.frets[string] = [fret];
         }
+
+        // the root may changed
+        draftShape.root = root(draftShape);
 
     });
 
@@ -122,6 +149,9 @@ export const replace = (shape, string, fret) => {
         } else {
             draftShape.frets[string] = [fret];
         }
+
+        // the root may changed
+        draftShape.root = root(draftShape);
 
     });
 

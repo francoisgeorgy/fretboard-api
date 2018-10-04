@@ -35,7 +35,7 @@ test('shape by object', () => {
 test('shape with two notes only', () => {
 
     expect(Shape.create("3X5")).toMatchObject({
-        frets: [[3], [], [5]],
+        frets: [[3], ['X'], [5]],
         fingers: null,
         root: {string: 0, fret: 3}
     });
@@ -45,9 +45,9 @@ test('shape with two notes only', () => {
 test('add note to shape', () => {
 
     expect(Shape.add(Shape.create("022100"), 4, 3)).toMatchObject({
-        frets: [[3], [], [5]],
+        frets: [[0], [2], [2], [1], [0, 3], [0]],
         fingers: null,
-        root: {string: 0, fret: 3}
+        root: {string: 0, fret: 0}
     });
 
 });

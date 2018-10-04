@@ -35,7 +35,7 @@ function minFret(frets) {
  * @returns {number} Number (1-based) of the lowest-pitched fretted string
  */
 export function firstPlayedString(frets) {
-    return frets.findIndex(f => f.length > 0);
+    return frets.findIndex(f => f.length > 0 && f[0] !== 'X');
 }
 
 /**

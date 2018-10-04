@@ -71,6 +71,8 @@ export const interval = (fromString, fromFret, toString, toFret, tuning = Tuning
  */
 export const intervals = (frets, root, tuning = Tuning.guitar.standard) => {
 
+    // console.log(frets, root);
+
     //TODO: use Internal.props() to simplify the code
 
     const intervals = [];        // one array per string; empty array for non-played strings
@@ -82,9 +84,9 @@ export const intervals = (frets, root, tuning = Tuning.guitar.standard) => {
         let iv = [];
         // let chromas = [];
 
-        // console.log(string, frets.length, frets[string].length);
+        // console.log(string, frets.length, frets[string].length, frets[string]);
 
-        if (frets[string].length === 0) {
+        if (frets[string].length === 0 || frets[string][0] === 'X') {   //TODO: check that frets[string] is really an array
             intervals.push(iv);
             // this.chromas.push(chromas);
             continue;
@@ -92,15 +94,19 @@ export const intervals = (frets, root, tuning = Tuning.guitar.standard) => {
 
         for (let fret of frets[string]) {
 
+            // console.log(root.string, root.fret, string, fret, tuning);  // !!! NaN
+
             // get interval name between this shape's note and the shape's root note:
             let interval_from_root = interval(root.string, root.fret, string, fret, tuning);
 
+            // console.log("interval_from_root", interval_from_root);  // !!! NaN
+
             // transform negative interval to positive intervals: (take the inversion)
-            if (/*this.onlyPositiveIntervals &&*/ interval_from_root.startsWith('-')) {
-                let i = Interval.semitones(interval_from_root);
-                while (i < 0) i += 12;
-                interval_from_root = Interval.fromSemitones(i);
-            }
+            // if (/*this.onlyPositiveIntervals &&*/ interval_from_root.startsWith('-')) {
+            //     let i = Interval.semitones(interval_from_root);
+            //     while (i < 0) i += 12;
+            //     interval_from_root = Interval.fromSemitones(i);
+            // }
 
             let simple = Interval.simplify(interval_from_root);       // Get the simplified version of an interval:
 
@@ -201,7 +207,7 @@ export const fret = (note, string, tuning = Tuning.guitar.standard) => {
  */
 export const moveToFret = (shape, fret) => {
 
-    // console.log(`fretboard.moveToFret`);
+    // console.log(`fretboard.moveToFret`, shape);
 
     return produce(shape, draftShape => {
 
@@ -210,12 +216,14 @@ export const moveToFret = (shape, fret) => {
         draftShape.root.fret += delta;
         draftShape.position = fret;
 
-        draftShape.frets = draftShape.frets.map(string => string.map(fret => fret + delta));
+        draftShape.frets = draftShape.frets.map(string => string.map(fret => fret === 'X' ? 'X' : (fret + delta)));
 
         if (draftShape.notes) {
             let iv = Interval.fromSemitones(delta);
             draftShape.notes = draftShape.notes.map(string => string.map(note => Distance.transpose(note, iv)));
         }
+
+        // console.log(`fretboard.moveToFret return`, draftShape);
 
     });
 };

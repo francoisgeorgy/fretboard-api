@@ -87,7 +87,7 @@ test('fretboard tuning', () => {
 
 test('fretboard play shape', () => {
     expect(Fretboard.play(Fretboard.moveToFret(Shape.create("X32010"), 8))).toMatchObject({
-        frets: [[], [8], [7], [5], [6], [5]],
+        frets: [['X'], [8], [7], [5], [6], [5]],
         fingers: null,
         root: {"string": 1, "fret": 8},
         position: 8,
@@ -99,7 +99,7 @@ test('fretboard play shape', () => {
     });
 
     expect(Fretboard.play(Shape.create("X32010"), 8)).toMatchObject({
-        frets: [[], [8], [7], [5], [6], [5]],
+        frets: [['X'], [8], [7], [5], [6], [5]],
         fingers: null,
         root: {"string": 1, "fret": 8},
         position: 8,
