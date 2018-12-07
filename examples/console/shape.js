@@ -51,6 +51,8 @@ console.log(Shape.compact(Shape.create("0-0---")));     // [ [ 0 ], [], [ 0 ] ],
 
 */
 
+
+/*
 console.log(Shape.create(""));
 console.log(Shape.add(Shape.create(""), 4, 3));
 
@@ -72,9 +74,32 @@ console.log(u);
 
 console.log(t.root === u.root); // false, the root has changed
 
-
 console.log(Shape.create());
+*/
 
+
+let u = Shape.create("1 2,0,0,0,0,0");      // [ [ 1, 2 ], [ 0 ], [ 0 ], [ 0 ], [ 0 ], [ 0 ] ]
+console.log(u.frets);
+
+let v = Shape.remove(u, 0, 1);              // [ [ 2 ], [ 0 ], [ 0 ], [ 0 ], [ 0 ], [ 0 ] ]
+console.log(v.frets);
+
+u = Shape.create("0,0,0,0,4 3,0");          // [ [ 0 ], [ 0 ], [ 0 ], [ 0 ], [ 4, 3 ], [ 0 ] ]
+console.log(u.frets);
+
+v = Shape.remove(u, 4, 3);                  // [ [ 0 ], [ 0 ], [ 0 ], [ 0 ], [ 4 ], [ 0 ] ]
+console.log(v.frets);
+
+u = Shape.create("0x00");                   // [ [ 0 ], [ 'X' ], [ 0 ], [ 0 ] ]
+console.log(u.frets);
+
+v = Shape.remove(u, 1, 'X');                // [ [ 0 ], [], [ 0 ], [ 0 ] ]
+console.log(v.frets);
+
+
+
+// const r = Fretboard.play(Shape.create("0,2,2,1,4 3,0"));
+// console.log(r.notes);
 
 /*
 // console.log(p.frets === s.frets);   // true because of immer.js

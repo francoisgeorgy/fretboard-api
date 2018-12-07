@@ -108,6 +108,7 @@ export const add = (shape, string, fret) => {
                 draftShape.frets[string][0] = fret;
             } else {
                 draftShape.frets[string].push(fret);
+                draftShape.frets[string].sort();
             }
         } else {
             draftShape.frets[string] = [fret];
@@ -128,6 +129,7 @@ export const add = (shape, string, fret) => {
  * @param fret
  * @returns {*}
  */
+/*
 export const replace = (shape, string, fret) => {
 
     return produce(shape, draftShape => {
@@ -156,11 +158,39 @@ export const replace = (shape, string, fret) => {
     });
 
 };
-
+*/
 
 export const remove = (shape, string, fret) => {
 
-    return replace(shape, string, null);
+    // console.log(`remove(${shape}, ${string}, ${fret})`);
+
+    return produce(shape, draftShape => {
+
+        if ((draftShape.frets.length - 1) < string) return;
+
+        //TODO: assert string and fret
+        if (fret === undefined || fret === null) {      // TODO: check string too
+            return;
+        }
+
+        draftShape.frets[string] = draftShape.frets[string].filter(f => f !== fret);
+
+        // if (typeof fret === 'string') {
+        //     if (fret === '-' || fret === '') {
+        //         draftShape.frets[string] = [];
+        //     } else if (fret.toUpperCase() === 'X') {
+        //         draftShape.frets[string] = ['X'];
+        //     } else {
+        //         throw new Error("invalid fret " + fret);
+        //     }
+        // } else {
+        //     draftShape.frets[string] = [fret];
+        // }
+
+        // the root may changed
+        draftShape.root = root(draftShape);
+
+    });
 
 };
 
