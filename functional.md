@@ -8,7 +8,7 @@ We don't really need to link the shape to a fretboard, because we only need to k
     
     s = shape(frets, tuning)        # create a shape with a specific tuning
 
-Freatbord: play this `shape` at this `position`with this `tuning` 
+Fretboard: play this `shape` at this `position` with this `tuning`: 
 
     Fretboard.play(shape, position, tuning)
         
@@ -18,20 +18,21 @@ Freatbord: play this `shape` at this `position`with this `tuning`
 # Choices
 
 - store the minimum set of data
-- compute all derivated data each time 
+- compute all derived data each time 
     - time these functions. If too compute-heavy, pre-compute and add to the base data-structure.
 
 # Data structures
 
-## Fretboard data structure:
+## Fretboard:
 
     {
         tuning: [...],
-        frets: 12,        
+        frets: 12,
+        capo: 0,            //TODO: allow for "non-linear" capo  
         shapes: [...],
     }
 
-## Shape data structure:
+## Shape:
 
     {
         frets: [...],           # user specified
