@@ -1,0 +1,56 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>fretboard-api examples</title>
+    <script src="index.js"></script>
+    <script src="docs.js"></script>
+    <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+
+    <h1>fretboard-api</h1>
+    <div id="header">
+        <a href="index.html">home</a>
+        <a href="caged.html">CAGED</a>
+        <a href="octaves.html">Octaves</a>
+        <a href="transpose.html">Transposition</a>
+        <a href="tunings.html">Tunings</a>
+    </div>
+
+    <h2>Octaves shapes</h2>
+    <div id="main">
+
+        Simple definition:
+        <div class="code example">
+            var s = new api.Shape("0X2");
+        </div>
+        <script>
+            var s = new api.Shape("0X2");
+            printObj(s);
+        </script>
+
+        Predefined octave shapes:
+        <div class="code example">
+            fretboardApi.SHAPES.OCTAVES
+        </div>
+        <script>
+            // for (const name in api.SHAPES.OCTAVES) {
+            //     printObj(new api.Shape(api.SHAPES.OCTAVES[name]));
+            // }
+
+            console.log("fretboardApi.SHAPES.OCTAVES");
+            printObj(fretboardApi.SHAPES.OCTAVES);
+
+            console.log("fretboardApi.Tuning");
+            printObj(fretboardApi.Tuning);
+            // for (const name in api.Tuning) {
+            //     printObj(name);
+            //     printObj(api.Tuning[name]);
+            // }
+        </script>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,42 @@
+{
+    "name": "fretboard-api",
+    "version": "0.4.15",
+    "description": "A kind of API for fretboard diagrams",
+    "keywords": [
+        "fretboard",
+        "api"
+    ],
+    "main": "dist/index.js",
+    "repository": "https://github.com/francoisgeorgy/fretboard-api.git",
+    "author": "François Georgy <francois.georgy@gmail.com>",
+    "license": "MIT",
+    "scripts": {
+        "dev": "webpack --mode development",
+        "build": "rimraf dist && babel src -d dist --copy-files",
+        "test": "jest --testPathIgnorePatterns=\"tmp.*\""
+    },
+    "devDependencies": {
+        "@babel/cli": "^7.4.4",
+        "@babel/core": "^7.4.5",
+        "@babel/plugin-proposal-object-rest-spread": "^7.4.4",
+        "@babel/preset-env": "^7.4.5",
+        "babel-jest": "^24.8.0",
+        "babel-loader": "^8.0.6",
+        "copy-webpack-plugin": "^5.0.3",
+        "esdoc": "^1.1.0",
+        "esdoc-standard-plugin": "^1.0.0",
+        "fs-extra": "^8.0.1",
+        "jest": "^24.8.0",
+        "webpack": "^4.32.2",
+        "webpack-cli": "^3.3.2",
+        "webpack-dev-server": "^3.4.1",
+        "webpack-shell-plugin": "^0.5.0"
+    },
+    "dependencies": {
+        "assert-js": "^0.22.0",
+        "enharmonics": "^1.0.3",
+        "immer": "^3.1.2",
+        "json-stringify-pretty-compact": "^2.0.0",
+        "tonal": "^2.2.2"
+    }
+}
