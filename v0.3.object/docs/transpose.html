@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <title>fretboard-api examples</title>
+    <script src="index.js"></script>
+    <script src="docs.js"></script>
+    <link rel="stylesheet" href="docs.css">
+</head>
+<body>
+
+    <h1>fretboard-api</h1>
+    <div id="header">
+        <a href="index.html">home</a>
+        <a href="caged.html">CAGED</a>
+        <a href="octaves.html">Octaves</a>
+        <a href="transpose.html">Transposition</a>
+        <a href="tunings.html">Tunings</a>
+    </div>
+
+    <h2>Transposition</h2>
+    <div id="main">
+        Create a Fretboard object:
+        <div class="code example">
+            f = new api.Fretboard();
+        </div>
+        <script>
+            // let api = fretboardApi;
+            var f = new api.Fretboard();
+            printObj(f);
+        </script>
+
+        Add a Shape corresponding to the C major scale:
+        <div class="code example">
+            s = f.addShape('8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8');
+        </div>
+        <script>
+            var s = f.addShape('8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8');
+            printObj(s);
+        </script>
+
+        Transpose this shape down one string, which gives us the F major scale:
+        <div class="code example">
+            s.transposeByStrings(1);
+        </div>
+        <script>
+            s.transposeByStrings(1);
+            printObj(s);
+        </script>
+
+        Transpose this shape up one string, to get back to the C major scale:
+        <div class="code example">
+            s.transposeByStrings(-1);
+        </div>
+        <script>
+            s.transposeByStrings(-1);
+            printObj(s);
+        </script>
+
+    </div>
+
+</body>
+</html>
