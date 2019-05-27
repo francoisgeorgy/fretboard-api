@@ -35,7 +35,7 @@ function minFret(frets) {
  * @returns {number} Number (1-based) of the lowest-pitched fretted string
  */
 export function firstPlayedString(frets) {
-    return frets.findIndex(f => f.length > 0 && f[0] !== 'X');
+    return frets.findIndex(f => f.length > 0);
 }
 
 /**
@@ -61,7 +61,7 @@ export function normalizeInputFormat(frets) {
         }
         return frets.map(s => {
             if (typeof s === 'string') {
-                return s.toUpperCase() === 'X' ? ['X'] : [parseInt(s, 10)];
+                return s.toUpperCase() === 'X' ? [] : [parseInt(s, 10)];
             } else {
                 return [s];
             }
@@ -76,8 +76,7 @@ export function normalizeInputFormat(frets) {
             ? fs.split(' ')     // "8 10 ..." --> ["8", "10", ...]
             : Array.from(fs);   // "022100" --> ["0", "2", "2", "1", "0", "0"]
         return a.map(s => {
-            if (s.toUpperCase() === 'X') return ['X'];
-            if (s === '-') return [];
+            if (s.toUpperCase() === 'X') return [];
             return [parseInt(s, 10)]
         });
         // return a.map(s => s.toUpperCase() === 'X'
@@ -88,16 +87,11 @@ export function normalizeInputFormat(frets) {
     } else {
         let a = fs.replace(/,\s*/g, ',').split(',');    // "8 10, 7 8 10, ..." --> ["8 10", "7 8 10", ...]
         return a.map(s => {
-            if (s.toUpperCase() === 'X') return ['X'];
-            if (s === '' || s === '-') return [];
+            if (s.toUpperCase() === 'X') return [];
             return (s.indexOf(' ') >= 0
                         ? s.split(' ')              // ["8 10", ...] --> [["8", "10"], ...]
                         : Array.from(s)             // ["24", "124", ...] --> [["2", "4"], ["1", "2", "4"], ...]
-                    ).map(s => {
-                        if (s.toUpperCase() === 'X') throw new Error('invalid format');
-                        if (s === '-') throw new Error('invalid format');
-                        return parseInt(s, 10)
-                    });
+                    ).map(e => parseInt(e, 10));    // [[2, 4], [1, 2, 4], ...]
         });
     }
 

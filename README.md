@@ -65,7 +65,9 @@ A7 chord:
 
 Frets and fingers can be specified as strings or arrays. They will always be normalized as arrays.
 
-`X` or `x` must be used to define a non-played (muted) string.
+`X` or `x` define a explicitely non-played (muted) string.
+
+`-` define a ignored string.
 
 '0' denote a played open-string.
 
