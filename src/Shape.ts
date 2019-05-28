@@ -170,22 +170,13 @@ function firstPlayedString(shape: Shape): number {
  * Returns first played fret (non null)
  * @param shape The Shape
  */
-// export function firstPlayedFret(frets: Fret[]): number {
 function firstPlayedFret(shape: Shape): number {
-
-    // console.log("firstPlayedFret", shape, firstPlayedString(shape), shape.frets[0]);
-
-    // return frets.findIndex(f => f.length > 0 && f[0] !== null);
     const f = shape.frets[firstPlayedString(shape)].find(fret => fret !== null);
-
-    if (!f) {
+    if (f == undefined) {
         throw new Error('no played position found');
     } else {
         return f;
     }
-
-    // return f ? f : null;
-    // return 0;
 }
 
 /**
@@ -244,7 +235,10 @@ export function normalizeInputFormat(frets: string|Fret[]): Fret[][] {
 
 }
 
-
+/**
+ *
+ * @param fingers
+ */
 export function normalizeFingers(fingers: string|Finger[]): Finger[][] {
 
     // if (typeof frets !== 'string') return frets;
