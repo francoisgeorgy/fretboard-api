@@ -1,8 +1,12 @@
+
 /**
  * Fret number.
+ * Also finger number.
  * null means non-played.
  */
-export type Fret = number|null;
+export type Fret = number;
+
+export type SingleFret = number|null;   // used for the simplified input format with only one note per string.
 
 /**
  * Finger number.
@@ -10,9 +14,42 @@ export type Fret = number|null;
  */
 export type Finger = number;
 
+/**
+ * Frets along a single string
+ */
+export type StringFrets = Fret[]|null;
+
+/**
+ * All frets
+ */
+export type Frets = StringFrets[];
+
+/**
+ * Fingers for a single string
+ */
+export type StringFingers = Finger[]|null;
+
+/**
+ * All fingering
+ */
+export type Fingers = StringFingers[];
+
+/**
+ * Intervals for a single string
+ */
+export type StringIntervals = string[]|null;
+
+/**
+ * All intervals
+ */
+export type Intervals = StringIntervals[];
+
+/**
+ *
+ */
 export interface Position {
     string: number,
-    fret: number
+    fret: Fret
 }
 
 /**
@@ -31,17 +68,18 @@ export interface Position {
  * Frets are numbered starting at 0 and from the head of the neck towards the bridge.
  * Fret number 0 is the nut, or the "zero fret" installed close the the nut on some guitars.
  *
- * For frets, the value `null` means a non-played string.
+ * A null values in frets means a non-played string.
  */
-export interface Shape {
+export interface FretboardShape {
     /**
      * First dimensions is strings, second dimension is frets.
      */
-    frets: Fret[][],
+    // frets: Fret[][],
+    frets: Frets,
     /**
      * First dimensions is strings, second dimension is frets.
      */
-    fingers?: Finger[][],    //fixme: for non played position, leave empty array position instead of null value?
+    fingers?: Fingers,    //fixme: for non played position, leave empty array position instead of null value?
     /**
      * Position of the root note of the shape.
      *
@@ -67,7 +105,7 @@ export interface Shape {
     /**
      * Computed when played
      */
-    intervals?: string[][],
+    intervals?: Intervals,
     /**
      * Computed when played
      */
@@ -82,12 +120,12 @@ export interface Shape {
     notesSimple?: string[]
 }
 
-export function create(frets: string): Shape;
-export function create(frets: Fret[]): Shape;
-export function create(shape: object): Shape;
-export function create(shape: any): Shape {
+export function create(frets: string): FretboardShape;
+export function create(frets: Fret[]): FretboardShape;
+export function create(shape: object): FretboardShape;
+export function create(shape: any): FretboardShape {
 
-    let s: Shape = {frets:[[]]};
+    let s: FretboardShape = {frets:[null]};
 
     // if (typeof shape === 'string') {                    // we use two distinct tests to help Typescript.
     //
@@ -142,6 +180,8 @@ export function create(shape: any): Shape {
         // by default takes the first fretted note on the first played string
         let firstString = firstPlayedString(s);
 
+        if (firstString < 0) throw new Error("Invalid shape, at least a string must be played.");
+
         // console.log("firstString", firstString);
 
         s.root = {
@@ -159,19 +199,22 @@ export function create(shape: any): Shape {
 
 /**
  *
- * @param shape The Shape
+ * @param shape The FretboardShape
  */
-function firstPlayedString(shape: Shape): number {
-    return shape.frets.findIndex(string => string.length > 0 && string[0] !== null);
+function firstPlayedString(shape: FretboardShape): number {
+    return shape.frets.findIndex(string => string != null && string.length > 0);
     // return 0;
 }
 
 /**
  * Returns first played fret (non null)
- * @param shape The Shape
+ * @param shape The FretboardShape
  */
-function firstPlayedFret(shape: Shape): number {
-    const f = shape.frets[firstPlayedString(shape)].find(fret => fret !== null);
+function firstPlayedFret(shape: FretboardShape): number {
+    const firstString = firstPlayedString(shape);
+    if (firstString < 0) throw new Error("Invalid shape, at least a string must be played.");
+    const fs = shape.frets[firstString];
+    const f = fs ? fs.find(fret => fret !== null) : undefined;
     if (f == undefined) {
         throw new Error('no played position found');
     } else {
@@ -192,7 +235,7 @@ function firstPlayedFret(shape: Shape): number {
  */
 // export function normalizeInputFormat(frets: string): Fret[][]|undefined;
 // export function normalizeInputFormat(frets: number[]): Fret[][]|undefined;
-export function normalizeInputFormat(frets: string|Fret[]): Fret[][] {
+export function normalizeInputFormat(frets: string|SingleFret[]): Frets {
 
     if (!frets) {
         //TODO: throw an error instead?
@@ -200,7 +243,7 @@ export function normalizeInputFormat(frets: string|Fret[]): Fret[][] {
     }
 
     if (Array.isArray(frets)) {
-        return frets.map(s => [s]);
+        return frets.map(s => s == null ? null : [s]);
     }
 
     // replace multiples blanks with one space:
@@ -209,25 +252,22 @@ export function normalizeInputFormat(frets: string|Fret[]): Fret[][] {
     if (fs.indexOf(',') < 0) {
         // only one fretted note per string
         let a = fs.indexOf(' ') >= 0
-            ? fs.split(' ')     // "8 10 ..." --> ["8", "10", ...]
-            : Array.from(fs);   // "022100" --> ["0", "2", "2", "1", "0", "0"]
+            ? fs.split(' ')       // "8 10 ..." --> ["8", "10", ...]
+            : Array.from(fs);               // "022100" --> ["0", "2", "2", "1", "0", "0"]
         return a.map((s: string) => {
-            if (s.toUpperCase() === 'X') return [null];     // value "null" means non-played string
-            // if (s === '-') return [];       // nothing played on this string
+            if (s.toUpperCase() === 'X') return null;     // value "null" means non-played string
             return [parseInt(s, 10)]
         });
     } else {
         // more than one fretted note per string
         let a: string[] = fs.replace(/,\s*/g, ',').split(',');    // "8 10, 7 8 10, ..." --> ["8 10", "7 8 10", ...]
         return a.map((s: string) => {
-            if (s.toUpperCase() === 'X') return [null];     // value "null" means non-played string
-            // if (s === '' || s === '-') return [];           // nothing played on this string
+            if (s.toUpperCase() === 'X') return null;     // value "null" means non-played string
             return (s.indexOf(' ') >= 0
-                    ? s.split(' ')              // ["8 10", ...] --> [["8", "10"], ...]
+                    ? s.split(' ')    // ["8 10", ...] --> [["8", "10"], ...]
                     : Array.from(s)             // ["24", "124", ...] --> [["2", "4"], ["1", "2", "4"], ...]
             ).map(s => {
                 if (s.toUpperCase() === 'X') throw new Error('invalid format');
-                // if (s === '-') throw new Error('invalid format');
                 return parseInt(s, 10)
             });
         });
@@ -239,7 +279,7 @@ export function normalizeInputFormat(frets: string|Fret[]): Fret[][] {
  *
  * @param fingers
  */
-export function normalizeFingers(fingers: string|Finger[]): Finger[][] {
+export function normalizeFingers(fingers: string|Finger[]): Fingers {
 
     // if (typeof frets !== 'string') return frets;
 
@@ -250,9 +290,7 @@ export function normalizeFingers(fingers: string|Finger[]): Finger[][] {
     }
 
     if (Array.isArray(fingers)) {
-        return fingers.map(s => {
-            return [s];
-        });
+        return fingers.map(s => s == null ? null : [s]);
     }
 
     let fs = fingers.toUpperCase().replace(/\s+/g, ' ');  // replace multiples blanks with one space
@@ -260,11 +298,11 @@ export function normalizeFingers(fingers: string|Finger[]): Finger[][] {
     if (fs.indexOf(',') < 0) {
         // only one fretted note per string
         let a = fs.indexOf(' ') >= 0
-            ? fs.split(' ')     // "8 10 ..." --> ["8", "10", ...]
-            : Array.from(fs);   // "022100" --> ["0", "2", "2", "1", "0", "0"]
+            ? fs.split(' ')       // "8 10 ..." --> ["8", "10", ...]
+            : Array.from(fs);               // "022100" --> ["0", "2", "2", "1", "0", "0"]
         return a.map((s: string) => {
-            if (s.toUpperCase() === 'X') return [0];     // value 0 means non-played string
-            // if (s === '-') return [];                       // nothing played on this string
+            if (s.toUpperCase() === 'X') return null;     // value 0 means non-played string
+            // if (s === '-') return [];                  // nothing played on this string
             return [parseInt(s, 10)]
         });
     } else {
@@ -273,7 +311,7 @@ export function normalizeFingers(fingers: string|Finger[]): Finger[][] {
             if (s.toUpperCase() === 'X') return [0];
             // if (s === '' || s === '-') return [];   // nothing played on this string
             return (s.indexOf(' ') >= 0
-                    ? s.split(' ')              // ["8 10", ...] --> [["8", "10"], ...]
+                    ? s.split(' ')    // ["8 10", ...] --> [["8", "10"], ...]
                     : Array.from(s)             // ["24", "124", ...] --> [["2", "4"], ["1", "2", "4"], ...]
             ).map(s => {
                 if (s.toUpperCase() === 'X') throw new Error('invalid format');

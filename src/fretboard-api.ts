@@ -9,5 +9,9 @@
 // }
 
 import * as Shape from "./Shape";
+import * as Tunings from "./Tunings";
+import * as Fretboard from "./fretboard";
 
 export {Shape};
+export {Tunings};
+export {Fretboard};

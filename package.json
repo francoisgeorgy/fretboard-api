@@ -113,5 +113,9 @@
         "tslint-config-standard": "^8.0.1",
         "typedoc": "^0.14.2",
         "typescript": "^3.0.3"
+    },
+    "dependencies": {
+        "immer": "^3.1.2",
+        "tonal": "^2.2.2"
     }
 }
