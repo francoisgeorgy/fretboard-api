@@ -19,6 +19,8 @@ are changed depending on the tuning.
 
 - western tonal music: 12 semitones
 
+## Conventions
+
 ### Strings numbering
 
 #### for the user
