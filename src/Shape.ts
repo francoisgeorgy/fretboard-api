@@ -22,7 +22,7 @@ export type StringFrets = Fret[]|null;
 /**
  * All frets
  */
-export type Frets = StringFrets[];
+export type Frets = readonly StringFrets[];
 
 /**
  * Fingers for a single string
@@ -32,7 +32,7 @@ export type StringFingers = Finger[]|null;
 /**
  * All fingering
  */
-export type Fingers = StringFingers[];
+export type Fingers = readonly StringFingers[];
 
 /**
  * Intervals for a single string
@@ -42,7 +42,7 @@ export type StringIntervals = string[]|null;
 /**
  * All intervals
  */
-export type Intervals = StringIntervals[];
+export type Intervals = readonly StringIntervals[];
 
 /**
  *
@@ -202,8 +202,9 @@ export function create(shape: any): FretboardShape {
  * @param shape The FretboardShape
  */
 function firstPlayedString(shape: FretboardShape): number {
-    return shape.frets.findIndex(string => string != null && string.length > 0);
-    // return 0;
+    const n = shape.frets.findIndex(string => string != null && string.length > 0);
+    if (n < 0) throw new Error("Invalid shape, at least one string must be played.");
+    return n;
 }
 
 /**
@@ -211,9 +212,9 @@ function firstPlayedString(shape: FretboardShape): number {
  * @param shape The FretboardShape
  */
 function firstPlayedFret(shape: FretboardShape): number {
-    const firstString = firstPlayedString(shape);
-    if (firstString < 0) throw new Error("Invalid shape, at least a string must be played.");
-    const fs = shape.frets[firstString];
+    // const firstString = firstPlayedString(shape);
+    // if (firstString < 0) throw new Error("Invalid shape, at least a string must be played.");
+    const fs = shape.frets[firstPlayedString(shape)];
     const f = fs ? fs.find(fret => fret !== null) : undefined;
     if (f == undefined) {
         throw new Error('no played position found');
@@ -323,3 +324,18 @@ export function normalizeFingers(fingers: string|Finger[]): Fingers {
 
 }
 
+
+/**
+ *
+ * @param shape
+ * @returns {*}
+ */
+export function getFretPosition(shape: FretboardShape): number {
+    if (shape.position === undefined || shape.position === null) {
+        const s = shape.frets[firstPlayedString(shape)];
+        // @ts-ignore
+        return s[0];
+    } else {
+        return shape.position.fret;
+    }
+}

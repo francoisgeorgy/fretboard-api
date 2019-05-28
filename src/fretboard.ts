@@ -92,8 +92,10 @@ export function intervals(shape: FretboardShape, tuning = Tunings.guitar.standar
 
         // console.log(string, frets.length, frets[string].length, frets[string]);
 
+        const stringFrets = shape.frets[string];
+
         // skip non played strings:
-        if (shape.frets[string] == null) {
+        if (stringFrets == null) {
             shapeIntervals.push(null);
             continue;
         }
@@ -104,7 +106,7 @@ export function intervals(shape: FretboardShape, tuning = Tunings.guitar.standar
         //     continue;
         // }
 
-        for (let fret of shape.frets[string]) {
+        for (let fret of stringFrets) {
 
             // console.log(root.string, root.fret, string, fret, tuning);  // !!! NaN
 
@@ -163,7 +165,8 @@ export const notes = (shape: FretboardShape, tuning = Tunings.guitar.standard) =
     }
     return Object.freeze(
         shape.intervals.map(
-            string => string.map(
+            string => string == null ? null :
+                string.map(
                 interval => {
 
                     const d = Distance.transpose(rootNote, interval);
@@ -241,11 +244,22 @@ export const moveToFret = (shape: FretboardShape, fret: number): FretboardShape 
 
     // console.log(`fretboard.moveToFret`, shape);
 
+    if (shape == null) throw new Error("Invalid argument. Shape can not be null.");
+
     return produce(shape, draftShape => {
 
-        let delta = fret - Shape.position(draftShape);
+        let delta = fret - Shape.getFretPosition(draftShape);
 
+        if (!draftShape.root) {
+            draftShape.root = { //TODO: function to getRoot
+                string: 0,
+                fret: 0
+            };
+        }
         draftShape.root.fret += delta;
+
+/* TODO
+
         draftShape.position = fret;
 
         draftShape.frets = draftShape.frets.map(string => string.map(fret => fret === 'X' ? 'X' : (fret + delta)));
@@ -254,6 +268,7 @@ export const moveToFret = (shape: FretboardShape, fret: number): FretboardShape 
             let iv = Interval.fromSemitones(delta);
             draftShape.notes = draftShape.notes.map(string => string.map(note => Distance.transpose(note, iv)));
         }
+*/
 
         // console.log(`fretboard.moveToFret return`, draftShape);
 
@@ -286,7 +301,7 @@ export const transposeByString = (shape, string, tuning) => {
  * @param tuning Array
  * @param position int
  */
-export const play = (shape, position = null, tuning = Tuning.guitar.standard) => {
+export const play = (shape: FretboardShape, position = null, tuning = Tunings.guitar.standard) => {
 
     //TODO: Question: do we embed the tuning? because plying the shape is directly linked to the tuning
 
