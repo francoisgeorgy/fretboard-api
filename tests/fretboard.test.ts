@@ -8,6 +8,12 @@ test('fretboard tuning', () => {
 });
 
 test('fretboard play shape X32010 at fret 8', () => {
+
+    //TODO: if we create then play, do we want to update the position?
+
+    // create + play : position updated or not updated ? --> updated because when we play we define intervals, notes, etc...
+    // create + moveToFret + play : position updated
+
     expect(Fretboard.play(Shape.create("X32010"), 8)).toMatchObject({
         frets: [null, [8], [7], [5], [6], [5]],
         // fingers: null,
