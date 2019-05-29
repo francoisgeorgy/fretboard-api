@@ -354,8 +354,14 @@ export function normalizeFingers(fingers: string|Finger[]): Fingers {
 export function getFretPosition(shape: FretboardShape): number {
     if (shape.position === undefined || shape.position === null) {
         const s = shape.frets[firstPlayedString(shape)];
-        // @ts-ignore
-        return s[0];
+        // const s0 = s[0];
+        if (s == null) {    // to make typescript happy
+            return 0;
+        } else {
+            return s[0];
+        }
+        // // @ts-ignore
+        // return s[0];
     } else {
         return shape.position.fret;
     }

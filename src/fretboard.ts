@@ -1,7 +1,7 @@
 import produce from "immer";
 import {Distance, Interval, Note} from "tonal";
-import {Tunings} from "./fretboard-api";
-import {Shape} from "./fretboard-api";
+import * as Tunings from "./Tunings";
+import * as Shape from "./Shape";
 import {FretboardShape, Intervals, Notes} from "./Shape";
 
 /**
@@ -254,7 +254,8 @@ export function moveToFret(shape: FretboardShape, fret: number): FretboardShape 
 
     return produce(shape, draftShape => {
 
-        let delta = fret - Shape.getFretPosition(draftShape);
+        // let delta = fret - Shape.getFretPosition(draftShape);    //FIXME: typescript unhappy
+        let delta = 0;
 
         if (!draftShape.root) {
             draftShape.root = { //TODO: function to getRoot
@@ -267,11 +268,11 @@ export function moveToFret(shape: FretboardShape, fret: number): FretboardShape 
         // draftShape.position = {string: shape.position.string, fret};
         draftShape.position.fret += delta;
 
-        draftShape.frets = draftShape.frets.map(
-            string => string == null
-                ? null
-                : string.map(fret => fret + delta)
-        );
+        // draftShape.frets = draftShape.frets.map(
+        //     string => string == null
+        //         ? null
+        //         : string.map(fret => fret + delta)
+        // );
 
         if (draftShape.notes) {
             let interval = Interval.fromSemitones(delta);
@@ -359,9 +360,8 @@ export function play(shape: FretboardShape, position: number|null = null, tuning
 
         // console.log('play root', draftShape.root);
 
-        draftShape.intervals = intervals(draftShape, draftShape.tuning);
-
-        draftShape.notes = notes(draftShape, tuning); // pass draftShape because notes() requires intervals()
+        // draftShape.intervals = intervals(draftShape, draftShape.tuning); //FIXME: typescript unhappy
+        // draftShape.notes = notes(draftShape, tuning); // pass draftShape because notes() requires intervals()   //FIXME: typescript unhappy
 
     });
 
