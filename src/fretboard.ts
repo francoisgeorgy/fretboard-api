@@ -129,9 +129,10 @@ export function intervals(shape: FretboardShape, tuning = Tunings.guitar.standar
             //     interval_from_root = Interval.fromSemitones(i);
             // }
 
+/* moved into utils.intervalsSimple()
             let simple = Interval.simplify(intervalFromRoot);       // Get the simplified version of an interval:
-
             if (Interval.ic(simple) === 0) simple = '1P';   //TODO: document this simplification
+*/
 
             // intervals.push((string === this.root.string) && (interval_from_root === "1P") ? "R" : interval_from_root);
             // intervalsSimple.push((string === this.root.string) && (interval_from_root === "1P") ? "R" : simple);
@@ -365,4 +366,3 @@ export function play(shape: FretboardShape, position: number|null = null, tuning
     });
 
 }
-
