@@ -22,7 +22,7 @@ export type StringFrets = Fret[]|null;
 /**
  * All frets
  */
-export type Frets = readonly StringFrets[];
+export type Frets = StringFrets[];
 
 /**
  * Fingers for a single string
@@ -32,7 +32,7 @@ export type StringFingers = Finger[]|null;
 /**
  * All fingering
  */
-export type Fingers = readonly StringFingers[];
+export type Fingers = StringFingers[];
 
 /**
  * Intervals for a single string
@@ -42,7 +42,17 @@ export type StringIntervals = string[]|null;
 /**
  * All intervals
  */
-export type Intervals = readonly StringIntervals[];
+export type Intervals = StringIntervals[];
+
+/**
+ * Notes for a single string
+ */
+export type StringNotes = string[]|null;
+
+/**
+ * All notes
+ */
+export type Notes = StringNotes[];
 
 /**
  *
@@ -87,17 +97,17 @@ export interface FretboardShape {
      *
      * By default, if not specified, this will be the position of the first fretted note of the first played string.
      */
-    root?: Position,
+    root: Position,
     /**
      * Position of the shape.
      *
      * User specified or auto-computed.
      *
-     * Position is absolute (relative to the fretboard); position is only the fret number. position is always for the first played string.
+     * Position is absolute (relative to the fretboard); position is always for the first played fret of the first played string.
      *
      * By default, if not specified, this will be the position of the first fretted note of the first played string.
      */
-    position?: Position,
+    position: Position,
     /**
      * Added when played
      */
@@ -109,15 +119,15 @@ export interface FretboardShape {
     /**
      * Computed when played
      */
-    notes?: string[][],
+    notes?: Notes
     /**
      * Computed when played
      */
-    intervalsSimple?: string[],
+    // intervalsSimple?: string[],
     /**
      * Computed when played
      */
-    notesSimple?: string[]
+    // notesSimple?: string[]
 }
 
 export function create(frets: string): FretboardShape;
@@ -125,7 +135,11 @@ export function create(frets: Fret[]): FretboardShape;
 export function create(shape: object): FretboardShape;
 export function create(shape: any): FretboardShape {
 
-    let s: FretboardShape = {frets:[null]};
+    let newShape: FretboardShape = {
+        frets:[null],
+        root: {string: 0, fret: 0},
+        position: {string: 0, fret: 0}
+    };
 
     // if (typeof shape === 'string') {                    // we use two distinct tests to help Typescript.
     //
@@ -137,7 +151,7 @@ export function create(shape: any): FretboardShape {
     // } else if (Array.isArray(shape)) {
     if ((typeof shape === 'string') || Array.isArray(shape)) {
 
-        s.frets = normalizeInputFormat(shape);
+        newShape.frets = normalizeInputFormat(shape);
 
         // console.log(JSON.stringify(s));
 
@@ -155,7 +169,7 @@ export function create(shape: any): FretboardShape {
 
         // o.fingers = normalizeInputFormat(shape.fingers);
 
-        s = {
+        newShape = {
             // ...s,
             frets: normalizeInputFormat(shape.frets),
             fingers: normalizeFingers(shape.fingers),
@@ -172,29 +186,36 @@ export function create(shape: any): FretboardShape {
 
     // console.log(o.frets);
 
-    if (!s.frets || (s.frets.length === 0)) {     // this allows the creation of empty shapes
-        return s;
+    if (!newShape.frets || (newShape.frets.length === 0)) {     // this allows the creation of empty shapes
+        return newShape;
     }
 
-    if (!s.root) {
+    // if we did not supply the root definition, compute it:
+    if (!shape.root) {
         // by default takes the first fretted note on the first played string
-        let firstString = firstPlayedString(s);
+        let firstString = firstPlayedString(newShape);
 
         if (firstString < 0) throw new Error("Invalid shape, at least a string must be played.");
 
         // console.log("firstString", firstString);
 
-        s.root = {
+        newShape.root = {
             string: firstString,
             // fret: firstPlayedFret(o.frets[firstString])
-            fret: firstPlayedFret(s)
+            fret: firstPlayedFret(newShape)
         };
-
         // console.log("root", JSON.stringify(s));
-
     }
 
-    return s;
+    // if we did not supply the position definition, compute it:
+    if (!shape.position) {
+        newShape.position = {
+            string: newShape.root.string,
+            fret: newShape.root.fret
+        };
+    }
+
+    return newShape;
 }
 
 /**

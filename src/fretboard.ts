@@ -2,7 +2,7 @@ import produce from "immer";
 import {Distance, Interval, Note} from "tonal";
 import {Tunings} from "./fretboard-api";
 import {Shape} from "./fretboard-api";
-import {FretboardShape, Intervals} from "./Shape";
+import {FretboardShape, Intervals, Notes} from "./Shape";
 
 /**
  * [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ] --> [ '1P', '4P', '4P', '4P', '3M', '4P' ]
@@ -13,7 +13,12 @@ import {FretboardShape, Intervals} from "./Shape";
 export function computeTuningIntervals(tuning = Tunings.guitar.standard): string[]  {
     const tuningIntervals = Array(tuning.length).fill(null);
     for (let i = 0; i < tuning.length; i++) {
-        const d = Distance.interval("M2", "P5");
+        // const d = Distance.interval("C2", "C3");
+        const d = Distance.interval(
+            tuning[(i - 1 + tuning.length) % tuning.length],
+            tuning[i]
+        );
+        // console.log("computeTuningIntervals d", d);
         if (typeof d !== "string") {    // because Distance.interval can return a function
             throw new Error("unexpected error")
         }
@@ -21,7 +26,7 @@ export function computeTuningIntervals(tuning = Tunings.guitar.standard): string
         tuningIntervals[i] = simple === '-1P' ? '1P' : simple;
     }
     // return Object.freeze(tuningIntervals);
-    return [];
+    return tuningIntervals;
 }
 
 /**
@@ -30,9 +35,9 @@ export function computeTuningIntervals(tuning = Tunings.guitar.standard): string
  * @param tuning
  * @returns {ReadonlyArray<any>}
  */
-export const computeTuningPitchClasses = (tuning = Tunings.guitar.standard) => {
+export function computeTuningPitchClasses(tuning = Tunings.guitar.standard) {
     return Object.freeze(tuning.map(Note.pc));
-};
+}
 
 /**
  *
@@ -146,7 +151,8 @@ export function intervals(shape: FretboardShape, tuning = Tunings.guitar.standar
 
     // console.log(intervals);
 
-    return Object.freeze(shapeIntervals);
+    // return Object.freeze(shapeIntervals);
+    return shapeIntervals;
 }
 
 /**
@@ -154,7 +160,7 @@ export function intervals(shape: FretboardShape, tuning = Tunings.guitar.standar
  * @param shape
  * @param tuning
  */
-export const notes = (shape: FretboardShape, tuning = Tunings.guitar.standard) => {
+export function notes(shape: FretboardShape, tuning = Tunings.guitar.standard): Notes  {
 
     if (!shape.root) throw new Error("Shape root must be defined.");
     if (!shape.intervals) throw new Error("Shape intervals must be defined.");
@@ -163,12 +169,11 @@ export const notes = (shape: FretboardShape, tuning = Tunings.guitar.standard) =
     if (typeof rootNote !== "string") {    // because Distance.transpose can return a function
         throw new Error("unexpected error")
     }
-    return Object.freeze(
-        shape.intervals.map(
+    // return Object.freeze(
+    return shape.intervals.map(
             string => string == null ? null :
                 string.map(
                 interval => {
-
                     const d = Distance.transpose(rootNote, interval);
                     if (typeof d !== "string") {    // because Distance.transpose can return a function
                         throw new Error("unexpected error")
@@ -176,9 +181,9 @@ export const notes = (shape: FretboardShape, tuning = Tunings.guitar.standard) =
                     return d;
                 }
             )
-        )
-    );
-};
+        );
+    // );
+}
 
 
 /**
@@ -240,7 +245,7 @@ export const fret = (note, string, tuning = Tuning.guitar.standard) => {
  * @param fret
  * @returns {*}
  */
-export const moveToFret = (shape: FretboardShape, fret: number): FretboardShape => {
+export function moveToFret(shape: FretboardShape, fret: number): FretboardShape {
 
     // console.log(`fretboard.moveToFret`, shape);
 
@@ -258,22 +263,33 @@ export const moveToFret = (shape: FretboardShape, fret: number): FretboardShape 
         }
         draftShape.root.fret += delta;
 
-/* TODO
+        // draftShape.position = {string: shape.position.string, fret};
+        draftShape.position.fret += delta;
 
-        draftShape.position = fret;
-
-        draftShape.frets = draftShape.frets.map(string => string.map(fret => fret === 'X' ? 'X' : (fret + delta)));
+        draftShape.frets = draftShape.frets.map(
+            string => string == null
+                ? null
+                : string.map(fret => fret + delta)
+        );
 
         if (draftShape.notes) {
-            let iv = Interval.fromSemitones(delta);
-            draftShape.notes = draftShape.notes.map(string => string.map(note => Distance.transpose(note, iv)));
+            let interval = Interval.fromSemitones(delta);
+            draftShape.notes = draftShape.notes.map(
+                string => string == null ? null :
+                    string.map(
+                        note => {
+                            const n = Distance.transpose(note, interval);
+                            if (typeof n !== "string") {    // because Distance.transpose can return a function
+                                throw new Error("unexpected error")
+                            }
+                            return n;
+                        }
+                    )
+            );
         }
-*/
-
         // console.log(`fretboard.moveToFret return`, draftShape);
-
     });
-};
+}
 
 
 /**
@@ -301,15 +317,21 @@ export const transposeByString = (shape, string, tuning) => {
  * @param tuning Array
  * @param position int
  */
-export const play = (shape: FretboardShape, position = null, tuning = Tunings.guitar.standard) => {
+export function play(shape: FretboardShape, position: number|null = null, tuning = Tunings.guitar.standard): FretboardShape {
 
-    //TODO: Question: do we embed the tuning? because plying the shape is directly linked to the tuning
+    //TODO: Question: do we embed the tuning? because playing the shape is directly linked to the tuning
 
     // console.log('fretboard.play');  //, shape, position, tuning);
 
-    // let s = position ? moveToFret(shape, position) : shape
+    // const s = position ? moveToFret(shape, position) : shape;
+    // let s;
+    // if (position == null) {
+    //     s = shape;
+    // } else {
+    //     s = moveToFret(shape, position)
+    // }
 
-    return produce(position ? moveToFret(shape, position) : shape, draftShape => {
+    return produce(position != null ? moveToFret(shape, position) : shape, draftShape => {
 
         // console.log(position, draftShape.position, shape.position, ((shape.position === undefined || shape.position === null) ? draftShape.position : shape.position));
 
@@ -336,11 +358,11 @@ export const play = (shape: FretboardShape, position = null, tuning = Tunings.gu
 
         // console.log('play root', draftShape.root);
 
-        draftShape.intervals = intervals(draftShape.frets, draftShape.root, draftShape.tuning);
+        draftShape.intervals = intervals(draftShape, draftShape.tuning);
 
         draftShape.notes = notes(draftShape, tuning); // pass draftShape because notes() requires intervals()
 
     });
 
-};
+}
 

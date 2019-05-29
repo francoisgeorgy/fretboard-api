@@ -1,0 +1,36 @@
+import {Fretboard, Shape, Tunings} from "../src/fretboard-api";
+
+test('fretboard tuning', () => {
+    expect(Fretboard.computeTuningIntervals()).toEqual([ '1P', '4P', '4P', '4P', '3M', '4P' ]);
+    expect(Fretboard.computeTuningPitchClasses()).toEqual([ 'E', 'A', 'D', 'G', 'B', 'E' ]);
+    expect(Fretboard.computeTuningIntervals(Tunings.guitar.standard)).toEqual([ '1P', '4P', '4P', '4P', '3M', '4P' ]);
+    expect(Fretboard.computeTuningPitchClasses(Tunings.guitar.standard)).toEqual([ 'E', 'A', 'D', 'G', 'B', 'E' ]);
+});
+
+test('fretboard play shape X32010 at fret 8', () => {
+    expect(Fretboard.play(Shape.create("X32010"), 8)).toMatchObject({
+        frets: [null, [8], [7], [5], [6], [5]],
+        // fingers: null,
+        root: {"string": 1, "fret": 8},
+        position: {"string": 1, "fret": 8},
+        tuning: Tunings.guitar.standard,
+        intervals: [null, ["1P"], ["3M"], ["5P"], ["8P"], ["10M"]],
+        notes: [null, ["F3"], ["A3"], ["C4"], ["F4"], ["A4"]],
+        // intervalsSimple: null,
+        // notesSimple: null
+    });
+});
+
+test('fretboard play shape', () => {
+    expect(Fretboard.play(Fretboard.moveToFret(Shape.create("X32010"), 8))).toMatchObject({
+        frets: [null, [8], [7], [5], [6], [5]],
+        // fingers: null,
+        root: {"string": 1, "fret": 8},
+        position: {"string": 1, "fret": 8},
+        tuning: Tunings.guitar.standard,
+        intervals: [null, ["1P"], ["3M"], ["5P"], ["8P"], ["10M"]],
+        notes: [null, ["F3"], ["A3"], ["C4"], ["F4"], ["A4"]],
+        // intervalsSimple: null,
+        // notesSimple: null
+    });
+});

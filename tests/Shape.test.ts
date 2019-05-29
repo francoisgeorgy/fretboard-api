@@ -96,9 +96,39 @@ test('shape 022100 on fretboard with default tuning', () => {
 
 test('shape X57X57 on fretboard with default tuning', () => {
     const s = Shape.create("X57X57");     // {frets: [[null], [5], [7], [null], [5], [7]], root: {string: 1, fret: 5}}
-
-    console.log("s", s);
+    // console.log("s", s);
     const intervals = Fretboard.intervals(s);   // [[], ['1P'], ['5P'], [], ['9M'], ['13M']]
-    console.log("intervals", intervals);
+    // console.log("intervals", intervals);
     expect(intervals).toMatchObject([null, ['1P'], ['5P'], null, ['9M'], ['13M']]);
 });
+
+
+
+/*
+test('fretboard play shape', () => {
+    expect(Fretboard.play(Fretboard.moveToFret(Shape.create("X32010"), 8))).toMatchObject({
+        frets: [['X'], [8], [7], [5], [6], [5]],
+        fingers: null,
+        root: {"string": 1, "fret": 8},
+        position: 8,
+        tuning: Tuning.guitar.standard,
+        intervals: [[], ["1P"], ["3M"], ["5P"], ["8P"], ["10M"]],
+        notes: [[], ["F3"], ["A3"], ["C4"], ["F4"], ["A4"]],
+        intervalsSimple: null,
+        notesSimple: null
+    });
+
+    expect(Fretboard.play(Shape.create("X32010"), 8)).toMatchObject({
+        frets: [['X'], [8], [7], [5], [6], [5]],
+        fingers: null,
+        root: {"string": 1, "fret": 8},
+        position: 8,
+        tuning: Tuning.guitar.standard,
+        intervals: [[], ["1P"], ["3M"], ["5P"], ["8P"], ["10M"]],
+        notes: [[], ["F3"], ["A3"], ["C4"], ["F4"], ["A4"]],
+        intervalsSimple: null,
+        notesSimple: null
+    });
+
+});
+*/

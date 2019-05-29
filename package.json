@@ -55,12 +55,14 @@
         ],
         "testPathIgnorePatterns": [
             "/node_modules/",
-            "/v0.*/"
+            "/v0.*/",
+            "/discarded/"
         ],
         "coveragePathIgnorePatterns": [
             "/node_modules/",
             "/test/",
-            "/v0.*/"
+            "/v0.*/",
+            "/discarded/"
         ],
         "coverageThreshold": {
             "global": {
