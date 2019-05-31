@@ -1,7 +1,7 @@
 // import DummyClass from "../src/fretboard-api"
-// import {create, normalizeInputFormat} from "../src/Shape";
-import {Fretboard, Shape} from "../src";
-// import {normalizeInputFormat} from "../src/utils";
+// import {create, Shape.normalizeInputFormat} from "../src/Shape";
+
+// import {Shape.normalizeInputFormat} from "../src/utils";
 
 /**
  * Dummy test
@@ -23,6 +23,8 @@ describe("Dummy test", () => {
 */
 
 // const NON_PLAYED = null;
+
+import {Fretboard, Shape} from "../src";
 
 test('normalizeFretsFormat', () => {
     //TODO: complete test with more input formats, using 'X', '', '-', ",,", ...
@@ -111,19 +113,19 @@ test('fretboard play shape', () => {
         fingers: null,
         root: {"string": 1, "fret": 8},
         position: 8,
-        tuning: Tuning.guitar.standard,
+        tuning: TuningType.guitar.standard,
         intervals: [[], ["1P"], ["3M"], ["5P"], ["8P"], ["10M"]],
         notes: [[], ["F3"], ["A3"], ["C4"], ["F4"], ["A4"]],
         intervalsSimple: null,
         notesSimple: null
     });
 
-    expect(Fretboard.play(Shape.create("X32010"), 8)).toMatchObject({
+    expect(Fretboard.play(create("X32010"), 8)).toMatchObject({
         frets: [['X'], [8], [7], [5], [6], [5]],
         fingers: null,
         root: {"string": 1, "fret": 8},
         position: 8,
-        tuning: Tuning.guitar.standard,
+        tuning: TuningType.guitar.standard,
         intervals: [[], ["1P"], ["3M"], ["5P"], ["8P"], ["10M"]],
         notes: [[], ["F3"], ["A3"], ["C4"], ["F4"], ["A4"]],
         intervalsSimple: null,

@@ -1,7 +1,7 @@
-import {Intervals} from "./Shape";
+import {Intervals} from "./shape";
 import {Interval} from "tonal";
 
-export function intervalsSimple(intervals: Intervals): string[] {
+function intervalsSimple(intervals: Intervals): string[] {
     let simples: string[] = [];
     for (let string of intervals) {
         if (string == null) {
@@ -22,3 +22,7 @@ export function intervalsSimple(intervals: Intervals): string[] {
     }
     return simples;
 }
+
+export const Utils = {
+    intervalsSimple
+};

@@ -108,8 +108,8 @@ test('shape X57X57 on fretboard with default tuning', () => {
 test('fretboard tuning', () => {
     expect(Fretboard.computeTuningIntervals()).toEqual([ '1P', '4P', '4P', '4P', '3M', '4P' ]);
     expect(Fretboard.computeTuningPitchClasses()).toEqual([ 'E', 'A', 'D', 'G', 'B', 'E' ]);
-    expect(Fretboard.computeTuningIntervals(Tuning.guitar.standard)).toEqual([ '1P', '4P', '4P', '4P', '3M', '4P' ]);
-    expect(Fretboard.computeTuningPitchClasses(Tuning.guitar.standard)).toEqual([ 'E', 'A', 'D', 'G', 'B', 'E' ]);
+    expect(Fretboard.computeTuningIntervals(TuningType.guitar.standard)).toEqual([ '1P', '4P', '4P', '4P', '3M', '4P' ]);
+    expect(Fretboard.computeTuningPitchClasses(TuningType.guitar.standard)).toEqual([ 'E', 'A', 'D', 'G', 'B', 'E' ]);
 });
 */
 /*
@@ -119,7 +119,7 @@ test('fretboard play shape', () => {
         fingers: null,
         root: {"string": 1, "fret": 8},
         position: 8,
-        tuning: Tuning.guitar.standard,
+        tuning: TuningType.guitar.standard,
         intervals: [[], ["1P"], ["3M"], ["5P"], ["8P"], ["10M"]],
         notes: [[], ["F3"], ["A3"], ["C4"], ["F4"], ["A4"]],
         intervalsSimple: null,
@@ -131,7 +131,7 @@ test('fretboard play shape', () => {
         fingers: null,
         root: {"string": 1, "fret": 8},
         position: 8,
-        tuning: Tuning.guitar.standard,
+        tuning: TuningType.guitar.standard,
         intervals: [[], ["1P"], ["3M"], ["5P"], ["8P"], ["10M"]],
         notes: [[], ["F3"], ["A3"], ["C4"], ["F4"], ["A4"]],
         intervalsSimple: null,

@@ -1,8 +1,7 @@
 import produce from "immer";
 import {Distance, Interval, Note} from "tonal";
-import * as Tunings from "./Tunings";
-import * as Shape from "./Shape";
-import {FretboardShape, Intervals, Notes} from "./Shape";
+import {Tuning} from "./tuning";
+import {Intervals, Notes, Shape, ShapeType} from "./shape";
 
 /**
  * [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ] --> [ '1P', '4P', '4P', '4P', '3M', '4P' ]
@@ -10,7 +9,7 @@ import {FretboardShape, Intervals, Notes} from "./Shape";
  * @param tuning
  * @returns {ReadonlyArray<any>}
  */
-export function computeTuningIntervals(tuning = Tunings.guitar.standard): string[]  {
+function computeTuningIntervals(tuning = Tuning.guitar.standard): string[]  {
     const tuningIntervals = Array(tuning.length).fill(null);
     for (let i = 0; i < tuning.length; i++) {
         // const d = Distance.interval("C2", "C3");
@@ -35,7 +34,7 @@ export function computeTuningIntervals(tuning = Tunings.guitar.standard): string
  * @param tuning
  * @returns {ReadonlyArray<any>}
  */
-export function computeTuningPitchClasses(tuning = Tunings.guitar.standard) {
+function computeTuningPitchClasses(tuning = Tuning.guitar.standard) {
     return Object.freeze(tuning.map(Note.pc));
 }
 
@@ -47,7 +46,7 @@ export function computeTuningPitchClasses(tuning = Tunings.guitar.standard) {
  * @param toFret
  * @param tuning
  */
-export function semitones(fromString: number, fromFret: number, toString: number, toFret: number, tuning = Tunings.guitar.standard): number {
+function semitones(fromString: number, fromFret: number, toString: number, toFret: number, tuning = Tuning.guitar.standard): number {
     const n = Distance.semitones(tuning[fromString], tuning[toString]);
     if (n == null) throw new Error("invalid arguments");
     return n + toFret - fromFret;
@@ -61,7 +60,7 @@ export function semitones(fromString: number, fromFret: number, toString: number
  * @param toFret
  * @param tuning
  */
-export function interval(fromString: number, fromFret: number, toString: number, toFret: number, tuning = Tunings.guitar.standard): string {
+function interval(fromString: number, fromFret: number, toString: number, toFret: number, tuning = Tuning.guitar.standard): string {
     return Interval.fromSemitones(semitones(fromString, fromFret, toString, toFret, tuning));
 }
 
@@ -79,7 +78,7 @@ export function interval(fromString: number, fromFret: number, toString: number,
  *
  *  intervals [ [ '1P' ], [ '5P' ], [ '8P' ], [ '10M' ], [ '12P' ], [ '15P' ] ]
  */
-export function intervals(shape: FretboardShape, tuning = Tunings.guitar.standard): Intervals {
+function intervals(shape: ShapeType, tuning = Tuning.guitar.standard): Intervals {
 
     // console.log(frets, root);
     if (!shape.root) throw new Error("Shape root must be defined.");
@@ -161,7 +160,7 @@ export function intervals(shape: FretboardShape, tuning = Tunings.guitar.standar
  * @param shape
  * @param tuning
  */
-export function notes(shape: FretboardShape, tuning = Tunings.guitar.standard): Notes  {
+function notes(shape: ShapeType, tuning = Tuning.guitar.standard): Notes  {
 
     if (!shape.root) throw new Error("Shape root must be defined.");
     if (!shape.intervals) throw new Error("Shape intervals must be defined.");
@@ -195,7 +194,7 @@ export function notes(shape: FretboardShape, tuning = Tunings.guitar.standard): 
  * @returns {*}
  */
 /*
-export const fret = (note, string, tuning = Tuning.guitar.standard) => {
+const fret = (note, string, tuning = Tuning.guitar.standard) => {
 
     //TODO: re-implement or discard
 
@@ -246,7 +245,7 @@ export const fret = (note, string, tuning = Tuning.guitar.standard) => {
  * @param fret
  * @returns {*}
  */
-export function moveToFret(shape: FretboardShape, fret: number): FretboardShape {
+function moveToFret(shape: ShapeType, fret: number): ShapeType {
 
     // console.log(`fretboard.moveToFret`, shape);
 
@@ -254,8 +253,8 @@ export function moveToFret(shape: FretboardShape, fret: number): FretboardShape 
 
     return produce(shape, draftShape => {
 
-        // let delta = fret - Shape.getFretPosition(draftShape);    //FIXME: typescript unhappy
-        let delta = 0;
+        let delta = fret - Shape.getFretPosition(draftShape);    //FIXME: typescript unhappy
+        // let delta = 0;
 
         if (!draftShape.root) {
             draftShape.root = { //TODO: function to getRoot
@@ -263,7 +262,7 @@ export function moveToFret(shape: FretboardShape, fret: number): FretboardShape 
                 fret: 0
             };
         }
-        draftShape.root.fret += delta;
+        draftShape.root.fret += delta;      // FIXME: if we update the root, we must update the frets; otherwise only update the position
 
         // draftShape.position = {string: shape.position.string, fret};
         draftShape.position.fret += delta;
@@ -301,11 +300,11 @@ export function moveToFret(shape: FretboardShape, fret: number): FretboardShape 
  * @returns {*}
  */
 /*
-export const moveToString = (shape, string) => {
+const moveToString = (shape, string) => {
 };
 
 
-export const transposeByString = (shape, string, tuning) => {
+const transposeByString = (shape, string, tuning) => {
     //--> shape
 };
 */
@@ -319,7 +318,7 @@ export const transposeByString = (shape, string, tuning) => {
  * @param tuning Array
  * @param position int
  */
-export function play(shape: FretboardShape, position: number|null = null, tuning = Tunings.guitar.standard): FretboardShape {
+function play(shape: ShapeType, position: number|null = null, tuning = Tuning.guitar.standard): ShapeType {
 
     //TODO: Question: do we embed the tuning? because playing the shape is directly linked to the tuning
 
@@ -360,9 +359,20 @@ export function play(shape: FretboardShape, position: number|null = null, tuning
 
         // console.log('play root', draftShape.root);
 
-        // draftShape.intervals = intervals(draftShape, draftShape.tuning); //FIXME: typescript unhappy
-        // draftShape.notes = notes(draftShape, tuning); // pass draftShape because notes() requires intervals()   //FIXME: typescript unhappy
+        draftShape.intervals = intervals(draftShape, draftShape.tuning); //FIXME: typescript unhappy
+        draftShape.notes = notes(draftShape, tuning); // pass draftShape because notes() requires intervals()   //FIXME: typescript unhappy
 
     });
 
 }
+
+export const Fretboard = {
+    computeTuningIntervals,
+    computeTuningPitchClasses,
+    semitones,
+    intervals,
+    interval,
+    notes,
+    moveToFret,
+    play
+};

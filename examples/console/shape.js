@@ -1,6 +1,6 @@
 import * as Shape from "../../src/shape";
 import * as Fretboard from "../../src/fretboard";
-// import {Tuning} from "../../src/Tuning.js";
+// import {TuningType} from "../../src/TuningType.js";
 
 // console.log(Shape.create("X02210"));
 
@@ -8,7 +8,7 @@ import * as Fretboard from "../../src/fretboard";
 const s = Shape.create({frets: "022100", fingers: "123411"});
 console.log(JSON.stringify(s));
 
-const p = Fretboard.play(s, 5, Tuning.guitar.standard);
+const p = Fretboard.play(s, 5, TuningType.guitar.standard);
 console.log(JSON.stringify(p));
 
 const r = Fretboard.play(Shape.create("022100"));
@@ -104,7 +104,7 @@ console.log(v.frets);
 /*
 // console.log(p.frets === s.frets);   // true because of immer.js
 
-// const q = Shape.play(s, Tuning.guitar.standard, 5);
+// const q = Shape.play(s, TuningType.guitar.standard, 5);
 // console.log(JSON.stringify(q));
 //
 // const r = Shape.moveToFret(q, 8);

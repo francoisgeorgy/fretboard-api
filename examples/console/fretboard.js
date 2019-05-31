@@ -1,5 +1,5 @@
 import * as Fretboard from "../../src/fretboard";
-import {Tuning} from "../../src/Tuning.js";
+import {Tuning} from "../../src/TuningType.js";
 
 console.log(Fretboard.computeTuningIntervals(Tuning.guitar.standard));
 console.log(Fretboard.computeTuningPitchClasses(Tuning.guitar.standard));

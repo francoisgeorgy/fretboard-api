@@ -1,4 +1,6 @@
 
+//TODO: move these types into index
+
 /**
  * Fret number.
  * Also finger number.
@@ -80,7 +82,7 @@ export interface Position {
  *
  * A null values in frets means a non-played string.
  */
-export interface FretboardShape {
+export interface ShapeType {
     /**
      * First dimensions is strings, second dimension is frets.
      */
@@ -130,12 +132,12 @@ export interface FretboardShape {
     // notesSimple?: string[]
 }
 
-export function create(frets: string): FretboardShape;
-export function create(frets: Fret[]): FretboardShape;
-export function create(shape: object): FretboardShape;
-export function create(shape: any): FretboardShape {
+function create(frets: string): ShapeType;
+function create(frets: Fret[]): ShapeType;
+function create(shape: object): ShapeType;
+function create(shape: any): ShapeType {
 
-    let newShape: FretboardShape = {
+    let newShape: ShapeType = {
         frets:[null],
         root: {string: 0, fret: 0},
         position: {string: 0, fret: 0}
@@ -220,9 +222,9 @@ export function create(shape: any): FretboardShape {
 
 /**
  *
- * @param shape The FretboardShape
+ * @param shape The Shape
  */
-function firstPlayedString(shape: FretboardShape): number {
+function firstPlayedString(shape: ShapeType): number {
     const n = shape.frets.findIndex(string => string != null && string.length > 0);
     if (n < 0) throw new Error("Invalid shape, at least one string must be played.");
     return n;
@@ -230,9 +232,9 @@ function firstPlayedString(shape: FretboardShape): number {
 
 /**
  * Returns first played fret (non null)
- * @param shape The FretboardShape
+ * @param shape The Shape
  */
-function firstPlayedFret(shape: FretboardShape): number {
+function firstPlayedFret(shape: ShapeType): number {
     // const firstString = firstPlayedString(shape);
     // if (firstString < 0) throw new Error("Invalid shape, at least a string must be played.");
     const fs = shape.frets[firstPlayedString(shape)];
@@ -257,7 +259,7 @@ function firstPlayedFret(shape: FretboardShape): number {
  */
 // export function normalizeInputFormat(frets: string): Fret[][]|undefined;
 // export function normalizeInputFormat(frets: number[]): Fret[][]|undefined;
-export function normalizeInputFormat(frets: string|SingleFret[]): Frets {
+function normalizeInputFormat(frets: string|SingleFret[]): Frets {
 
     if (!frets) {
         //TODO: throw an error instead?
@@ -301,7 +303,7 @@ export function normalizeInputFormat(frets: string|SingleFret[]): Frets {
  *
  * @param fingers
  */
-export function normalizeFingers(fingers: string|Finger[]): Fingers {
+function normalizeFingers(fingers: string|Finger[]): Fingers {
 
     // if (typeof frets !== 'string') return frets;
 
@@ -351,7 +353,7 @@ export function normalizeFingers(fingers: string|Finger[]): Fingers {
  * @param shape
  * @returns {*}
  */
-export function getFretPosition(shape: FretboardShape): number {
+function getFretPosition(shape: ShapeType): number {
     if (shape.position === undefined || shape.position === null) {
         const s = shape.frets[firstPlayedString(shape)];
         // const s0 = s[0];
@@ -366,3 +368,10 @@ export function getFretPosition(shape: FretboardShape): number {
         return shape.position.fret;
     }
 }
+
+export const Shape = {
+    create,
+    normalizeInputFormat,   // export for testing; TODO: find a solution to test this without exporting
+    // normalizeFingers,
+    getFretPosition         // used in Fretboard
+};

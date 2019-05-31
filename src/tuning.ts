@@ -1,12 +1,12 @@
 
-export type Tuning = { [name: string]: string[] };
+export type TuningType = { [name: string]: string[] };
 
-export const bass4: Tuning = {
+const bass4: TuningType = {
     standard : ['E1', 'A1', 'D2', 'G2'],
     drop_d : ['D1', 'A1', 'D2', 'G2']
 };
 
-export const guitar6: Tuning = {
+const guitar6: TuningType = {
     standard : ['E2', 'A2', 'D3', 'G3', 'B3', 'E4'],
         standard_d : ['D2', 'G2', 'C3', 'F3', 'A3', 'D4'],
         drop_d : ['D2', 'A2', 'D3', 'G3', 'B3', 'E4'],
@@ -15,10 +15,18 @@ export const guitar6: Tuning = {
         dadgad : ['D2', 'A2', 'D3', 'G3', 'A3', 'D4']
 };
 
-export const guitar: Tuning = guitar6;
+const bass: TuningType = bass4;
+const guitar: TuningType = guitar6;
+
+export const Tuning = {
+    bass,
+    bass4,
+    guitar,
+    guitar6
+};
 
 /*
-export const Tunings: { [name: string]: Tuning } = {
+export const Tunings: { [name: string]: TuningType } = {
     bass4: {
         standard : ['E1', 'A1', 'D2', 'G2'],
         drop_d : ['D1', 'A1', 'D2', 'G2']

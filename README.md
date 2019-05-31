@@ -21,6 +21,10 @@ are changed depending on the tuning.
 
 ## Conventions
 
+Naming:
+
+interface with "Type" suffix. 
+
 ### Strings numbering
 
 #### for the user
