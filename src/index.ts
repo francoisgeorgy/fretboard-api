@@ -11,6 +11,7 @@
 export * from "./shape";
 export * from "./tuning";
 export * from "./fretboard";
+export * from "./utils";
 
 // import * as Shape from "./Shape";
 // import * as Tunings from "./Tunings";

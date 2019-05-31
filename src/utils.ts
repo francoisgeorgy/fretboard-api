@@ -23,6 +23,25 @@ function intervalsSimple(intervals: Intervals): string[] {
     return simples;
 }
 
+/**
+ *
+ * @param interval
+ * @param compound
+ * @returns {string}
+ */
+function intervalText(interval: string, compound=false): string {
+    let props = Interval.props(interval);
+    if (props.chroma === 0) return compound ? props.num.toString() : 'R';     // make optional
+    if (props.num == null) {
+        throw new Error(`invalid interval: ${interval}`);
+    } else {
+        let t = compound ? props.num.toString() : props.simple.toString();
+        if ((props.q === 'M') || (props.q === 'P')) return t;
+        return t + props.q;
+    }
+}
+
 export const Utils = {
-    intervalsSimple
+    intervalsSimple,
+    intervalText
 };
