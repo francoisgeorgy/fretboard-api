@@ -1,4 +1,4 @@
-import {Fretboard, Shape, Tunings} from "../src/fretboard-api";
+import {Fretboard, Shape, Tunings} from "../src";
 
 test('fretboard tuning', () => {
     expect(Fretboard.computeTuningIntervals()).toEqual([ '1P', '4P', '4P', '4P', '3M', '4P' ]);

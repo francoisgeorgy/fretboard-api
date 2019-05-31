@@ -1,6 +1,6 @@
 // import DummyClass from "../src/fretboard-api"
 // import {create, normalizeInputFormat} from "../src/Shape";
-import {Fretboard, Shape} from "../src/fretboard-api";
+import {Fretboard, Shape} from "../src";
 // import {normalizeInputFormat} from "../src/utils";
 
 /**

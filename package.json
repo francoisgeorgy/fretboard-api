@@ -2,30 +2,32 @@
     "name": "fretboard-api",
     "version": "0.5.0",
     "description": "A kind of API for fretboard diagrams",
+    "author": "François Georgy <francois.georgy@gmail.com>",
+    "license": "MIT",
     "keywords": [
         "fretboard",
         "api"
     ],
-    "main": "dist/fretboard-api.umd.js",
-    "module": "dist/fretboard-api.es5.js",
-    "typings": "dist/types/fretboard-api.d.ts",
-    "files": [
-        "dist"
-    ],
-    "author": "François Georgy <francois.georgy@gmail.com>",
     "repository": {
         "type": "git",
         "url": "https://github.com/francoisgeorgy/fretboard-api.git"
     },
-    "license": "MIT",
+    "main": "dist/index.js",
+    "module": "dist/index.es.js",
+    "types": "dist/index.d.ts",
+    "files": [
+        "dist"
+    ],
     "engines": {
         "node": ">=6.0.0"
     },
     "scripts": {
         "lint": "tslint  --project tsconfig.json -t codeFrame 'src/**/*.ts' 'test/**/*.ts'",
         "prebuild": "rimraf dist",
-        "build": "tsc --module commonjs && rollup -c rollup.config.ts && typedoc --out docs --target es6 --theme minimal --mode file src",
-        "start": "rollup -c rollup.config.ts -w",
+        "xbuild": "tsc --module commonjs && rollup -c rollup.config.js && typedoc --out docs --target es6 --theme minimal --mode file src",
+        "build": "rollup -c rollup.config.js && typedoc --out docs --target es6 --theme minimal --mode file src",
+        "build-only": "rollup -c rollup.config.js",
+        "start": "rollup -c rollup.config.js -w",
         "test": "jest",
         "test-coverage": "jest --coverage",
         "test:watch": "jest --coverage --watch",
