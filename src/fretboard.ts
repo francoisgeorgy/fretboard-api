@@ -264,14 +264,17 @@ function moveToFret(shape: ShapeType, fret: number): ShapeType {
         }
         draftShape.root.fret += delta;      // FIXME: if we update the root, we must update the frets; otherwise only update the position
 
+        // MOVE THE POSITION
+        //FIXME: position should be computed, not an attribute
         // draftShape.position = {string: shape.position.string, fret};
         draftShape.position.fret += delta;
 
-        // draftShape.frets = draftShape.frets.map(
-        //     string => string == null
-        //         ? null
-        //         : string.map(fret => fret + delta)
-        // );
+        // MOVE THE FRET POSITIONS:
+        draftShape.frets = draftShape.frets.map(
+            string => string == null
+                ? null
+                : string.map(fret => fret + delta)
+        );
 
         if (draftShape.notes) {
             let interval = Interval.fromSemitones(delta);
