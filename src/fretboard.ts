@@ -1,5 +1,5 @@
 import produce from "immer";
-import {Distance, Interval, Note} from "tonal";
+import {Distance, Interval, note, Note} from "tonal";
 import {Tuning} from "./tuning";
 import {Intervals, Notes, Shape, ShapeType} from "./shape";
 
@@ -169,19 +169,27 @@ function notes(shape: ShapeType, tuning = Tuning.guitar.standard): Notes  {
     if (typeof rootNote !== "string") {    // because Distance.transpose can return a function
         throw new Error("unexpected error")
     }
+
+    // console.log(`notes: rootNote=${rootNote}`);
+
     // return Object.freeze(
     return shape.intervals.map(
-            string => string == null ? null :
-                string.map(
-                interval => {
-                    const d = Distance.transpose(rootNote, interval);
-                    if (typeof d !== "string") {    // because Distance.transpose can return a function
-                        throw new Error("unexpected error")
-                    }
-                    return d;
+        string => string == null ? null :
+            string.map(
+            interval => {
+                const d = Distance.transpose(rootNote, interval);
+                // console.log(`notes: rootNote=${rootNote} interval=${interval} d=${d}`);
+                if (typeof d !== "string") {    // because Distance.transpose can return a function
+                    throw new Error("unexpected error")     //TODO: need a better error message
                 }
-            )
-        );
+                const s = Note.simplify(d);
+                if (s == null) {
+                    throw new Error("unexpected error")     //TODO: need a better error message
+                }
+                return s;
+            }
+        )
+    );
     // );
 }
 

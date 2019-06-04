@@ -1,3 +1,8 @@
 Execute on the command line:
 
-    node_modules/babel-cli/bin/babel-node.js lab/lab-immerjs-1.js 
+    yarn add --dev @babel/core @babel/cli @babel/node @babel/preset-env
+    babel-node --presets @babel/preset-env lab/intervals.js
+    
+     
+    
+    
