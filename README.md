@@ -15,9 +15,12 @@ are changed depending on the tuning.
 When _*transposing*_ a shape, the shape's *intervals* never changes. If the shape is transposed to a different string, then the shape's frets 
 are changed depending on the tuning.
 
+- move: the shape form never changes; the intervals may change.
+- transpose: the shape form may change; the intervals never change.
+
 ### Assumptions
 
-- western tonal music: 12 semitones
+- Western tonal music with 12 semitones per octave.
 
 ## Conventions
 
@@ -47,8 +50,8 @@ Fret number 0 is the nut, or the "zero fret" installed close the the nut on some
 
 The canonical format is a two-dimensional array:
 
-- 1st dimension is strings
-- 2nd dimension is frets
+- 1st dimension are strings
+- 2nd dimension are frets within a string
 
 A muted string is represented by an empty frets array.
 
