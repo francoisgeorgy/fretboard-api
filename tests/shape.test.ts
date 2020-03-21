@@ -26,6 +26,8 @@ describe("Dummy test", () => {
 
 import {Fretboard, Shape} from "../src";
 
+describe.skip("shapes", () => {
+
 test('normalizeFretsFormat', () => {
     //TODO: complete test with more input formats, using 'X', '', '-', ",,", ...
     expect(Shape.normalizeInputFormat("022100")).toEqual([[0], [2], [2], [1], [0], [0]]);
@@ -104,6 +106,7 @@ test('shape X57X57 on fretboard with default tuning', () => {
     expect(intervals).toMatchObject([null, ['1P'], ['5P'], null, ['9M'], ['13M']]);
 });
 
+});
 
 
 /*

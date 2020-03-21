@@ -9,7 +9,7 @@ import {Intervals, Notes, Shape, ShapeType} from "./shape";
  * @param tuning
  * @returns {ReadonlyArray<any>}
  */
-function computeTuningIntervals(tuning = Tuning.guitar.standard): string[]  {
+function computeTuningIntervals(tuning = Tuning.guitar.standard): string[] {
     const tuningIntervals = Array(tuning.length).fill(null);
     for (let i = 0; i < tuning.length; i++) {
         // const d = Distance.interval("C2", "C3");
@@ -21,7 +21,7 @@ function computeTuningIntervals(tuning = Tuning.guitar.standard): string[]  {
         if (typeof d !== "string") {    // because Distance.interval can return a function
             throw new Error("unexpected error")
         }
-        let simple = Interval.simplify(d);
+        const simple = Interval.simplify(d);
         tuningIntervals[i] = simple === '-1P' ? '1P' : simple;
     }
     // return Object.freeze(tuningIntervals);
@@ -34,7 +34,7 @@ function computeTuningIntervals(tuning = Tuning.guitar.standard): string[]  {
  * @param tuning
  * @returns {ReadonlyArray<any>}
  */
-function computeTuningPitchClasses(tuning = Tuning.guitar.standard) {
+function computeTuningPitchClasses(tuning = Tuning.guitar.standard): ReadonlyArray<string | null> {
     return Object.freeze(tuning.map(Note.pc));
 }
 
@@ -91,7 +91,7 @@ function intervals(shape: ShapeType, tuning = Tuning.guitar.standard): Intervals
 
     for (let string = 0; string < shape.frets.length; string++) {  // strings
 
-        let stringIntervals: string[] = [];
+        const stringIntervals: string[] = [];
         // let chromas = [];
 
         // console.log(string, frets.length, frets[string].length, frets[string]);
@@ -110,14 +110,14 @@ function intervals(shape: ShapeType, tuning = Tuning.guitar.standard): Intervals
         //     continue;
         // }
 
-        for (let fret of stringFrets) {
+        for (const fret of stringFrets) {
 
             // console.log(root.string, root.fret, string, fret, tuning);  // !!! NaN
 
             if (fret == null) continue;     // skip non-played string
 
             // get interval name between this shape's note and the shape's root note:
-            let intervalFromRoot = interval(shape.root.string, shape.root.fret, string, fret, tuning);
+            const intervalFromRoot = interval(shape.root.string, shape.root.fret, string, fret, tuning);
 
             // console.log("interval_from_root", interval_from_root);  // !!! NaN
 
@@ -169,19 +169,27 @@ function notes(shape: ShapeType, tuning = Tuning.guitar.standard): Notes  {
     if (typeof rootNote !== "string") {    // because Distance.transpose can return a function
         throw new Error("unexpected error")
     }
+
+    // console.log(`notes: rootNote=${rootNote}`);
+
     // return Object.freeze(
     return shape.intervals.map(
-            string => string == null ? null :
-                string.map(
-                interval => {
-                    const d = Distance.transpose(rootNote, interval);
-                    if (typeof d !== "string") {    // because Distance.transpose can return a function
-                        throw new Error("unexpected error")
-                    }
-                    return d;
+        string => string == null ? null :
+            string.map(
+            interval => {
+                const d = Distance.transpose(rootNote, interval);
+                // console.log(`notes: rootNote=${rootNote} interval=${interval} d=${d}`);
+                if (typeof d !== "string") {    // because Distance.transpose can return a function
+                    throw new Error("unexpected error")     //TODO: need a better error message
                 }
-            )
-        );
+                const s = Note.simplify(d);
+                if (s == null) {
+                    throw new Error("unexpected error")     //TODO: need a better error message
+                }
+                return s;
+            }
+        )
+    );
     // );
 }
 
@@ -253,7 +261,7 @@ function moveToFret(shape: ShapeType, fret: number): ShapeType {
 
     return produce(shape, draftShape => {
 
-        let delta = fret - Shape.getFretPosition(draftShape);    //FIXME: typescript unhappy
+        const delta = fret - Shape.getFretPosition(draftShape);    //FIXME: typescript unhappy
         // let delta = 0;
 
         if (!draftShape.root) {
@@ -264,17 +272,20 @@ function moveToFret(shape: ShapeType, fret: number): ShapeType {
         }
         draftShape.root.fret += delta;      // FIXME: if we update the root, we must update the frets; otherwise only update the position
 
+        // MOVE THE POSITION
+        //FIXME: position should be computed, not an attribute
         // draftShape.position = {string: shape.position.string, fret};
         draftShape.position.fret += delta;
 
-        // draftShape.frets = draftShape.frets.map(
-        //     string => string == null
-        //         ? null
-        //         : string.map(fret => fret + delta)
-        // );
+        // MOVE THE FRET POSITIONS:
+        draftShape.frets = draftShape.frets.map(
+            string => string == null
+                ? null
+                : string.map(fret => fret + delta)
+        );
 
         if (draftShape.notes) {
-            let interval = Interval.fromSemitones(delta);
+            const interval = Interval.fromSemitones(delta);
             draftShape.notes = draftShape.notes.map(
                 string => string == null ? null :
                     string.map(

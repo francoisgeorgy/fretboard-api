@@ -13,17 +13,17 @@ import pkg from './package.json'
 export default {
     input: `src/index.ts`,
     output: [
-        {
-            file: pkg.main,
-            // name: camelCase(LIBRARY_NAME),
-            format: 'cjs',
-            sourcemap: true
-        },
+        // {
+        //     file: pkg.main,
+        //     // name: camelCase(LIBRARY_NAME),
+        //     format: 'cjs',
+        //     sourcemap: true
+        // },
         {
             file: pkg.module,
-            format: 'es',
-            sourcemap: true
-        },
+            format: 'esm',      // esm – Keep the bundle as an ES module file, suitable for other bundlers and inclusion as a <script type=module> tag in modern browsers
+            sourcemap: true     // https://rollupjs.org/guide/en/
+        }
     ],
     // Indicate here external modules you don't wanna include in your bundle (i.e.: 'lodash')
     external: [],
