@@ -1,6 +1,6 @@
 {
     "name": "fretboard-api",
-    "version": "0.5.1",
+    "version": "0.5.3",
     "description": "A kind of API for fretboard diagrams",
     "author": "François Georgy <francois.georgy@gmail.com>",
     "license": "MIT",
@@ -59,7 +59,8 @@
         "testPathIgnorePatterns": [
             "/node_modules/",
             "/v0.*/",
-            "/discarded/"
+            "/discarded/",
+            "/tmp/"
         ],
         "coveragePathIgnorePatterns": [
             "/node_modules/",
