@@ -83,7 +83,7 @@ function intervals(shape: ShapeType, tuning = Tuning.guitar.standard): Intervals
     // console.log(frets, root);
     if (!shape.root) throw new Error("Shape root must be defined.");
 
-    //TODO: use Internal.props() to simplify the code
+    //TODO: use Interval.props() to simplify the code
 
     const shapeIntervals = [];        // one array per string; empty array for non-played strings
     // this.chromas = [];          // one array per string; empty array for non-played strings

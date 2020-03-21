@@ -173,6 +173,13 @@ function firstPlayedFret(shape: ShapeType): number {
 // export function normalizeInputFormat(frets: number[]): Fret[][]|undefined;
 function normalizeInputFormat(frets: string|SingleFret[]): Frets {
 
+    //TODO: add formats:
+    //
+    //  "---010" --> [[], [], [], [0], [1], [0]]
+    //
+    //
+    //
+
     if (!frets) {
         //TODO: throw an error instead?
         return [];

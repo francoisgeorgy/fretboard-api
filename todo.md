@@ -7,7 +7,17 @@
 - notes
 - scale
 
+### Tuning
+
+    Define tuning as:
+        - fixed set of notes
+        - function(from-string, to-string)
+        - function(to-string)
+  
 ### Shape property:
+
+    ADD option to display non played string as 'X' or nothing
+    ADD option to set root as single number (string) or set {string,fret}. Second format is important for scales and arpeggios
 
     barre : strings to barre with first finger. First string can be specified, otherwise is implied.
     fretboard : pointer to parent
