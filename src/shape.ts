@@ -44,12 +44,12 @@ export type StringIntervals = string[]|null;
 /**
  * All intervals
  */
-export type Intervals = StringIntervals[];
+export type Intervals = StringIntervals[] | []; // empty array instead of null to ease usage
 
 /**
  * Notes for a single string
  */
-export type StringNotes = string[]|null;
+export type StringNotes = string[] | []; //|null;
 
 /**
  * All notes
@@ -83,15 +83,18 @@ export interface Position {
  * A null values in frets means a non-played string.
  */
 export interface ShapeType {
+
     /**
      * First dimensions is strings, second dimension is frets.
      */
     // frets: Fret[][],
     frets: Frets;
+
     /**
      * First dimensions is strings, second dimension is frets.
      */
     fingers?: Fingers;    //fixme: for non played position, leave empty array position instead of null value?
+
     /**
      * Position of the root note of the shape.
      *
@@ -100,6 +103,7 @@ export interface ShapeType {
      * By default, if not specified, this will be the position of the first fretted note of the first played string.
      */
     root: Position;
+
     /**
      * Position of the shape.
      *
@@ -110,18 +114,22 @@ export interface ShapeType {
      * By default, if not specified, this will be the position of the first fretted note of the first played string.
      */
     position: Position;
+
     /**
      * Added when played
      */
     tuning?: string[];
+
     /**
      * Computed when played
      */
-    intervals?: Intervals;
+    intervals: Intervals;
+
     /**
      * Computed when played
      */
-    notes?: Notes;
+    notes: Notes;   // always present, even when empty because not played; this is to simplify its usage (no more test to see if a present or not)
+
     /**
      * Computed when played
      */
@@ -130,6 +138,7 @@ export interface ShapeType {
      * Computed when played
      */
     // notesSimple?: string[]
+
 }
 
 /**
@@ -275,7 +284,9 @@ function create(shape: any): ShapeType {
     let newShape: ShapeType = {
         frets:[null],
         root: {string: 0, fret: 0},
-        position: {string: 0, fret: 0}
+        position: {string: 0, fret: 0},
+        intervals: [],
+        notes: []
     };
 
     // if (typeof shape === 'string') {                    // we use two distinct tests to help Typescript.
@@ -311,7 +322,9 @@ function create(shape: any): ShapeType {
             frets: normalizeInputFormat(shape.frets),
             fingers: normalizeFingers(shape.fingers),
             position: shape.position,
-            root: shape.root
+            root: shape.root,
+            intervals: [],
+            notes: []
         }
 
         // ['frets', 'fingers'].map(p => o[p] = normalizeInputFormat(shape[p]));

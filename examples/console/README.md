@@ -1,6 +1,12 @@
 Execute on the command line:
 
+babel 6:
+
     node_modules/babel-cli/bin/babel-node.js examples/console/example1.js 
+
+babel 7:
+
+    ???
 
 with yarn:
 

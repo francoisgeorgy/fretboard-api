@@ -1,4 +1,4 @@
-import {Fretboard, Shape} from "../src";
+import {Fretboard, Shape, Utils} from "../src";
 
 // import DummyClass from "../src/fretboard-api"
 // import {create, Shape.normalizeInputFormat} from "../src/Shape";
@@ -26,7 +26,7 @@ describe("Dummy test", () => {
 
 // const NON_PLAYED = null;
 
-describe.skip("shapes", () => {
+describe("shapes", () => {
 
 //TODO: add test for ignored '-' strings
 
@@ -45,7 +45,7 @@ test('normalizeFretsFormat', () => {
     expect(Shape.normalizeInputFormat([5, null, 5, 6, 5, null])).toEqual([[5], null, [5], [6], [5], null]);
     expect(Shape.normalizeInputFormat("24,124,134,134,24,12")).toEqual([[2, 4], [1, 2, 4], [1, 3, 4], [1, 3, 4], [2, 4], [1, 2]]);
     expect(Shape.normalizeInputFormat("8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8")).toEqual([[8, 10], [7, 8, 10], [7, 9, 10], [7, 9, 10], [8, 10], [7, 8]]);
-    expect(Shape.normalizeInputFormat("---010")).toEqual([null, null, null, [0], [1], [0]]);
+    //expect(Shape.normalizeInputFormat("---010")).toEqual([null, null, null, [0], [1], [0]]);
 });
 
 
@@ -140,3 +140,16 @@ test('fretboard play shape', () => {
 
 });
 */
+
+test('shape at position 0', () => {
+    const s = Shape.create("8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8");
+    console.log(s);
+    const p = Fretboard.play(s);
+    console.log(p);
+    console.log(Utils.intervalsSimple(p.intervals))
+    // expect(s).toMatchObject({
+    //     frets: [[0], [2], [2], [1], [0], [0]],
+    //     // fingers: undefined,
+    //     root: {string: 0, fret: 0}
+    // });
+});

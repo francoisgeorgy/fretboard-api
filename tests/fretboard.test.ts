@@ -2,14 +2,14 @@ import {Fretboard, Shape, Tuning} from "../src";
 
 describe("fretboard", () => {
 
-test.skip('fretboard tuning', () => {
+test('fretboard tuning', () => {
     expect(Fretboard.computeTuningIntervals()).toEqual([ '1P', '4P', '4P', '4P', '3M', '4P' ]);
     expect(Fretboard.computeTuningPitchClasses()).toEqual([ 'E', 'A', 'D', 'G', 'B', 'E' ]);
     expect(Fretboard.computeTuningIntervals(Tuning.guitar.standard)).toEqual([ '1P', '4P', '4P', '4P', '3M', '4P' ]);
     expect(Fretboard.computeTuningPitchClasses(Tuning.guitar.standard)).toEqual([ 'E', 'A', 'D', 'G', 'B', 'E' ]);
 });
 
-test.skip('fretboard play shape X32010 at fret 8', () => {
+test('fretboard play shape X32010 at fret 8', () => {
 
     //TODO: if we create then play, do we want to update the position?
 
@@ -29,7 +29,7 @@ test.skip('fretboard play shape X32010 at fret 8', () => {
     });
 });
 
-test.skip('fretboard play shape', () => {
+test('fretboard play shape', () => {
     expect(Fretboard.play(Fretboard.moveToFret(Shape.create("X32010"), 8))).toMatchObject({
         frets: [null, [8], [7], [5], [6], [5]],
         // fingers: null,
