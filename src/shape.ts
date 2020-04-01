@@ -29,32 +29,41 @@ export type Frets = StringFrets[];
 /**
  * Fingers for a single string
  */
-export type StringFingers = Finger[]|null;
+export type StringFingers = Finger[] | null;
 
 /**
  * All fingering
  */
 export type Fingers = StringFingers[];
 
+// export type StringIntervalsOrNotes = string[] | null;
+
 /**
  * Intervals for a single string
+ * null means the string is not played
  */
-export type StringIntervals = string[]|null;
+// export type StringIntervals = StringIntervalsOrNotes;   //string[] | null;
+export type StringIntervals = string[] | null;
 
 /**
  * All intervals
  */
-export type Intervals = StringIntervals[] | []; // empty array instead of null to ease usage
+export type ShapeIntervals = StringIntervals[]; // empty array instead of null to ease usage
 
 /**
  * Notes for a single string
+ * null means the string is not played
  */
-export type StringNotes = string[] | []; //|null;
+export type StringNotes = string[] | null;
+// export type StringNotes = StringIntervalsOrNotes;   //string[] | null;
 
 /**
  * All notes
  */
-export type Notes = StringNotes[];
+export type ShapeNotes = StringNotes[];    // empty array instead of null to ease usage
+// export type ShapeNotes = StringIntervalsOrNotes[];    // empty array instead of null to ease usage
+
+// export type ShapesNotesOrIntervals = StringIntervalsOrNotes[];
 
 /**
  *
@@ -121,14 +130,14 @@ export interface ShapeType {
     tuning?: string[];
 
     /**
-     * Computed when played
+     * Computed when played (because intervals depend on the tuning)
      */
-    intervals: Intervals;
+    intervals: ShapeIntervals;
 
     /**
-     * Computed when played
+     * Computed when played (because intervals depend on the tuning)
      */
-    notes: Notes;   // always present, even when empty because not played; this is to simplify its usage (no more test to see if a present or not)
+    notes: ShapeNotes;   // always present, even when empty because not played; this is to simplify its usage (no more test to see if a present or not)
 
     /**
      * Computed when played

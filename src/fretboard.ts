@@ -1,7 +1,14 @@
 import produce from "immer";
 import {Distance, Interval, Note} from "tonal";
 import {Tuning} from "./tuning";
-import {Intervals, Notes, Shape, ShapeType} from "./shape";
+import {
+    ShapeIntervals,
+    ShapeNotes,
+    Shape,
+    ShapeType,
+    StringIntervals,
+    StringNotes,
+} from "./shape";
 
 /**
  * [ 'E2', 'A2', 'D3', 'G3', 'B3', 'E4' ] --> [ '1P', '4P', '4P', '4P', '3M', '4P' ]
@@ -78,7 +85,7 @@ function interval(fromString: number, fromFret: number, toString: number, toFret
  *
  *  intervals [ [ '1P' ], [ '5P' ], [ '8P' ], [ '10M' ], [ '12P' ], [ '15P' ] ]
  */
-function intervals(shape: ShapeType, tuning = Tuning.guitar.standard): Intervals {
+function intervals(shape: ShapeType, tuning = Tuning.guitar.standard): ShapeIntervals {
 
     // console.log(frets, root);
     if (!shape.root) throw new Error("Shape root must be defined.");
@@ -160,7 +167,7 @@ function intervals(shape: ShapeType, tuning = Tuning.guitar.standard): Intervals
  * @param shape
  * @param tuning
  */
-function notes(shape: ShapeType, tuning = Tuning.guitar.standard): Notes  {
+function notes(shape: ShapeType, tuning = Tuning.guitar.standard): ShapeNotes  {
 
     if (!shape.root) throw new Error("Shape root must be defined.");
     if (!shape.intervals) throw new Error("Shape intervals must be defined.");
@@ -170,27 +177,101 @@ function notes(shape: ShapeType, tuning = Tuning.guitar.standard): Notes  {
         throw new Error("unexpected error")
     }
 
+
+    return shape.intervals.map(                                 //type: StringIntervals[]
+        (stringIntervals: StringIntervals) => {
+            if (stringIntervals) {                      // string[] | null;
+                return stringIntervals.map(
+                    (interval: string) => {
+                        // if (interval === null) {
+                        //     return "";
+                        // } else {
+                            const d = Distance.transpose(rootNote, interval);
+                            // console.log(`notes: rootNote=${rootNote} interval=${interval} d=${d}`);
+                            if (typeof d !== "string") {    // because Distance.transpose can return a function
+                                throw new Error("unexpected error")     //TODO: need a better error message
+                            }
+                            const s = Note.simplify(d);
+                            if (s == null) {
+                                throw new Error("unexpected error")     //TODO: need a better error message
+                            }
+                            return s;
+                        // }
+                    }
+                )
+            } else {
+                return null;
+            }
+        }
+    );
+
+
     // console.log(`notes: rootNote=${rootNote}`);
 
-    // return Object.freeze(
-    return shape.intervals.map(
-        string => string == null ? null :
-            string.map(
-            interval => {
-                const d = Distance.transpose(rootNote, interval);
-                // console.log(`notes: rootNote=${rootNote} interval=${interval} d=${d}`);
-                if (typeof d !== "string") {    // because Distance.transpose can return a function
-                    throw new Error("unexpected error")     //TODO: need a better error message
-                }
-                const s = Note.simplify(d);
-                if (s == null) {
-                    throw new Error("unexpected error")     //TODO: need a better error message
-                }
-                return s;
+    // intervals: StringIntervals[] | []
+    //              StringIntervals = string[]|null
+    //
+    // intervals: []
+    // intervals: []
+
+    // [!] (plugin rpt2) Error: /home/pri/dev/projets/fretboard-api/src/fretboard.ts(181,28): semantic error TS2349: This expression is not callable.
+    //     Each member of the union type
+    //
+    //     '(<U>(callbackfn: (value: StringIntervals, index: number, array: StringIntervals[]) => U, thisArg?: any) => U[]) |
+    //      (<U>(callbackfn: (value: never, index: number, array: never[]) => U, thisArg?: any) => U[])'
+    //
+    // has signatures, but none of those signatures are compatible with each other.
+
+    // return [];
+
+/*
+        return shape.intervals.map(
+        (stringIntervals: StringIntervals | undefined) => {
+            if (stringIntervals) {
+                return stringIntervals.map(
+                    (s:string|null) => {
+                        if (s) {
+                            return 's';
+                        }else {
+                            return null;
+                        }
+                    }
+                );
+            } else {
+                return null;
             }
-        )
+        }
     );
-    // );
+*/
+
+
+/*
+    return shape.intervals.map(                                 //type: StringIntervals[] | []
+        (stringIntervals: StringIntervals) => {
+            if (!stringIntervals || stringIntervals.length === 0) {
+                return [];
+            } else {
+                return stringIntervals.map(
+                    (interval: string|null) => {                                       //type: string[]|null
+                        if (interval === null) return null;
+                        const d = Distance.transpose(rootNote, interval);
+                        // console.log(`notes: rootNote=${rootNote} interval=${interval} d=${d}`);
+                        if (typeof d !== "string") {    // because Distance.transpose can return a function
+                            throw new Error("unexpected error")     //TODO: need a better error message
+                        }
+                        const s = Note.simplify(d);
+                        if (s == null) {
+                            throw new Error("unexpected error")     //TODO: need a better error message
+                        }
+                        return null;
+                    }
+                )
+            }
+        }
+    );
+*/
+
+
 }
 
 
@@ -290,8 +371,8 @@ function moveToFret(shape: ShapeType, fret: number): ShapeType {
         if (draftShape.notes) {
             const interval = Interval.fromSemitones(delta);
             draftShape.notes = draftShape.notes.map(
-                string => string == null ? null :
-                    string.map(
+                (stringNotes: StringNotes) => stringNotes == null ? null :     // null means the string is not played
+                    stringNotes.map(
                         note => {
                             const n = Distance.transpose(note, interval);
                             if (typeof n !== "string") {    // because Distance.transpose can return a function
