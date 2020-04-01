@@ -142,11 +142,12 @@ test('fretboard play shape', () => {
 */
 
 test('shape at position 0', () => {
-    const s = Shape.create("8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8");
-    console.log(s);
-    const p = Fretboard.play(s);
-    console.log(p);
-    console.log(Utils.intervalsSimple(p.intervals))
+    // const s = Shape.create("8 10, 7 8 10, 7 9 10, 7 9 10, 8 10, 7 8");
+    const s = Shape.create("1 3, 0 1 3, 0 2 3, 0 2 3, 1 3, 0 1");
+    console.log("shape:", s);
+    const p = Fretboard.play(s, 8);
+    console.log("play:", p);
+    console.log("intervals simple:", Utils.intervalsSimple(p.intervals))
     // expect(s).toMatchObject({
     //     frets: [[0], [2], [2], [1], [0], [0]],
     //     // fingers: undefined,

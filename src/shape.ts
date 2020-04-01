@@ -139,6 +139,16 @@ export interface ShapeType {
      */
     // notesSimple?: string[]
 
+    /**
+     * Computed when played
+     */
+    fromFret: number;
+
+    /**
+     * Computed when played
+     */
+    toFret: number;
+
 }
 
 /**
@@ -363,6 +373,30 @@ function create(shape: any): ShapeType {
             string: newShape.root.string,
             fret: newShape.root.fret
         };
+    }
+
+    // compute min fret:
+    newShape.fromFret = newShape.root.fret;             // we need to start somewhere
+    for (let s = 0; s < newShape.frets.length; s++) {     // for each string
+        const f = newShape.frets[s];
+        if (!f) continue;
+        for (let i = 0; i < f.length; i++) {                // for each fret
+            if (f[i] < newShape.fromFret) {
+                newShape.fromFret = f[i];
+            }
+        }
+    }
+
+    // compute max fret:
+    newShape.toFret = 0;
+    for (let s = 0; s < newShape.frets.length; s++) {     // for each string
+        const f = newShape.frets[s];
+        if (!f) continue;
+        for (let i = 0; i < f.length; i++) {                // for each fret
+            if (f[i] > newShape.toFret) {
+                newShape.toFret = f[i];
+            }
+        }
     }
 
     return newShape;

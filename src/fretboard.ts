@@ -284,6 +284,9 @@ function moveToFret(shape: ShapeType, fret: number): ShapeType {
                 : string.map(fret => fret + delta)
         );
 
+        draftShape.fromFret += delta;
+        draftShape.toFret += delta;
+
         if (draftShape.notes) {
             const interval = Interval.fromSemitones(delta);
             draftShape.notes = draftShape.notes.map(
