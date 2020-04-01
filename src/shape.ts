@@ -148,7 +148,6 @@ export interface ShapeType {
      * Computed when played
      */
     toFret: number;
-
 }
 
 /**
@@ -296,7 +295,9 @@ function create(shape: any): ShapeType {
         root: {string: 0, fret: 0},
         position: {string: 0, fret: 0},
         intervals: [],
-        notes: []
+        notes: [],
+        fromFret: 0,
+        toFret: 0
     };
 
     // if (typeof shape === 'string') {                    // we use two distinct tests to help Typescript.
@@ -334,7 +335,9 @@ function create(shape: any): ShapeType {
             position: shape.position,
             root: shape.root,
             intervals: [],
-            notes: []
+            notes: [],
+            fromFret: 0,
+            toFret: 0
         }
 
         // ['frets', 'fingers'].map(p => o[p] = normalizeInputFormat(shape[p]));
