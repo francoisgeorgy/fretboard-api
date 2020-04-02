@@ -1,0 +1,20 @@
+{
+  "name": "example",
+  "version": "1.0.0",
+  "main": "index.js",
+  "license": "MIT",
+  "scripts": {
+    "start": "parcel index.html",
+    "build": "parcel build index.html"
+  },
+  "dependencies": {
+    "json-stringify-pretty-compact": "^2.0.0"
+  },
+  "alias": {
+    "scheduler/tracing": "../node_modules/scheduler/tracing-profiling"
+  },
+  "devDependencies": {
+    "parcel": "^1.12.3",
+    "typescript": "^3.4.5"
+  }
+}

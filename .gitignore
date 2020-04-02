@@ -1,6 +1,7 @@
 .idea
 *.iml
 .cache/
+/example/dist/
 
 node_modules
 coverage
