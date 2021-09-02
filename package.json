@@ -121,7 +121,7 @@
         "typescript": "^3.5.1"
     },
     "dependencies": {
-        "immer": "^8.0.1",
+        "immer": "^9.0.6",
         "tonal": "^2.2.2"
     }
 }
